@@ -1,7 +1,7 @@
 NAME = engine
 RM = /bin/rm -f
 
-FLAGS = -Wall -Wextra -Werror
+FLAGS = #-Wall -Wextra -Werror
 
 INCLUDE = -I ./includes/
 SRC_DIR := ./srcs/
@@ -18,7 +18,7 @@ OFILES = $(patsubst %, $(OBJ_DIR)%.o, $(FILES))
 GL_FLAGS = -lglfw3 -framework AppKit -framework OpenGL -framework IOKit -framework CoreVideo
 GL_DIR = $(LIB_DIR)glfw/src
 GL_INC = -I $(LIB_DIR)glfw/include/
-GL_LINK = -L$(GL_DIR) 
+GL_LINK = -L$(GL_DIR)
 
 .PHONY: all clean fclean re
 

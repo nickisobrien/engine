@@ -32,7 +32,7 @@ int main()
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     // build and compile our shader program
-    Shader ourShader("shader.vs", "shader.fs"); // you can name your shader files however you like
+    Shader ourShader("../resources/shaders/shader.vs", "../resources/shaders/shader.fs");
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     float vertices[] = {

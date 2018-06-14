@@ -159,11 +159,6 @@ int main()
 		transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
 		transform = glm::translate(transform, glm::vec3(-0.2f, 0.2f, 0.0f));
 
-		//set scalar value in shader program to scalar from cpp
-		ourShader.setFloat("scalar", scalar);
-
-		ourShader.use();
-
 		// get matrix's uniform location and set matrix
 		transformLoc = glGetUniformLocation(ourShader.ID, "transform");
 		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));

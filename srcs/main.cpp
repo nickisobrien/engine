@@ -156,7 +156,8 @@ int main()
 	//second
 		// create transformations
 		transform = glm::mat4(1.0f);
-		transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+		float scaleAmount = sin(glfwGetTime());
+        transform = glm::scale(transform, glm::vec3(scaleAmount, scaleAmount, scaleAmount));
 		transform = glm::translate(transform, glm::vec3(-0.2f, 0.2f, 0.0f));
 
 		// get matrix's uniform location and set matrix

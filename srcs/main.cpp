@@ -137,8 +137,8 @@ int main()
 
 		// create transformations
 		glm::mat4 transform(1.0f);
-		transform = glm::translate(transform, glm::vec3(0.5f, -0.5f, 0.0f));
 		transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+		transform = glm::translate(transform, glm::vec3(0.2f, -0.2f, 0.0f));
 
 		//set scalar value in shader program to scalar from cpp
 		ourShader.setFloat("scalar", scalar);
@@ -147,6 +147,25 @@ int main()
 
 		// get matrix's uniform location and set matrix
 		unsigned int transformLoc = glGetUniformLocation(ourShader.ID, "transform");
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+
+		// render the triangle
+		glBindVertexArray(VAO);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	//second
+		// create transformations
+		transform = glm::mat4(1.0f);
+		transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+		transform = glm::translate(transform, glm::vec3(-0.2f, 0.2f, 0.0f));
+
+		//set scalar value in shader program to scalar from cpp
+		ourShader.setFloat("scalar", scalar);
+
+		ourShader.use();
+
+		// get matrix's uniform location and set matrix
+		transformLoc = glGetUniformLocation(ourShader.ID, "transform");
 		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 
 		// render the triangle

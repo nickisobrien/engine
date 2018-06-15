@@ -192,7 +192,7 @@ int main()
 
 		// View Matrix
 		glm::mat4 view(1.0f);
-		view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f)); 
+		view = glm::translate(view, glm::vec3(0.0f, 0.0f, -5.0f)); 
 		// set the uniform matrix's in the shaders
 		ourShader.setMat4("view", view);
 
@@ -202,8 +202,11 @@ int main()
 		{
 			glm::mat4 model(1.0f);
 			model = glm::translate(model, cubePositions[i]);
-			float angle = 20.0f * i; 
-			model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+			float angle = 20.0f * i;
+			if (i % 2)
+				model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+			else
+				model = glm::rotate(model, glm::radians((float)glfwGetTime() * 10.0f), glm::vec3(1.0f, 0.3f, 0.5f));
 			ourShader.setMat4("model", model);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}

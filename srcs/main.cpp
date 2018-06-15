@@ -3,12 +3,6 @@
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 
-// settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
-
-float scalar = 0.2f;
-
 int main()
 {
 	// glfw: initialize and configure
@@ -22,7 +16,7 @@ int main()
 #endif
 
 	// glfw window creation
-	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Engine", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Engine", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -35,17 +29,69 @@ int main()
 	// build and compile our shader program
 	Shader ourShader("../resources/shaders/shader.vs", "../resources/shaders/shader.fs");
 
+	// turn on z buffering
+	glEnable(GL_DEPTH_TEST);
+
 	// set up vertex data (and buffer(s)) and configure vertex attributes
 	float vertices[] = {
-		// positions			// texture coords
-		 0.5f,  0.5f, 0.0f,		1.0f, 1.0f, // top right
-		 0.5f, -0.5f, 0.0f,		1.0f, 0.0f, // bottom right
-		-0.5f, -0.5f, 0.0f,		0.0f, 0.0f, // bottom left
-		-0.5f,  0.5f, 0.0f,		0.0f, 1.0f  // top left
+		-0.5f, -0.5f, -0.5f,	0.0f, 0.0f,
+		 0.5f, -0.5f, -0.5f,	1.0f, 0.0f,
+		 0.5f,	0.5f, -0.5f,	1.0f, 1.0f,
+		 0.5f,	0.5f, -0.5f,	1.0f, 1.0f,
+		-0.5f,	0.5f, -0.5f,	0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,	0.0f, 0.0f,
+
+		-0.5f, -0.5f,	0.5f,	0.0f, 0.0f,
+		 0.5f, -0.5f,	0.5f,	1.0f, 0.0f,
+		 0.5f,	0.5f,	0.5f,	1.0f, 1.0f,
+		 0.5f,	0.5f,	0.5f,	1.0f, 1.0f,
+		-0.5f,	0.5f,	0.5f,	0.0f, 1.0f,
+		-0.5f, -0.5f,	0.5f,	0.0f, 0.0f,
+
+		-0.5f,	0.5f,	0.5f,	1.0f, 0.0f,
+		-0.5f,	0.5f, -0.5f,	1.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,	0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,	0.0f, 1.0f,
+		-0.5f, -0.5f,	0.5f,	0.0f, 0.0f,
+		-0.5f,	0.5f,	0.5f,	1.0f, 0.0f,
+
+		 0.5f,	0.5f,	0.5f,	1.0f, 0.0f,
+		 0.5f,	0.5f, -0.5f,	1.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,	0.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,	0.0f, 1.0f,
+		 0.5f, -0.5f,	0.5f,	0.0f, 0.0f,
+		 0.5f,	0.5f,	0.5f,	1.0f, 0.0f,
+
+		-0.5f, -0.5f, -0.5f,	0.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,	1.0f, 1.0f,
+		 0.5f, -0.5f,	0.5f,	1.0f, 0.0f,
+		 0.5f, -0.5f,	0.5f,	1.0f, 0.0f,
+		-0.5f, -0.5f,	0.5f,	0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,	0.0f, 1.0f,
+
+		-0.5f,	0.5f, -0.5f,	0.0f, 1.0f,
+		 0.5f,	0.5f, -0.5f,	1.0f, 1.0f,
+		 0.5f,	0.5f,	0.5f,	1.0f, 0.0f,
+		 0.5f,	0.5f,	0.5f,	1.0f, 0.0f,
+		-0.5f,	0.5f,	0.5f,	0.0f, 0.0f,
+		-0.5f,	0.5f, -0.5f,	0.0f, 1.0f
 	};
-	unsigned int indices[] = {  
+	unsigned int indices[] = {	
 		0, 1, 3, // first triangle
-		1, 2, 3  // second triangle
+		1, 2, 3	// second triangle
+	};
+
+	glm::vec3 cubePositions[] = {
+		glm::vec3( 0.0f,	0.0f,	0.0f),
+		glm::vec3( 2.0f,	5.0f, -15.0f),
+		glm::vec3(-1.5f, -2.2f, -2.5f),
+		glm::vec3(-3.8f, -2.0f, -12.3f),
+		glm::vec3( 2.4f, -0.4f, -3.5f),
+		glm::vec3(-1.7f,	3.0f, -7.5f),
+		glm::vec3( 1.3f, -2.0f, -2.5f),
+		glm::vec3( 1.5f,	2.0f, -2.5f),
+		glm::vec3( 1.5f,	0.2f, -1.5f),
+		glm::vec3(-1.3f,	1.0f, -1.5f)
 	};
 
 	unsigned int VBO, VAO, EBO;
@@ -72,7 +118,7 @@ int main()
 	// VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
 	// glBindVertexArray(0);
 
-	//Texture setup
+	// Texture setup
 	unsigned int texture[2];
 	glGenTextures(2, texture);
 	glBindTexture(GL_TEXTURE_2D, texture[0]);
@@ -119,6 +165,11 @@ int main()
 	ourShader.setInt("texture1", 0);
 	ourShader.setInt("texture2", 1);
 
+	// Projection Matrix can be outside loop
+	glm::mat4 projection(1.0f);
+	projection = glm::perspective(glm::radians(45.0f), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
+	ourShader.setMat4("projection", projection);// can prob move this outside the loop (along with matrix calc)
+
 	// render loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -128,6 +179,8 @@ int main()
 		// render
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
+		// clear z buffer
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// bind textures on corresponding texture units
 		glActiveTexture(GL_TEXTURE0);
@@ -135,38 +188,25 @@ int main()
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture[1]);
 
-		// create transformations
-		glm::mat4 transform(1.0f);
-		transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
-		transform = glm::translate(transform, glm::vec3(0.2f, -0.2f, 0.0f));
-
-		//set scalar value in shader program to scalar from cpp
-		ourShader.setFloat("scalar", scalar);
-
 		ourShader.use();
 
-		// get matrix's uniform location and set matrix
-		unsigned int transformLoc = glGetUniformLocation(ourShader.ID, "transform");
-		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+		// View Matrix
+		glm::mat4 view(1.0f);
+		view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f)); 
+		// set the uniform matrix's in the shaders
+		ourShader.setMat4("view", view);
 
-		// render the triangle
+		// render the triangles
 		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-	//second
-		// create transformations
-		transform = glm::mat4(1.0f);
-		float scaleAmount = sin(glfwGetTime());
-        transform = glm::scale(transform, glm::vec3(scaleAmount, scaleAmount, scaleAmount));
-		transform = glm::translate(transform, glm::vec3(-0.2f, 0.2f, 0.0f));
-
-		// get matrix's uniform location and set matrix
-		transformLoc = glGetUniformLocation(ourShader.ID, "transform");
-		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
-
-		// render the triangle
-		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		for(unsigned int i = 0; i < 10; i++)
+		{
+			glm::mat4 model(1.0f);
+			model = glm::translate(model, cubePositions[i]);
+			float angle = 20.0f * i; 
+			model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+			ourShader.setMat4("model", model);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);
@@ -187,14 +227,6 @@ void processInput(GLFWwindow *window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
-	else if (scalar < 1.0f && glfwGetKey(window, GLFW_KEY_UP))
-		scalar += 0.1f;
-	else if (scalar > 0.0f && glfwGetKey(window, GLFW_KEY_DOWN))
-		scalar -= 0.1f;
-	if (scalar > 1.0f)
-		scalar = 1.0f;
-	else if (scalar < 0.0f)
-		scalar = 0.0f;
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes

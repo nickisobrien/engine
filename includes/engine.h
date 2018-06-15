@@ -11,9 +11,10 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <glm/glm.hpp>//With glm version 0.9.9 default matrix is 0 not identity so to make identity glm::mat4 mat = glm::mat4(1.0f)
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+
+#include <glm/glm.hpp> //vec3, vec4, ivec4, mat4
+#include <glm/gtc/matrix_transform.hpp> //translate, rotate, scale, perspective 
+#include <glm/gtc/type_ptr.hpp> //value_ptr
 
 //By defining STB_IMAGE_IMPLEMENTATION the preprocessor modifies the header file such
 //that it only contains the relevant definition source code, effectively turning the header file into a .cpp file

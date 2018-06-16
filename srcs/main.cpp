@@ -2,6 +2,24 @@
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+
+glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp	= glm::vec3(0.0f, 1.0f,  0.0f);
+
+float deltaTime = 0.0f;	// Time between current frame and last frame
+float lastFrame = 0.0f; // Time of last frame
+
+float pitch = 0.0f;
+float yaw = 0.0f;
+
+float lastX = 400, lastY = 300; //last mouse position
+bool firstMouse = true; //if it's the first mouse movement we want to update positions
+
+float fov = 45.0f;
+glm::mat4 projection(1.0f);
 
 int main()
 {
@@ -25,6 +43,9 @@ int main()
 	}
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // turn on mouse capturing
+	glfwSetCursorPosCallback(window, mouse_callback); // calls mouse_callback every time mouse moves
+	glfwSetScrollCallback(window, scroll_callback);  // calls scroll_callback every time scrolling happens
 
 	// build and compile our shader program
 	Shader ourShader("../resources/shaders/shader.vs", "../resources/shaders/shader.fs");
@@ -165,10 +186,9 @@ int main()
 	ourShader.setInt("texture1", 0);
 	ourShader.setInt("texture2", 1);
 
-	// Projection Matrix can be outside loop
-	glm::mat4 projection(1.0f);
-	projection = glm::perspective(glm::radians(45.0f), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
-	ourShader.setMat4("projection", projection);// can prob move this outside the loop (along with matrix calc)
+	// Projection Matrix, is global so recalculating only happens when fov changes
+	projection = glm::perspective(glm::radians(fov), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
+	ourShader.setMat4("projection", projection);
 
 	// render loop
 	while (!glfwWindowShouldClose(window))
@@ -190,10 +210,16 @@ int main()
 
 		ourShader.use();
 
-		// View Matrix
-		glm::mat4 view(1.0f);
-		view = glm::translate(view, glm::vec3(0.0f, 0.0f, -5.0f)); 
-		// set the uniform matrix's in the shaders
+		// camera/view transformation
+		glm::mat4 view;
+		float radius = 10.0f;
+		//calculate camera rotations
+		glm::vec3 front;
+		front.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
+		front.y = sin(glm::radians(pitch));
+		front.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
+		cameraFront = glm::normalize(front);
+		view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 		ourShader.setMat4("view", view);
 
 		// render the triangles
@@ -210,6 +236,16 @@ int main()
 			ourShader.setMat4("model", model);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
+
+		// calculate time between frames and update
+		float currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;  
+
+		// needs this because recalculating projection matrix only needs to happen when fov changes
+		// but ourShader isn't global currently so we need to set it again
+		// only need this for the zooming effect
+		ourShader.setMat4("projection", projection);
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);
@@ -230,6 +266,56 @@ void processInput(GLFWwindow *window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
+	float cameraSpeed = 2.5f * deltaTime; // adjust accordingly
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		cameraPos += cameraSpeed * cameraFront;
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		cameraPos -= cameraSpeed * cameraFront;
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+}
+
+// calculate mouse movement
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+	if (firstMouse)
+	{
+		lastX = xpos;
+		lastY = ypos;
+		firstMouse = false;
+	}
+	float xoffset = xpos - lastX;
+	float yoffset = lastY - ypos; // reversed since y-coordinates range from bottom to top
+	lastX = xpos;
+	lastY = ypos;
+
+	float sensitivity = 0.05f;
+	xoffset *= sensitivity;
+	yoffset *= sensitivity;
+
+	yaw += xoffset;
+	pitch += yoffset;
+
+	// avoid looking too high or low
+	if (pitch > 89.0f)
+		pitch =  89.0f;
+	if (pitch < -89.0f)
+		pitch = -89.0f;
+}
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	if (fov >= 1.0f && fov <= 45.0f)
+		fov -= yoffset;
+	if (fov <= 1.0f)
+		fov = 1.0f;
+	if (fov >= 45.0f)
+		fov = 45.0f;
+
+	// change projection matrix
+	projection = glm::perspective(glm::radians(fov), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes

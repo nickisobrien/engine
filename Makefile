@@ -8,7 +8,7 @@ SRC_DIR := ./srcs/
 OBJ_DIR := ./objs/
 LIB_DIR := ./lib/
 
-HEADERS = ./includes/engine
+HEADERS = ./includes/*
 
 # engine
 FILES = main

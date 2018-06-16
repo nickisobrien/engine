@@ -11,6 +11,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <vector>
 
 #include <glm/glm.hpp> //vec3, vec4, ivec4, mat4
 #include <glm/gtc/matrix_transform.hpp> //translate, rotate, scale, perspective 
@@ -21,5 +22,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h" //https://github.com/nothings/stb/blob/master/stb_image.h
 #include "shader.h"
+#include "camera.h"
 
 #endif

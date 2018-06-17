@@ -33,57 +33,56 @@ int main()
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // turn on mouse capturing
 	glfwSetCursorPosCallback(window, mouse_callback); // calls mouse_callback every time mouse moves
-	glfwSetScrollCallback(window, scroll_callback);  // calls scroll_callback every time scrolling happens
+	glfwSetScrollCallback(window, scroll_callback); // calls scroll_callback every time scrolling happens
 	glEnable(GL_DEPTH_TEST); //turn on z buffering
 
 	// build and compile our shader program
 	Shader colorShader("../resources/shaders/shader.vs", "../resources/shaders/shader.fs");
-	Shader lampShader("../resources/shaders/shader.vs", "../resources/shaders/lamp.fs");
+	Shader lampShader("../resources/shaders/lamp.vs", "../resources/shaders/lamp.fs");
 
-	// set up vertex data (and buffer(s)) and configure vertex attributes
-	float vertices[] = {
-		-0.5f, -0.5f, -0.5f, 
-		 0.5f, -0.5f, -0.5f,  
-		 0.5f,  0.5f, -0.5f,  
-		 0.5f,  0.5f, -0.5f,  
-		-0.5f,  0.5f, -0.5f, 
-		-0.5f, -0.5f, -0.5f, 
+float vertices[] = {
+	-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+	 0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+	 0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+	 0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+	-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+	-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
 
-		-0.5f, -0.5f,  0.5f, 
-		 0.5f, -0.5f,  0.5f,  
-		 0.5f,  0.5f,  0.5f,  
-		 0.5f,  0.5f,  0.5f,  
-		-0.5f,  0.5f,  0.5f, 
-		-0.5f, -0.5f,  0.5f, 
+	-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+	 0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+	 0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+	 0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+	-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+	-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
 
-		-0.5f,  0.5f,  0.5f, 
-		-0.5f,  0.5f, -0.5f, 
-		-0.5f, -0.5f, -0.5f, 
-		-0.5f, -0.5f, -0.5f, 
-		-0.5f, -0.5f,  0.5f, 
-		-0.5f,  0.5f,  0.5f, 
+	-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
+	-0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
+	-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
+	-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
+	-0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
+	-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
 
-		 0.5f,  0.5f,  0.5f,  
-		 0.5f,  0.5f, -0.5f,  
-		 0.5f, -0.5f, -0.5f,  
-		 0.5f, -0.5f, -0.5f,  
-		 0.5f, -0.5f,  0.5f,  
-		 0.5f,  0.5f,  0.5f,  
+	 0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
+	 0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+	 0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+	 0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+	 0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
+	 0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
 
-		-0.5f, -0.5f, -0.5f, 
-		 0.5f, -0.5f, -0.5f,  
-		 0.5f, -0.5f,  0.5f,  
-		 0.5f, -0.5f,  0.5f,  
-		-0.5f, -0.5f,  0.5f, 
-		-0.5f, -0.5f, -0.5f, 
+	-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
+	 0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
+	 0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
+	 0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
+	-0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
+	-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
 
-		-0.5f,  0.5f, -0.5f, 
-		 0.5f,  0.5f, -0.5f,  
-		 0.5f,  0.5f,  0.5f,  
-		 0.5f,  0.5f,  0.5f,  
-		-0.5f,  0.5f,  0.5f, 
-		-0.5f,  0.5f, -0.5f, 
-	};
+	-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+	 0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+	 0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
+	 0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
+	-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
+	-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f
+};
 
 	unsigned int VBO, cubeVAO;
 	glGenVertexArrays(1, &cubeVAO);
@@ -95,8 +94,11 @@ int main()
 	glBindVertexArray(cubeVAO);
 
 	// position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+	// normal attribute
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
 
 	// lights
 	unsigned int lightVAO;
@@ -106,7 +108,7 @@ int main()
 	// we only need to bind to the VBO, the container's VBO's data already contains the correct data.
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	// set the vertex attributes (only position data for our lamp)
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
 	// render loop
@@ -128,7 +130,8 @@ int main()
 
 		colorShader.use();
 		colorShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
-		colorShader.setVec3("lightColor",  1.0f, 1.0f, 1.0f);
+		colorShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
+		colorShader.setVec3("lightPos", lightPos);
 
 		// pass projection matrix to shader (note that in this case it could change every frame)
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);

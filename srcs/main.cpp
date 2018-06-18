@@ -9,6 +9,8 @@ float lastX = WIDTH / 2.0f;
 float lastY = HEIGHT / 2.0f;
 bool firstMouse = true;
 
+glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+
 int main()
 {
 	// glfw: initialize and configure
@@ -102,7 +104,6 @@ float vertices[] = {
 
 	// lights
 	unsigned int lightVAO;
-	glm::vec3 lightPos(0.75f, 0.75f, 0.75f);
 	glGenVertexArrays(1, &lightVAO);
 	glBindVertexArray(lightVAO);
 	// we only need to bind to the VBO, the container's VBO's data already contains the correct data.
@@ -128,10 +129,14 @@ float vertices[] = {
 		// clear z buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		lightPos.x = 1.0f + sin(glfwGetTime()) * 2.0f;
+		lightPos.y = sin(glfwGetTime() / 2.0f) * 1.0f;
+
 		colorShader.use();
 		colorShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
 		colorShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
 		colorShader.setVec3("lightPos", lightPos);
+		colorShader.setVec3("viewPos", camera.Position);
 
 		// pass projection matrix to shader (note that in this case it could change every frame)
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);

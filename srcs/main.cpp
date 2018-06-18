@@ -129,8 +129,8 @@ float vertices[] = {
 		// clear z buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		lightPos.x = 1.0f + sin(glfwGetTime()) * 2.0f;
-		lightPos.y = sin(glfwGetTime() / 2.0f) * 1.0f;
+		lightPos.x = sin(glfwGetTime()) * 2.0f + 1.0f;
+		lightPos.y = sin(glfwGetTime() / 2.0f);
 
 		colorShader.use();
 		colorShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);

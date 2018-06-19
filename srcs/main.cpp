@@ -132,21 +132,28 @@ float vertices[] = {
 		colorShader.setVec3("light.position", lightPos);
 		colorShader.setVec3("viewPos", camera.Position);
 
-		// light properties
-		glm::vec3 lightColor;
-		lightColor.x = sin(glfwGetTime() * 2.0f);
-		lightColor.y = sin(glfwGetTime() * 0.7f);
-		lightColor.z = sin(glfwGetTime() * 1.3f);
-		glm::vec3 diffuseColor = lightColor   * glm::vec3(0.5f); // decrease the influence
-		glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // low influence
-		colorShader.setVec3("light.ambient", ambientColor);
-		colorShader.setVec3("light.diffuse", diffuseColor);
-		colorShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+		// // light properties
+		// glm::vec3 lightColor;
+		// lightColor.x = sin(glfwGetTime() * 2.0f);
+		// lightColor.y = sin(glfwGetTime() * 0.7f);
+		// lightColor.z = sin(glfwGetTime() * 1.3f);
+		// glm::vec3 diffuseColor = lightColor   * glm::vec3(0.5f); // decrease the influence
+		// glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // low influence
+		// colorShader.setVec3("light.ambient", ambientColor);
+		// colorShader.setVec3("light.diffuse", diffuseColor);
+		// colorShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+		colorShader.setVec3("light.ambient", glm::vec3(1.0f));
+		colorShader.setVec3("light.diffuse", glm::vec3(1.0f));
+		colorShader.setVec3("light.specular", glm::vec3(1.0f));
 
-		// material properties
-		colorShader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
-		colorShader.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
-		colorShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f); // specular lighting doesn't have full effect on this object's material
+		// // material properties
+		// colorShader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
+		// colorShader.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
+		// colorShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f); // specular lighting doesn't have full effect on this object's material
+		// colorShader.setFloat("material.shininess", 32.0f);
+		colorShader.setVec3("material.ambient", 0.24725f, 0.1995f, 0.0745f);
+		colorShader.setVec3("material.diffuse", 0.75164f, 0.60648f, 0.22648f);
+		colorShader.setVec3("material.specular", 0.628281f, 0.555802f, 0.366065f);
 		colorShader.setFloat("material.shininess", 32.0f);
 
 		// view/projection transformations

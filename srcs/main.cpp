@@ -115,7 +115,7 @@ float vertices[] = {
 	// render loop
 	while (!glfwWindowShouldClose(window))
 	{
-		// calculate time between frames and update
+		// per-frame time logic
 		float currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
@@ -124,42 +124,47 @@ float vertices[] = {
 		processInput(window);
 
 		// render
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
-		// clear z buffer
+		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		lightPos.x = sin(glfwGetTime()) * 2.0f + 1.0f;
-		lightPos.y = sin(glfwGetTime() / 2.0f);
-
+		// be sure to activate shader when setting uniforms/drawing objects
 		colorShader.use();
-		colorShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
-		colorShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
-		colorShader.setVec3("lightPos", lightPos);
+		colorShader.setVec3("light.position", lightPos);
 		colorShader.setVec3("viewPos", camera.Position);
 
-		// material settings
-		colorShader.setVec3("material.ambient",  1.0f, 0.5f, 0.31f);
-		colorShader.setVec3("material.diffuse",  1.0f, 0.5f, 0.31f);
-		colorShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+		// light properties
+		glm::vec3 lightColor;
+		lightColor.x = sin(glfwGetTime() * 2.0f);
+		lightColor.y = sin(glfwGetTime() * 0.7f);
+		lightColor.z = sin(glfwGetTime() * 1.3f);
+		glm::vec3 diffuseColor = lightColor   * glm::vec3(0.5f); // decrease the influence
+		glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // low influence
+		colorShader.setVec3("light.ambient", ambientColor);
+		colorShader.setVec3("light.diffuse", diffuseColor);
+		colorShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+
+		// material properties
+		colorShader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
+		colorShader.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
+		colorShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f); // specular lighting doesn't have full effect on this object's material
 		colorShader.setFloat("material.shininess", 32.0f);
 
-		// pass projection matrix to shader (note that in this case it could change every frame)
+		// view/projection transformations
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
-		colorShader.setMat4("projection", projection);
-		// camera/view transformation
 		glm::mat4 view = camera.GetViewMatrix();
+		colorShader.setMat4("projection", projection);
 		colorShader.setMat4("view", view);
+
 		// world transformation
 		glm::mat4 model(1.0f);
-		model = glm::rotate(model, glm::radians((float)glfwGetTime() * 10.0f), glm::vec3(1.0f, 0.3f, 0.5f));
 		colorShader.setMat4("model", model);
 
 		// render the cube
 		glBindVertexArray(cubeVAO);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		 // also draw the lamp object
+
+		// also draw the lamp object
 		lampShader.use();
 		lampShader.setMat4("projection", projection);
 		lampShader.setMat4("view", view);
@@ -170,6 +175,7 @@ float vertices[] = {
 
 		glBindVertexArray(lightVAO);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
+
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);

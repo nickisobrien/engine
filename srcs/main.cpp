@@ -138,6 +138,12 @@ float vertices[] = {
 		colorShader.setVec3("lightPos", lightPos);
 		colorShader.setVec3("viewPos", camera.Position);
 
+		// material settings
+		colorShader.setVec3("material.ambient",  1.0f, 0.5f, 0.31f);
+		colorShader.setVec3("material.diffuse",  1.0f, 0.5f, 0.31f);
+		colorShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+		colorShader.setFloat("material.shininess", 32.0f);
+
 		// pass projection matrix to shader (note that in this case it could change every frame)
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
 		colorShader.setMat4("projection", projection);

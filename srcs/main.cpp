@@ -144,14 +144,8 @@ float vertices[] = {
 		colorShader.setVec3("viewPos", camera.Position);
 
 		// // light properties
-		glm::vec3 lightColor;
-		lightColor.x = sin(glfwGetTime() * 2.0f);
-		lightColor.y = sin(glfwGetTime() * 0.7f);
-		lightColor.z = sin(glfwGetTime() * 1.3f);
-		glm::vec3 diffuseColor = lightColor   * glm::vec3(0.5f); // decrease the influence
-		glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // low influence
-		colorShader.setVec3("light.ambient", ambientColor);
-		colorShader.setVec3("light.diffuse", diffuseColor);
+		colorShader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
+		colorShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
 		colorShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
 
 		// // material properties

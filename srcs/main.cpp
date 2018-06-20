@@ -153,14 +153,18 @@ glm::vec3 cubePositions[] = {
 
 		// be sure to activate shader when setting uniforms/drawing objects
 		colorShader.use();
-		// colorShader.setVec3("light.position", lightPos); // not used for directional lighting
-		colorShader.setVec3("light.direction", -0.2f, -1.0f, -0.3f);
+		colorShader.setVec3("light.position", lightPos); // not used for directional lighting
+		// colorShader.setVec3("light.direction", -0.2f, -1.0f, -0.3f); // used for directional lighting
 		colorShader.setVec3("viewPos", camera.Position);
 
-		// // light properties
+		// light properties
 		colorShader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
 		colorShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
 		colorShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+		// light attenuation values
+		colorShader.setFloat("light.constant",  1.0f);
+		colorShader.setFloat("light.linear",    0.09f);
+		colorShader.setFloat("light.quadratic", 0.032f);
 
 		// // material properties
 		colorShader.setFloat("material.shininess", 32.0f);
@@ -195,13 +199,13 @@ glm::vec3 cubePositions[] = {
 		}
 
 		// also draw the lamp object
-		// lampShader.use();
-		// lampShader.setMat4("projection", projection);
-		// lampShader.setMat4("view", view);
-		// glm::mat4 model = glm::mat4(1.0f);
-		// model = glm::translate(model, lightPos);
-		// model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
-		// lampShader.setMat4("model", model);
+		lampShader.use();
+		lampShader.setMat4("projection", projection);
+		lampShader.setMat4("view", view);
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, lightPos);
+		model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
+		lampShader.setMat4("model", model);
 
 		glBindVertexArray(lightVAO);
 		glDrawArrays(GL_TRIANGLES, 0, 36);

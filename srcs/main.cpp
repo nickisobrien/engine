@@ -43,7 +43,7 @@ int main()
 	Shader lampShader("../resources/shaders/lamp.vs", "../resources/shaders/lamp.fs");
 
 float vertices[] = {
-// positions		  // normals		   // texture coords
+		// positions		  // normals		   // texture coords
 		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
 		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  0.0f,
 		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  1.0f,
@@ -118,8 +118,10 @@ float vertices[] = {
 
 	// texture
 	unsigned int diffuseMap = loadTexture("../resources/textures/container2.png");
+	unsigned int specularMap = loadTexture("../resources/textures/container2_specular.png");
 	colorShader.use(); 
     colorShader.setInt("material.diffuse", 0);
+    colorShader.setInt("material.specular", 1);
 
 	// render loop
 	while (!glfwWindowShouldClose(window))
@@ -153,7 +155,6 @@ float vertices[] = {
 		colorShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
 
 		// // material properties
-		colorShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f); // specular lighting doesn't have full effect on this object's material
 		colorShader.setFloat("material.shininess", 32.0f);
 
 		// view/projection transformations
@@ -165,6 +166,13 @@ float vertices[] = {
 		// world transformation
 		glm::mat4 model(1.0f);
 		colorShader.setMat4("model", model);
+
+		// bind diffuse map
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, diffuseMap);
+        // bind specular map
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, specularMap);
 
 		// render the cube
 		glBindVertexArray(cubeVAO);

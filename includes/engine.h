@@ -13,14 +13,14 @@
 #include <string>
 #include <vector>
 
-#include <glm/glm.hpp> //vec3, vec4, ivec4, mat4
-#include <glm/gtc/matrix_transform.hpp> //translate, rotate, scale, perspective 
-#include <glm/gtc/type_ptr.hpp> //value_ptr
+#include <glm/glm.hpp> // vec3, vec4, ivec4, mat4
+#include <glm/gtc/matrix_transform.hpp> // translate, rotate, scale, perspective 
+#include <glm/gtc/type_ptr.hpp> // value_ptr
 
-//By defining STB_IMAGE_IMPLEMENTATION the preprocessor modifies the header file such
-//that it only contains the relevant definition source code, effectively turning the header file into a .cpp file
+// By defining STB_IMAGE_IMPLEMENTATION the preprocessor modifies the header file such
+// that it only contains the relevant definition source code, effectively turning the header file into a .cpp file
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h" //https://github.com/nothings/stb/blob/master/stb_image.h
+#include "stb_image.h" // https://github.com/nothings/stb/blob/master/stb_image.h
 #include "shader.h"
 #include "camera.h"
 

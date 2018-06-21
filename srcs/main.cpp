@@ -153,9 +153,14 @@ glm::vec3 cubePositions[] = {
 
 		// be sure to activate shader when setting uniforms/drawing objects
 		colorShader.use();
-		colorShader.setVec3("light.position", lightPos); // not used for directional lighting
+		// colorShader.setVec3("light.position", lightPos); // not used for directional lighting
 		// colorShader.setVec3("light.direction", -0.2f, -1.0f, -0.3f); // used for directional lighting
 		colorShader.setVec3("viewPos", camera.Position);
+
+		// spotlight data
+		colorShader.setVec3("light.position", camera.Position);
+		colorShader.setVec3("light.direction", camera.Front);
+		colorShader.setFloat("light.cutOff", glm::cos(glm::radians(12.5f)));
 
 		// light properties
 		colorShader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);

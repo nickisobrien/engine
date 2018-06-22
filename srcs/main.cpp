@@ -9,8 +9,6 @@ float lastX = WIDTH / 2.0f;
 float lastY = HEIGHT / 2.0f;
 bool firstMouse = true;
 
-glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
-
 int main()
 {
 	// glfw: initialize and configure
@@ -100,6 +98,13 @@ glm::vec3 cubePositions[] = {
 	glm::vec3(-1.3f,  1.0f, -1.5f)
 };
 
+glm::vec3 pointLightPositions[] = {
+	glm::vec3( 0.7f,  0.2f,  2.0f),
+	glm::vec3( 2.3f, -3.3f, -4.0f),
+	glm::vec3(-4.0f,  2.0f, -12.0f),
+	glm::vec3( 0.0f,  0.0f, -3.0f)
+};
+
 	unsigned int VBO, cubeVAO;
 	glGenVertexArrays(1, &cubeVAO);
 	glGenBuffers(1, &VBO);
@@ -153,27 +158,28 @@ glm::vec3 cubePositions[] = {
 
 		// be sure to activate shader when setting uniforms/drawing objects
 		colorShader.use();
-		// colorShader.setVec3("light.position", lightPos); // not used for directional lighting
-		// colorShader.setVec3("light.direction", -0.2f, -1.0f, -0.3f); // used for directional lighting
+
 		colorShader.setVec3("viewPos", camera.Position);
-
-		// spotlight data
-		colorShader.setVec3("light.position", camera.Position);
-		colorShader.setVec3("light.direction", camera.Front);
-		colorShader.setFloat("light.cutOff", glm::cos(glm::radians(12.5f)));
-		colorShader.setFloat("light.outerCutOff", glm::cos(glm::radians(17.5f)));
-
-		// light properties
-		colorShader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
-		colorShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
-		colorShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
-		// light attenuation values
-		colorShader.setFloat("light.constant",  1.0f);
-		colorShader.setFloat("light.linear",    0.09f);
-		colorShader.setFloat("light.quadratic", 0.032f);
-
-		// // material properties
 		colorShader.setFloat("material.shininess", 32.0f);
+
+		// directional light:
+		colorShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+		colorShader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+		colorShader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
+		colorShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
+
+		// point light(s):
+		for (int i = 0; i < 4; i++)
+		{
+			std::string str = std::string("pointLights[") + std::to_string(i) + "].";
+			colorShader.setVec3(str + "position", pointLightPositions[i]);
+			colorShader.setVec3(str + "ambient", 0.05f, 0.05f, 0.05f);
+			colorShader.setVec3(str + "diffuse", 0.8f, 0.8f, 0.8f);
+			colorShader.setVec3(str + "specular", 1.0f, 1.0f, 1.0f);
+			colorShader.setFloat(str + "constant", 1.0f);
+			colorShader.setFloat(str + "linear", 0.09);
+			colorShader.setFloat(str + "quadratic", 0.032);
+		}
 
 		// view/projection transformations
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
@@ -182,8 +188,8 @@ glm::vec3 cubePositions[] = {
 		colorShader.setMat4("view", view);
 
 		// world transformation
-        glm::mat4 model(1.0f);
-        colorShader.setMat4("model", model);
+		glm::mat4 model(1.0f);
+		colorShader.setMat4("model", model);
 
 		// bind diffuse map
 		glActiveTexture(GL_TEXTURE0);
@@ -206,16 +212,17 @@ glm::vec3 cubePositions[] = {
 
 		// also draw the lamp object
 		lampShader.use();
-		lampShader.setMat4("projection", projection);
-		lampShader.setMat4("view", view);
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, lightPos);
-		model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
-		lampShader.setMat4("model", model);
-
-		glBindVertexArray(lightVAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-
+		for (int i = 0; i < 4; i++)
+		{
+			lampShader.setMat4("projection", projection);
+			lampShader.setMat4("view", view);
+			model = glm::mat4(1.0f);
+			model = glm::translate(model, pointLightPositions[i]);
+			model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
+			lampShader.setMat4("model", model);
+			glBindVertexArray(lightVAO);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);

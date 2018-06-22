@@ -162,9 +162,9 @@ glm::vec3 pointLightPositions[] = {
 
 		// directional light:
 		colorShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
-		colorShader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
-		colorShader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
-		colorShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
+		colorShader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.1f);
+		colorShader.setVec3("dirLight.diffuse", 0.2f, 0.2f, 0.7f);
+		colorShader.setVec3("dirLight.specular", 0.7f, 0.7f, 0.7f);
 
 		// point light(s):
 		for (int i = 0; i < 4; i++)

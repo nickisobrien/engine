@@ -161,6 +161,7 @@ glm::vec3 cubePositions[] = {
 		colorShader.setVec3("light.position", camera.Position);
 		colorShader.setVec3("light.direction", camera.Front);
 		colorShader.setFloat("light.cutOff", glm::cos(glm::radians(12.5f)));
+		colorShader.setFloat("light.outerCutOff", glm::cos(glm::radians(17.5f)));
 
 		// light properties
 		colorShader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f);

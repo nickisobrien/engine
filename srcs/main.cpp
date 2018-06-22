@@ -156,9 +156,7 @@ glm::vec3 pointLightPositions[] = {
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// be sure to activate shader when setting uniforms/drawing objects
 		colorShader.use();
-
 		colorShader.setVec3("viewPos", camera.Position);
 		colorShader.setFloat("material.shininess", 32.0f);
 
@@ -198,6 +196,7 @@ glm::vec3 pointLightPositions[] = {
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, specularMap);
 
+		// draw the containers
 		glBindVertexArray(cubeVAO);
 		for(unsigned int i = 0; i < 10; i++)
 		{

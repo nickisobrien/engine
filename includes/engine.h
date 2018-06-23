@@ -13,6 +13,10 @@
 #include <string>
 #include <vector>
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 #include <glm/glm.hpp> // vec3, vec4, ivec4, mat4
 #include <glm/gtc/matrix_transform.hpp> // translate, rotate, scale, perspective 
 #include <glm/gtc/type_ptr.hpp> // value_ptr

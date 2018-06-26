@@ -56,7 +56,7 @@ int main()
 		processInput(window);
 
 		// render
-		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+		glClearColor(0.35f, 0.25f, 0.5f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		modelShader.use();
@@ -66,9 +66,9 @@ int main()
 		modelShader.setFloat("material.shininess", 32.0f);
 		// directional light:
 		modelShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
-		modelShader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+		modelShader.setVec3("dirLight.ambient", 0.08f, 0.08f, 0.08f);
 		modelShader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
-		modelShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
+		modelShader.setVec3("dirLight.specular", 0.7f, 0.7f, 0.7f);
 
 		// view/projection transformations
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);

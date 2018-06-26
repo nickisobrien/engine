@@ -40,9 +40,7 @@ int main()
 	Shader modelShader("../resources/shaders/shader.vs", "../resources/shaders/shader.fs");
 	Model nanoModel("../resources/models/nanosuit/nanosuit.obj");
 
-	modelShader.use(); 
-	modelShader.setInt("material.diffuse", 0);
-	modelShader.setInt("material.specular", 1);
+	modelShader.use();
 
 	// render loop
 	while (!glfwWindowShouldClose(window))

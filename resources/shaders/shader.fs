@@ -18,7 +18,6 @@ struct DirLight {
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
 
 uniform DirLight dirLight;
-// uniform sampler2D texture_diffuse1;
 uniform vec3 viewPos;
 uniform Material material;
 

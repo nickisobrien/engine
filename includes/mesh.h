@@ -81,7 +81,6 @@ void Mesh::Draw(Shader shader)
             // retrieve texture number (the N in diffuse_textureN)
             string number;
             string name = textures[i].type;
-            cout << name << endl;
             if(name == "texture_diffuse")
 				number = std::to_string(diffuseNr++);
 			else if(name == "texture_specular")

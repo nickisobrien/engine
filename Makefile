@@ -20,6 +20,8 @@ GL_DIR = $(LIB_DIR)glfw/src
 GL_INC = -I $(LIB_DIR)glfw/include/
 GL_LINK = -L$(GL_DIR)
 
+ASSIMP_LINK = -lassimp
+
 .PHONY: all clean fclean re
 
 all: $(NAME)
@@ -32,7 +34,7 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp $(HEADERS).h
 	g++ $(FLAGS) $(INCLUDE) $(GL_INC)  -o $@ -c $< 
 
 $(NAME): $(OBJ_DIR) $(OFILES)
-	@g++ $(FLAGS) $(GL_LINK) $(OFILES) $(GL_FLAGS) -o $(NAME)
+	@g++ $(FLAGS) $(GL_LINK) $(OFILES) $(ASSIMP_LINK) $(GL_FLAGS) -o $(NAME)
 	@echo [INFO] engine Binary Created
 
 clean:

@@ -1,3 +1,8 @@
+#ifndef __MESH_H
+#define __MESH_H
+
+using namespace std;
+
 struct Vertex {
 	glm::vec3 Position;
 	glm::vec3 Normal;
@@ -6,17 +11,18 @@ struct Vertex {
 
 struct Texture {
 	unsigned int id;
-	std::string type;
+	string type;
+	string path;
 };
 
 class Mesh {
 	public:
 		/*  Mesh Data  */
-		std::vector<Vertex> vertices;
-		std::vector<unsigned int> indices;
-		std::vector<Texture> textures;
+		vector<Vertex> vertices;
+		vector<unsigned int> indices;
+		vector<Texture> textures;
 		/*  Functions  */
-		Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
+		Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures);
 		void Draw(Shader shader);
 	private:
 		/*  Render data  */
@@ -25,7 +31,7 @@ class Mesh {
 		void setupMesh();
 };
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures)
+Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures)
 {
 	this->vertices = vertices;
 	this->indices = indices;
@@ -64,26 +70,28 @@ void Mesh::setupMesh()
 
 void Mesh::Draw(Shader shader) 
 {
-    unsigned int diffuseNr = 1;
-    unsigned int specularNr = 1;
-    for(unsigned int i = 0; i < textures.size(); i++)
-    {
-        glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
-        // retrieve texture number (the N in diffuse_textureN)
-        string number;
-        string name = textures[i].type;
-        if(name == "texture_diffuse")
-            number = std::to_string(diffuseNr++);
-        else if(name == "texture_specular")
-            number = std::to_string(specularNr++);
+	unsigned int diffuseNr = 1;
+	unsigned int specularNr = 1;
+	for(unsigned int i = 0; i < textures.size(); i++)
+	{
+		glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
+		// retrieve texture number (the N in diffuse_textureN)
+		string number;
+		string name = textures[i].type;
+		if(name == "texture_diffuse")
+			number = to_string(diffuseNr++);
+		else if(name == "texture_specular")
+			number = to_string(specularNr++);
 
-        shader.setFloat(("material." + name + number).c_str(), i);
-        glBindTexture(GL_TEXTURE_2D, textures[i].id);
-    }
-    glActiveTexture(GL_TEXTURE0);
+		shader.setFloat(("material." + name + number).c_str(), i);
+		glBindTexture(GL_TEXTURE_2D, textures[i].id);
+	}
+	glActiveTexture(GL_TEXTURE0);
 
-    // draw mesh
-    glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
-} 
+	// draw mesh
+	glBindVertexArray(VAO);
+	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
+}
+
+#endif

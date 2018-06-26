@@ -27,6 +27,8 @@
 #include "stb_image.h" // https://github.com/nothings/stb/blob/master/stb_image.h
 #include "shader.h"
 #include "camera.h"
+#include "mesh.h"
+#include "model.h"
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);

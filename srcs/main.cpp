@@ -40,6 +40,10 @@ int main()
 	Shader modelShader("../resources/shaders/shader.vs", "../resources/shaders/shader.fs");
 	Model nanoModel("../resources/models/nanosuit/nanosuit.obj");
 
+	modelShader.use(); 
+	modelShader.setInt("material.diffuse", 0);
+	modelShader.setInt("material.specular", 1);
+
 	// render loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -52,10 +56,19 @@ int main()
 		processInput(window);
 
 		// render
-		glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
+		glClearColor(0.4f, 0.4f, 0.4f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		modelShader.use();
+
+		// lighting details:
+		modelShader.setVec3("viewPos", camera.Position);
+		modelShader.setFloat("material.shininess", 32.0f);
+		// directional light:
+		modelShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+		modelShader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+		modelShader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
+		modelShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
 
 		// view/projection transformations
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);

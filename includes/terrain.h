@@ -17,22 +17,17 @@ private:
 
 Terrain::Terrain()
 {
-	cols = 50;
-	rows = 50;
-
-	int N = max(rows, cols) / 10;
-
-	// vertices:
+	cols = 25;
+	rows = 25;
 	vector<glm::vec3> vert;
-	
-	rows = 2;
-	for (float i = -1; i < (float)rows - 1.0f; i++)
+	float scl = 0.4f;
+
+	for (int y = 0; y < rows; y++)
 	{
-		for (std::uint32_t j=0; j < N + 1; ++j)
+		for (int x = 0; x < cols /* + 1 */; x++)
 		{
-			float x = (float)j/(float)N;
-			vert.push_back(glm::vec3(x - 0.5f, i, 0)); // even row
-			vert.push_back(glm::vec3(x - 0.5f, i + 0.5, 0)); // odd row
+	        vert.push_back(glm::vec3(x * scl, y * scl, 0)); // even row
+	        vert.push_back(glm::vec3(x * scl, (y + 1.0f) * scl, 0)); // odd row
 		}
 	}
 

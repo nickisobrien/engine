@@ -78,12 +78,16 @@ int main()
 			glDrawArrays(GL_TRIANGLE_STRIP, terrain.vertice_count * i / terrain.rows, terrain.vertice_count / terrain.rows);
 		}
 		
+		glm::mat4 transform(1.0f);
+        transform = glm::translate(transform, glm::vec3(-0.5f, -0.5f, 0.0f));
+        transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		terrainShader.setMat4("transform", transform);
 
-		// // view/projection transformations
-		// glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
-		// glm::mat4 view = camera.GetViewMatrix();
-		// terrainShader.setMat4("projection", projection);
-		// terrainShader.setMat4("view", view);
+		// view/projection transformations
+		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
+		glm::mat4 view = camera.GetViewMatrix();
+		terrainShader.setMat4("projection", projection);
+		terrainShader.setMat4("view", view);
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);

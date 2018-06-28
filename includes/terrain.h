@@ -9,7 +9,7 @@ public:
 	int vertice_count;
 	int scl;
 	int rows, cols;
-	float vertices[10000];
+	glm::vec3 vertices[10000];
 	Terrain();
 private:
 	float *generate_coordinates(const int vc);
@@ -37,12 +37,9 @@ Terrain::Terrain()
 	}
 
 	vertice_count = vert.size();
-	// copying
-	for (int i = 0; i < vertice_count * 3; i+=3)
+	for (int i = 0; i < vertice_count; i++)
 	{
-		vertices[i] = vert[i / 3].x;
-		vertices[i+1] = vert[i / 3].y;
-		vertices[i+2] = vert[i / 3].z;
+		vertices[i] = vert[i];
 	}
 }
 

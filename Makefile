@@ -1,7 +1,7 @@
 NAME = engine
 RM = /bin/rm -f
 
-FLAGS = #-Wall -Wextra -Werror
+FLAGS = -std=c++11#-Wall -Wextra -Werror
 
 INCLUDE = -I ./includes/
 SRC_DIR := ./srcs/

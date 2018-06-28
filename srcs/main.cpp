@@ -37,11 +37,23 @@ int main()
 	glEnable(GL_DEPTH_TEST); //turn on z buffering
 
 	// build and compile our shader program
-	Shader modelShader("../resources/shaders/shader.vs", "../resources/shaders/shader.fs");
-	Model nanoModel("../resources/models/nanosuit/nanosuit.obj");
+	Shader terrainShader("../resources/shaders/shader.vs", "../resources/shaders/shader.fs");
+	Terrain terrain;
 
-	modelShader.use();
+	unsigned int VBO, VAO;
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+	glBindVertexArray(VAO);
 
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(terrain.vertices), terrain.vertices, GL_STATIC_DRAW);
+
+	// position attribute
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	// render loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -57,29 +69,21 @@ int main()
 		glClearColor(0.5f, 0.8f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		modelShader.use();
+		terrainShader.use();
 
-		// lighting details:
-		modelShader.setVec3("viewPos", camera.Position);
-		modelShader.setFloat("material.shininess", 32.0f);
-		// directional light:
-		modelShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
-		modelShader.setVec3("dirLight.ambient", 0.08f, 0.08f, 0.08f);
-		modelShader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
-		modelShader.setVec3("dirLight.specular", 0.7f, 0.7f, 0.7f);
+		glBindVertexArray(VAO);
+		// glDrawArrays(GL_TRIANGLES, 0, terrain.vertice_count);
+		for (int i = 0; i < terrain.rows; i++)
+		{
+			glDrawArrays(GL_TRIANGLE_STRIP, terrain.vertice_count * i / terrain.rows, terrain.vertice_count / terrain.rows);
+		}
+		
 
-		// view/projection transformations
-		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
-		glm::mat4 view = camera.GetViewMatrix();
-		modelShader.setMat4("projection", projection);
-		modelShader.setMat4("view", view);
-
-		// render the loaded model
-		glm::mat4 model(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // translate it down so it's at the center of the scene
-		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
-		modelShader.setMat4("model", model);
-		nanoModel.Draw(modelShader);
+		// // view/projection transformations
+		// glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
+		// glm::mat4 view = camera.GetViewMatrix();
+		// terrainShader.setMat4("projection", projection);
+		// terrainShader.setMat4("view", view);
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);

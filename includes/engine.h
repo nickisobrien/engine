@@ -29,6 +29,7 @@
 #include "camera.h"
 #include "mesh.h"
 #include "model.h"
+#include "terrain.h"
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);

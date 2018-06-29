@@ -12,7 +12,7 @@ enum Camera_Movement {
 // Default camera values
 const float YAW = 45.0f;
 const float PITCH = 0.0f;
-const float SPEED = 100.0f;
+const float SPEED = 30.0f;
 const float SENSITIVITY = 0.1f;
 const float ZOOM = 45.0f;
 
@@ -79,7 +79,7 @@ void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
             Position -= Right * velocity;
         if (direction == RIGHT)
             Position += Right * velocity;
-        Position.y = 0.0f; //removes y movement
+        // Position.y = 0.0f; //removes y movement
     }
 
 void Camera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch)

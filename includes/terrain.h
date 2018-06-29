@@ -20,7 +20,7 @@ Terrain::Terrain()
 	cols = 50;
 	rows = 50;
 	vector<glm::vec3> vert;
-	float scl = 5.0f;
+	float scl = 3.0f;
 	float terr[rows][cols];
 
 	float yoff = 0.0f;

@@ -7,20 +7,34 @@ class Terrain
 {
 public:
 	int vertice_count;
-	int scl;
+	float scl;
 	int rows, cols;
-	glm::vec3 vertices[100000]; // rows * cols * 2
-	Terrain();
+	glm::vec3 vertices[20000]; // rows * cols * 2
+	Terrain(void);
+	Terrain(int c, int r);
+	void generate_coordinates(void);
+	void generate_blocks(void);
 private:
-	float *generate_coordinates(const int vc);
 };
 
-Terrain::Terrain()
+Terrain::Terrain(void)
 {
-	cols = 50;
-	rows = 50;
+	cols = 100;
+	rows = 100;
+	vertice_count = rows * cols * 2;
+}
+
+Terrain::Terrain(int c, int r)
+{
+	cols = c;
+	rows = r;
+	vertice_count = rows * cols * 2;
+}
+
+void Terrain::generate_coordinates(void)
+{
 	vector<glm::vec3> vert;
-	float scl = 3.0f;
+	scl = 3.0f;
 	float terr[rows][cols];
 
 	float yoff = 0.0f;
@@ -30,7 +44,6 @@ Terrain::Terrain()
 		for (int x = 0; x < cols; x++)
 		{
 			terr[x][y] = MAP(noise(xoff, yoff),-1,1,-8,8);
-			// terr[x][y] = perlin(xoff, yoff);
 			xoff += 0.1f;
 		}
 		yoff += 0.1f;
@@ -38,7 +51,7 @@ Terrain::Terrain()
 
 	for (int y = 0; y < rows; y++)
 	{
-		for (int x = 0; x < cols - 1/* idfk (something is weird with terr and this+ 1 */; x++)
+		for (int x = 0; x < cols - 1/* idk.. (something is weird with terr and this+ 1 */; x++)
 		{
 			vert.push_back(glm::vec3(x * scl, y * scl, terr[x][y])); // even row
 			vert.push_back(glm::vec3(x * scl, (y + 1.0f) * scl, terr[x][y+1])); // odd row
@@ -46,11 +59,15 @@ Terrain::Terrain()
 	}
 	vertice_count = vert.size();
 
-	
 	for (int i = 0; i < vertice_count; i++)
 	{
 		vertices[i] = vert[i];
 	}
+}
+
+void Terrain::generate_blocks(void)
+{
+
 }
 
 #endif

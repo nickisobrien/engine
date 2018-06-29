@@ -42,6 +42,7 @@ int main()
 	// build and compile our shader program
 	Shader terrainShader("../resources/shaders/shader.vs", "../resources/shaders/shader.fs");
 	Terrain terrain;
+	terrain.generate_coordinates();
 
 	unsigned int VBO, VAO;
 	glGenVertexArrays(1, &VAO);

@@ -10,5 +10,8 @@ out vec3 pos;
 void main()
 {
 	pos = aPos;
-	gl_Position = projection * view * transform * vec4(aPos, 1.0);
+	// flattens water levels
+	if (pos.z > 5.0f)
+		pos.z = 5.0f;
+	gl_Position = projection * view * transform * vec4(pos, 1.0);
 }

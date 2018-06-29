@@ -3,6 +3,8 @@
 
 using namespace std;
 
+#define MAP(VAL,A,B,AA,BB) ((VAL - A) / (B - A)) * (BB - AA) + AA;
+
 float noise(float x, float y);
 
 class Terrain
@@ -31,11 +33,11 @@ Terrain::Terrain()
 		float xoff = 0.0f;
 		for (int x = 0; x < cols; x++)
 		{
-			terr[x][y] = noise(xoff, yoff);
+			terr[x][y] = MAP(noise(xoff, yoff),-1,1,-5,3);
 			// terr[x][y] = perlin(xoff, yoff);
-			xoff += 0.1f;
+			xoff += 0.2f;
 		}
-		yoff += 0.1f;
+		yoff += 0.2f;
 	}
 
 	for (int y = 0; y < rows; y++)

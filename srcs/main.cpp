@@ -230,6 +230,7 @@ unsigned int TextureFromFile(const char *path, const string &directory)
 
 
 /* * * * * * PERLIN FILE * * * * * */
+/* https://github.com/SRombauts/SimplexNoise */
 static const uint8_t perm[256] = {
     151, 160, 137, 91, 90, 15,
     131, 13, 201, 95, 96, 53, 194, 233, 7, 225, 140, 36, 103, 30, 69, 142, 8, 99, 37, 240, 21, 10, 23,

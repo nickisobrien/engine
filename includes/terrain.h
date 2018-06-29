@@ -29,11 +29,11 @@ Terrain::Terrain()
 		float xoff = 0.0f;
 		for (int x = 0; x < cols; x++)
 		{
-			terr[x][y] = MAP(noise(xoff, yoff),-1,1,-5,3);
+			terr[x][y] = MAP(noise(xoff, yoff),-1,1,-10,3);
 			// terr[x][y] = perlin(xoff, yoff);
-			xoff += 0.2f;
+			xoff += 0.1f;
 		}
-		yoff += 0.2f;
+		yoff += 0.1f;
 	}
 
 	for (int y = 0; y < rows; y++)

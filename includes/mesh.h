@@ -1,8 +1,6 @@
 #ifndef __MESH_H
 #define __MESH_H
 
-using namespace std;
-
 struct Vertex {
 	glm::vec3 Position;
 	glm::vec3 Normal;

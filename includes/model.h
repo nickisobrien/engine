@@ -1,8 +1,6 @@
 #ifndef __MODEL_H
 #define __MODEL_H
 
-using namespace std;
-
 unsigned int TextureFromFile(const char *path, const string &directory);
 
 class Model 

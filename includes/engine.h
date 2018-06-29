@@ -3,6 +3,7 @@
 
 #define WIDTH 800
 #define HEIGHT 600
+#define MAP(VAL,A,B,AA,BB) ((VAL - A) / (B - A)) * (BB - AA) + AA;
 
 #include <GLFW/glfw3.h>
 #include <math.h>
@@ -21,8 +22,7 @@
 #include <glm/gtc/matrix_transform.hpp> // translate, rotate, scale, perspective 
 #include <glm/gtc/type_ptr.hpp> // value_ptr
 
-// By defining STB_IMAGE_IMPLEMENTATION the preprocessor modifies the header file such
-// that it only contains the relevant definition source code, effectively turning the header file into a .cpp file
+using namespace std;
 
 #include "shader.h"
 #include "camera.h"

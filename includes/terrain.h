@@ -1,10 +1,6 @@
 #ifndef __TERRAIN_H
 #define __TERRAIN_H
 
-using namespace std;
-
-#define MAP(VAL,A,B,AA,BB) ((VAL - A) / (B - A)) * (BB - AA) + AA;
-
 float noise(float x, float y);
 
 class Terrain

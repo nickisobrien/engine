@@ -17,8 +17,8 @@ private:
 
 Terrain::Terrain()
 {
-	cols = 100;
-	rows = 100;
+	cols = 50;
+	rows = 50;
 	vector<glm::vec3> vert;
 	float scl = 5.0f;
 	float terr[rows][cols];
@@ -29,7 +29,7 @@ Terrain::Terrain()
 		float xoff = 0.0f;
 		for (int x = 0; x < cols; x++)
 		{
-			terr[x][y] = MAP(noise(xoff, yoff),-1,1,-10,3);
+			terr[x][y] = MAP(noise(xoff, yoff),-1,1,-8,8);
 			// terr[x][y] = perlin(xoff, yoff);
 			xoff += 0.1f;
 		}

@@ -82,7 +82,7 @@ int main()
 		}
 		
 		glm::mat4 transform(1.0f);
-		transform = glm::translate(transform, glm::vec3(-0.5f, -8.5f, 0.0f));
+		transform = glm::translate(transform, glm::vec3(-0.5f, -15.5f, 0.0f));
 		transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		terrainShader.setMat4("transform", transform);
 

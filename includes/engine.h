@@ -23,8 +23,7 @@
 
 // By defining STB_IMAGE_IMPLEMENTATION the preprocessor modifies the header file such
 // that it only contains the relevant definition source code, effectively turning the header file into a .cpp file
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h" // https://github.com/nothings/stb/blob/master/stb_image.h
+
 #include "shader.h"
 #include "camera.h"
 #include "mesh.h"
@@ -37,5 +36,6 @@ void processInput(GLFWwindow *window);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 unsigned int loadTexture(char const * path);
+unsigned int TextureFromFile(const char *path, const string &directory);
 
 #endif

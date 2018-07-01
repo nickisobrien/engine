@@ -148,8 +148,8 @@ int main(void)
 		transform = glm::translate(transform, glm::vec3(-0.5f, -15.5f, 0.0f));
 		transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		terrainShader.setMat4("transform", transform);
-		// view/projection transformations
-		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
+		// view/projection transformations (render distances)
+		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 500.0f);
 		glm::mat4 view = camera.GetViewMatrix();
 		terrainShader.setMat4("projection", projection);
 		terrainShader.setMat4("view", view);

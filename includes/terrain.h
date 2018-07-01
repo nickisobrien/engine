@@ -10,7 +10,7 @@ public:
 	float scl;
 	int rows, cols;
 	vector<glm::vec3> vectvert;
-	glm::vec3 vertices[20000]; // rows * cols * 2
+	glm::vec3 vertices[20000]; // rows * cols * 2 // should make vector of chunks?
 	Terrain(void);
 	Terrain(int c, int r);
 	void generate_coordinates(void);
@@ -21,8 +21,8 @@ private:
 
 Terrain::Terrain(void)
 {
-	cols = 100;
-	rows = 100;
+	cols = 25;
+	rows = 25;
 	vertice_count = rows * cols * 2;
 }
 
@@ -44,7 +44,7 @@ void Terrain::generate_coordinates(void)
 		float xoff = 0.0f;
 		for (int x = 0; x < cols; x++)
 		{
-			terr[x][y] = MAP(noise(xoff, yoff),-1,1,-8,8);
+			terr[x][y] = MAP(noise(xoff, yoff),-1,1,-12,12);
 			xoff += 0.1f;
 		}
 		yoff += 0.1f;

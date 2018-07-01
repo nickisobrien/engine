@@ -37,5 +37,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 unsigned int loadTexture(char const * path);
 unsigned int TextureFromFile(const char *path, const string &directory);
+unsigned int skybox(void);
+unsigned int loadCubemap(vector<std::string> faces);
 
 #endif

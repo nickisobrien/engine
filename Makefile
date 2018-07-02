@@ -3,15 +3,14 @@ RM = /bin/rm -f
 
 FLAGS = -std=c++11#-Wall -Wextra -Werror
 
-INCLUDE = -I ./includes/
 SRC_DIR := ./srcs/
 OBJ_DIR := ./objs/
 LIB_DIR := ./lib/
 
-HEADERS = ./includes/*
+HEADERS = ./srcs/*.h
 
 # engine
-FILES = main test
+FILES = main perlin chunk camera mesh model terrain
 CFILES = $(patsubst %, $(SRC_DIR)%.cpp, $(FILES))
 OFILES = $(patsubst %, $(OBJ_DIR)%.o, $(FILES))
 
@@ -30,8 +29,8 @@ $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)
 	@echo [INFO] engine Object Files Directory Created
 
-$(OBJ_DIR)%.o: $(SRC_DIR)%.cpp $(HEADERS).h
-	g++ $(FLAGS) $(INCLUDE) $(GL_INC)  -o $@ -c $< 
+$(OBJ_DIR)%.o: $(SRC_DIR)%.cpp $(HEADERS)
+	g++ $(FLAGS) $(GL_INC)  -o $@ -c $< 
 
 $(NAME): $(OBJ_DIR) $(OFILES)
 	@g++ $(FLAGS) $(GL_LINK) $(OFILES) $(ASSIMP_LINK) $(GL_FLAGS) -o $(NAME)

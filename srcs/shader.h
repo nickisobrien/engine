@@ -1,5 +1,4 @@
-#ifndef __SHADER_H
-#define __SHADER_H
+#pragma once
 
 class Shader
 {
@@ -152,5 +151,3 @@ private:
         }
     }
 };
-
-#endif

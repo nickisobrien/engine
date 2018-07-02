@@ -1,23 +1,5 @@
-#ifndef __TERRAIN_H
-#define __TERRAIN_H
-
-float noise(float x, float y);
-
-class Terrain
-{
-public:
-	int vertice_count;
-	float scl;
-	int rows, cols;
-	vector<glm::vec3> vectvert;
-	glm::vec3 vertices[20000]; // rows * cols * 2 // should make vector of chunks?
-	Terrain(void);
-	Terrain(int c, int r);
-	void generate_coordinates(void);
-	void generate_blocks(void);
-	void draw_blocks(void);
-private:
-};
+#include "engine.h"
+#include "terrain.h"
 
 Terrain::Terrain(void)
 {
@@ -79,5 +61,3 @@ void Terrain::draw_blocks(void)
 		}
 	}
 }
-
-#endif

@@ -11,7 +11,7 @@ LIB_DIR := ./lib/
 HEADERS = ./includes/*
 
 # engine
-FILES = main
+FILES = main test
 CFILES = $(patsubst %, $(SRC_DIR)%.cpp, $(FILES))
 OFILES = $(patsubst %, $(OBJ_DIR)%.o, $(FILES))
 

@@ -84,6 +84,50 @@ int main(void)
 		 1.0f, -1.0f,  1.0f
 	};
 
+	float cubeVertices[] = {
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+	};
+
 	vector<std::string> faces
 	{
 		"../resources/skybox/skybox/right.jpg",
@@ -94,23 +138,24 @@ int main(void)
 		"../resources/skybox/skybox/back.jpg"
 	};
 
-	// build and compile our shader program
-	Shader terrainShader("../resources/shaders/shader.vs", "../resources/shaders/shader.fs");
+	// // build and compile our shader program
+	// Shader terrainShader("../resources/shaders/shader.vs", "../resources/shaders/shader.fs");
 	Shader skyboxShader("../resources/shaders/skybox.vs", "../resources/shaders/skybox.fs");
-	Terrain terrain;
-	terrain.generate_coordinates();
-	terrain.generate_blocks();
+	Shader cubeShader("../resources/shaders/cube.vs", "../resources/shaders/cube.fs"); 
+	// Terrain terrain;
+	// terrain.generate_coordinates();
+	// terrain.generate_blocks();
 
-	unsigned int VBO, VAO;
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(terrain.vertices), terrain.vertices, GL_STATIC_DRAW);
-	// position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
+	// unsigned int VBO, VAO;
+	// glGenVertexArrays(1, &VAO);
+	// glGenBuffers(1, &VBO);
+	// // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+	// glBindVertexArray(VAO);
+	// glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	// glBufferData(GL_ARRAY_BUFFER, sizeof(terrain.vertices), terrain.vertices, GL_STATIC_DRAW);
+	// // position attribute
+	// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	// glEnableVertexAttribArray(0);
 
 	// skybox
 	unsigned int skyboxVAO, skyboxVBO;
@@ -121,11 +166,37 @@ int main(void)
 	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-
 	unsigned int cubemapTexture = loadCubemap(faces);
-
 	skyboxShader.use();
 	skyboxShader.setInt("skybox", 0);
+
+	unsigned int cubeVBO, cubeVAO;
+	glGenVertexArrays(1, &cubeVAO);
+	glGenBuffers(1, &cubeVBO);
+	glBindVertexArray(cubeVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+	int chunk[CHUNK_X][CHUNK_Y][CHUNK_Z];
+	for (int x = 0; x < CHUNK_X; x++)
+	{
+		for (int y = 0; y < CHUNK_Y; y++)
+		{
+			for (int z = 0; z < CHUNK_Z; z++)
+			{
+				if (z < 60)
+					chunk[x][y][z] = GRASS_BLOCK;
+				else
+					chunk[x][y][z] = AIR_BLOCK;
+			}
+		}
+	}
+
+	unsigned int texture = loadTexture("../resources/textures/grass.png");
 
 	// render loop
 	while (!glfwWindowShouldClose(window))
@@ -142,26 +213,71 @@ int main(void)
 		glClearColor(0.5f, 0.8f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		terrainShader.use();
+		// // terrain render
+		// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		// terrainShader.use();
+		// glm::mat4 transform(1.0f);
+		// transform = glm::translate(transform, glm::vec3(-0.5f, -15.5f, 0.0f));
+		// transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		// terrainShader.setMat4("transform", transform);
+		// // view/projection transformations (render distances)
+		// glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 500.0f);
+		// glm::mat4 view = camera.GetViewMatrix();
+		// terrainShader.setMat4("projection", projection);
+		// terrainShader.setMat4("view", view);
+		// glBindVertexArray(VAO);
+		// for (int i = 0; i < terrain.rows; i++)
+		// {
+		// 	glDrawArrays(GL_TRIANGLE_STRIP, terrain.vertice_count * i / terrain.rows, terrain.vertice_count / terrain.rows);
+		// }
+		// glBindVertexArray(0);
+
+		// bind Texture
+		glBindTexture(GL_TEXTURE_2D, texture);
+		// render container
+		cubeShader.use();
 		glm::mat4 transform(1.0f);
-		transform = glm::translate(transform, glm::vec3(-0.5f, -15.5f, 0.0f));
+		transform = glm::translate(transform, glm::vec3(-2.0f, 0.0f, 0.0f));
 		transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		terrainShader.setMat4("transform", transform);
-		// view/projection transformations (render distances)
+		cubeShader.setMat4("transform", transform);
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 500.0f);
 		glm::mat4 view = camera.GetViewMatrix();
-		terrainShader.setMat4("projection", projection);
-		terrainShader.setMat4("view", view);
-		glBindVertexArray(VAO);
-		for (int i = 0; i < terrain.rows; i++)
+		cubeShader.setMat4("projection", projection);
+		cubeShader.setMat4("view", view);
+		// render box
+		glBindVertexArray(cubeVAO);
+		for (int x = 0; x < CHUNK_X; x++)
 		{
-			glDrawArrays(GL_TRIANGLE_STRIP, terrain.vertice_count * i / terrain.rows, terrain.vertice_count / terrain.rows);
+			for (int y = 0; y < CHUNK_Y; y++)
+			{
+				for (int z = 0; z < CHUNK_Z; z++)
+				{
+					transform = glm::translate(transform, glm::vec3(0.0f, 0.0f, -1.0f));
+					cubeShader.setMat4("transform", transform);
+					if (airblock_near(chunk, x, y, z))
+						glDrawArrays(GL_TRIANGLES, 0, 36);
+				}
+				transform = glm::translate(transform, glm::vec3(0.0f, -1.0f, (float)CHUNK_Z));
+			}
+			transform = glm::translate(transform, glm::vec3(1.0f, (float)CHUNK_Y, 0.0f));
 		}
-		glBindVertexArray(0);
+	 //	for (int k = 0; k < 25; k++)
+	 //	{
+		//	 for (int j = 0; j < 25; j++)
+		//	 {
+		//	 	for (int i = 0; i < 25; i++)
+		//	 	{
+		//	 		transform = glm::translate(transform, glm::vec3(0.0f, 0.0f, -1.0f));
+		//	 		cubeShader.setMat4("transform", transform);
+		//	 		glDrawArrays(GL_TRIANGLES, 0, 36);
+		//	 	}
+		//	 	transform = glm::translate(transform, glm::vec3(0.0f, -1.0f, 25.0f));
+		//	 }
+		//	 transform = glm::translate(transform, glm::vec3(1.0f, 25.0f, 0.0f));
+		// }
 
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		// skybox
+		// // skybox
+		// glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
 		skyboxShader.use();
 		view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
@@ -182,6 +298,19 @@ int main(void)
 	// glfw: terminate, clearing all previously allocated GLFW resources
 	glfwTerminate();
 	return 0;
+}
+
+// can switch to using this to draw only sides of the cube exposed
+int airblock_near(int chunk[CHUNK_X][CHUNK_Y][CHUNK_Z], int x, int y, int z)
+{
+	if (!chunk[x][y][z])
+		return (0);
+	else if (!x || !y || !z || x >= CHUNK_X-1 || y >= CHUNK_Y-1 || z >= CHUNK_Z-1)
+		return (1);
+	else if (!chunk[x+1][y][z] || !chunk[x-1][y][z] || !chunk[x][y+1][z] ||
+						!chunk[x][y-1][z] || !chunk[x][y][z+1] || !chunk[x][y][z-1])
+		return (1);
+	return (0);
 }
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly

@@ -29,6 +29,7 @@ using namespace std;
 #include "mesh.h"
 #include "model.h"
 #include "terrain.h"
+#include "chunk.h"
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -39,5 +40,6 @@ unsigned int loadTexture(char const * path);
 unsigned int TextureFromFile(const char *path, const string &directory);
 unsigned int skybox(void);
 unsigned int loadCubemap(vector<std::string> faces);
+int airblock_near(int chunk[CHUNK_X][CHUNK_Y][CHUNK_Z], int x, int y, int z);
 
 #endif

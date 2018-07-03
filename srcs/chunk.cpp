@@ -53,14 +53,28 @@ void Chunk::draw_chunk(Shader shader)
 	}
 }
 
-void Chunk::draw_neighbors(Shader shader)
+void Chunk::draw_neighbors(Shader shader, int round)
 {
+	if (!round)
+		return ;
 	if (mxneighbor)
+	{
 		mxneighbor->draw_chunk(shader);
+		mxneighbor->draw_neighbors(shader, round - 1);
+	}
 	if (pxneighbor)
+	{
 		pxneighbor->draw_chunk(shader);
+		pxneighbor->draw_neighbors(shader, round - 1);
+	}
 	if (mzneighbor)
+	{
 		mzneighbor->draw_chunk(shader);
+		mzneighbor->draw_neighbors(shader, round - 1);
+	}
 	if (pzneighbor)
+	{
 		pzneighbor->draw_chunk(shader);
+		pzneighbor->draw_neighbors(shader, round - 1);
+	}
 }

@@ -99,7 +99,7 @@ int main(void)
 		 1.0f, -1.0f,  1.0f
 	};
 
-	float cubeVertices[] = {
+	float cubeVertices[] = { // can change to 0 and 1's?
 		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
 		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
@@ -200,6 +200,10 @@ int main(void)
 
 	unsigned int texture = loadTexture("../resources/textures/grass.png");
 
+	int lastChunkX = -1;
+	int lastChunkZ = -1;
+	int lastChunkIndex = -1;
+
 	// render loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -242,7 +246,7 @@ int main(void)
 		transform = glm::translate(transform, glm::vec3(-2.0f, 0.0f, 0.0f));
 		transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		cubeShader.setMat4("transform", transform);
-		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 500.0f);
+		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 200.0f);
 		glm::mat4 view = camera.GetViewMatrix();
 		cubeShader.setMat4("projection", projection);
 		cubeShader.setMat4("view", view);
@@ -250,7 +254,6 @@ int main(void)
 		glBindVertexArray(cubeVAO);
 
 // todo: each chunk has neighbors linked, so just grab the chunk im on then draw the neighbors
-
 		// for (int k = camera.Position.z / 16 - 2; k < camera.Position.z / 16 + 2; k++)
 		// {
 		// 	bool found = false;
@@ -275,22 +278,28 @@ int main(void)
 		// 		}
 		// 	}
 		// }
-		int x = round(camera.Position.x / 16.0f);
-		int z = round(camera.Position.z / 16.0f);
+
+		int x = camera.Position.x / 16.0f;
+		int z = camera.Position.z / 16.0f;
 		bool found = false;
-		for (int i = 0; i < t.chunks.size(); i++)
+		int i = 0;
+		if (x == lastChunkX && z == lastChunkZ)
+			i = lastChunkIndex;
+		for (;i < t.chunks.size(); i++)
 		{
+			
 			if (t.chunks[i].xoff == x && t.chunks[i].zoff == z)
 			{
 				found = true;
 				if (t.chunks[i].init)
 				{
 					t.chunks[i].draw_chunk(cubeShader);
-					t.bind_neighbors(x, z);
-					t.chunks[i].draw_neighbors(cubeShader);
+					t.bind_neighbors(x, z, 3);
+					t.chunks[i].draw_neighbors(cubeShader, 3);
 				}
 				else
 					t.chunks[i].init_chunk();
+				break ;
 			}
 		}
 		if (!found)
@@ -301,6 +310,9 @@ int main(void)
 			c.init_chunk();
 			t.chunks.push_back(c);
 		}
+		lastChunkX = x;
+		lastChunkZ = z;
+		lastChunkIndex = i;
 
 		// skybox
 		// glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

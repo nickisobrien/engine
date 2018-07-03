@@ -51,8 +51,10 @@ void Terrain::generate_blocks(void)
 	}
 }
 
-void Terrain::bind_neighbors(int x, int z)
+void Terrain::bind_neighbors(int x, int z, int round)
 {
+	if (!round)
+		return;
 	int index = -1;
 	for (int i = 0; i < chunks.size(); i++)
 	{
@@ -71,6 +73,7 @@ void Terrain::bind_neighbors(int x, int z)
 		chunks.push_back(c);
 		chunks[index].mxneighbor = &chunks[chunks.size()-1];
 		chunks[chunks.size()-1].mxneighbor = &chunks[index];
+		bind_neighbors(chunks[index].mxneighbor->xoff, chunks[index].mxneighbor->zoff, round - 1);
 	}
 	if (chunks[index].pxneighbor == NULL)
 	{
@@ -81,6 +84,7 @@ void Terrain::bind_neighbors(int x, int z)
 		chunks.push_back(c);
 		chunks[index].pxneighbor = &chunks[chunks.size()-1];
 		chunks[chunks.size()-1].pxneighbor = &chunks[index];
+		bind_neighbors(chunks[index].pxneighbor->xoff, chunks[index].pxneighbor->zoff, round - 1);
 	}
 	if (chunks[index].mzneighbor == NULL)
 	{
@@ -91,6 +95,7 @@ void Terrain::bind_neighbors(int x, int z)
 		chunks.push_back(c);
 		chunks[index].mzneighbor = &chunks[chunks.size()-1];
 		chunks[chunks.size()-1].mzneighbor = &chunks[index];
+		bind_neighbors(chunks[index].mzneighbor->xoff, chunks[index].mzneighbor->zoff, round - 1);
 	}
 	if (chunks[index].pzneighbor == NULL)
 	{
@@ -101,7 +106,7 @@ void Terrain::bind_neighbors(int x, int z)
 		chunks.push_back(c);
 		chunks[index].pzneighbor = &chunks[chunks.size()-1];
 		chunks[chunks.size()-1].pzneighbor = &chunks[index];
-		// bind_neighbors(chunks[index].pzneighbor.xoff, chunks[index].pzneighbor.zoff, )
+		bind_neighbors(chunks[index].pzneighbor->xoff, chunks[index].pzneighbor->zoff, round - 1);
 	}
 
 }

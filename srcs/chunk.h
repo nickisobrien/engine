@@ -18,7 +18,7 @@ public:
 	int chunk[CHUNK_X][CHUNK_Y][CHUNK_Z];
 	int airblock_near(int chunk[CHUNK_X][CHUNK_Y][CHUNK_Z], int x, int y, int z);
 	void draw_chunk(Shader shader);
-	void draw_neighbors(Shader shader);
+	void draw_neighbors(Shader shader, int round);
 	int xoff;
 	int zoff;
 	bool init = false;

@@ -64,6 +64,8 @@ void Terrain::bind_neighbors(int x, int z, int round)
 			break;
 		}
 	}
+	if (index == -1)
+		return;
 	if (chunks[index].mxneighbor == NULL)
 	{
 		Chunk c;

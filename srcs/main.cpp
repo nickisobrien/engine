@@ -196,8 +196,7 @@ int main(void)
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
-	Chunk c;
-	c.get_chunk();
+	Terrain t;
 
 	unsigned int texture = loadTexture("../resources/textures/grass.png");
 
@@ -249,9 +248,61 @@ int main(void)
 		cubeShader.setMat4("view", view);
 		// render box
 		glBindVertexArray(cubeVAO);
-		c.draw_chunk(cubeShader, transform);
 
-		// // skybox
+// todo: each chunk has neighbors linked, so just grab the chunk im on then draw the neighbors
+
+		// for (int k = camera.Position.z / 16 - 2; k < camera.Position.z / 16 + 2; k++)
+		// {
+		// 	bool found = false;
+		// 	for (int i = camera.Position.x / 16 - 2; i < camera.Position.x / 16 + 2; i++) // this is where to decide which chunks to draw around the camera
+		// 	{
+		// 		for (int j = 0; j < t.chunks.size(); j++)
+		// 		{
+		// 			if (t.chunks[j].xoff == i && t.chunks[j].zoff == k)//switch to camera position area
+		// 			{
+		// 				found = true;
+		// 				t.chunks[j].draw_chunk(cubeShader);
+		// 			}
+		// 		}
+		// 		if (found == false)
+		// 		{
+		// 			Chunk c;
+		// 			c.init_chunk();
+		// 			c.xoff = i;
+		// 			c.zoff = k;
+		// 			c.draw_chunk(cubeShader);
+		// 			t.chunks.push_back(c);
+		// 		}
+		// 	}
+		// }
+		int x = round(camera.Position.x / 16.0f);
+		int z = round(camera.Position.z / 16.0f);
+		bool found = false;
+		for (int i = 0; i < t.chunks.size(); i++)
+		{
+			if (t.chunks[i].xoff == x && t.chunks[i].zoff == z)
+			{
+				found = true;
+				if (t.chunks[i].init)
+				{
+					t.chunks[i].draw_chunk(cubeShader);
+					t.bind_neighbors(x, z);
+					t.chunks[i].draw_neighbors(cubeShader);
+				}
+				else
+					t.chunks[i].init_chunk();
+			}
+		}
+		if (!found)
+		{
+			Chunk c;
+			c.xoff = x;
+			c.zoff = z;
+			c.init_chunk();
+			t.chunks.push_back(c);
+		}
+
+		// skybox
 		// glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
 		skyboxShader.use();
@@ -426,7 +477,6 @@ unsigned int TextureFromFile(const char *path, const string &directory)
 		std::cout << "Texture failed to load at path: " << path << std::endl;
 		stbi_image_free(data);
 	}
-
 	return textureID;
 }
 

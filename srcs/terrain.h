@@ -19,6 +19,7 @@ public:
 	void generate_coordinates(void);
 	void generate_blocks(void);
 	void draw_blocks(void);
-private:
+	void bind_neighbors(int x, int z);
 	vector<Chunk> chunks;
+private:
 };

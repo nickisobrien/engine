@@ -51,13 +51,57 @@ void Terrain::generate_blocks(void)
 	}
 }
 
-void Terrain::draw_blocks(void)
+void Terrain::bind_neighbors(int x, int z)
 {
-	for (int i = 0; i < vertice_count; i++)
+	int index = -1;
+	for (int i = 0; i < chunks.size(); i++)
 	{
-		for (int z = vectvert[i].z; z > -100; z--)
+		if (chunks[i].xoff == x && chunks[i].zoff == z)
 		{
-			// place block at vectvert[i].x, vectvert[i].y, z
+			index = i;
+			break;
 		}
 	}
+	if (chunks[index].mxneighbor == NULL)
+	{
+		Chunk c;
+		c.xoff = x-1;
+		c.zoff = z;
+		c.init_chunk();
+		chunks.push_back(c);
+		chunks[index].mxneighbor = &chunks[chunks.size()-1];
+		chunks[chunks.size()-1].mxneighbor = &chunks[index];
+	}
+	if (chunks[index].pxneighbor == NULL)
+	{
+		Chunk c;
+		c.xoff = x+1;
+		c.zoff = z;
+		c.init_chunk();
+		chunks.push_back(c);
+		chunks[index].pxneighbor = &chunks[chunks.size()-1];
+		chunks[chunks.size()-1].pxneighbor = &chunks[index];
+	}
+	if (chunks[index].mzneighbor == NULL)
+	{
+		Chunk c;
+		c.xoff = x;
+		c.zoff = z-1;
+		c.init_chunk();
+		chunks.push_back(c);
+		chunks[index].mzneighbor = &chunks[chunks.size()-1];
+		chunks[chunks.size()-1].mzneighbor = &chunks[index];
+	}
+	if (chunks[index].pzneighbor == NULL)
+	{
+		Chunk c;
+		c.xoff = x;
+		c.zoff = z+1;
+		c.init_chunk();
+		chunks.push_back(c);
+		chunks[index].pzneighbor = &chunks[chunks.size()-1];
+		chunks[chunks.size()-1].pzneighbor = &chunks[index];
+		// bind_neighbors(chunks[index].pzneighbor.xoff, chunks[index].pzneighbor.zoff, )
+	}
+
 }

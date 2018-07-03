@@ -5,22 +5,26 @@
 #define AIR_BLOCK 0
 #define GRASS_BLOCK 1
 
-#define CHUNK_Z 5
+#define CHUNK_Z 16
 #define CHUNK_X 16
-#define CHUNK_Y 16
+#define CHUNK_Y 5
 
 int airblock_near(int chunk[CHUNK_X][CHUNK_Y][CHUNK_Z], int x, int y, int z);
 
 class Chunk
 {
 public:
-	void get_chunk(void);
+	void init_chunk(void);
 	int chunk[CHUNK_X][CHUNK_Y][CHUNK_Z];
 	int airblock_near(int chunk[CHUNK_X][CHUNK_Y][CHUNK_Z], int x, int y, int z);
-	void draw_chunk(Shader shader, glm::mat4 transform);
+	void draw_chunk(Shader shader);
+	void draw_neighbors(Shader shader);
+	int xoff;
+	int zoff;
+	bool init = false;
+	Chunk *mxneighbor = NULL;
+	Chunk *pxneighbor = NULL;
+	Chunk *mzneighbor = NULL;
+	Chunk *pzneighbor = NULL;
 private:
-	Chunk *mxneighbor;
-	Chunk *pxneighbor;
-	Chunk *myneighbor;
-	Chunk *pyneighbor;
 };

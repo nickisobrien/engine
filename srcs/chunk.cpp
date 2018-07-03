@@ -1,11 +1,7 @@
 #include "engine.h"
-// #include "camera.h"
-// #include "mesh.h"
-// #include "model.h"
-// #include "terrain.h"
 #include "chunk.h"
 
-void Chunk::get_chunk(void)
+void Chunk::init_chunk(void)
 {
 	for (int x = 0; x < CHUNK_X; x++)
 	{
@@ -20,6 +16,7 @@ void Chunk::get_chunk(void)
 			}
 		}
 	}
+	init = true;
 }
 
 // can switch to using this to draw only sides of the cube exposed
@@ -35,8 +32,10 @@ int Chunk::airblock_near(int chunk[CHUNK_X][CHUNK_Y][CHUNK_Z], int x, int y, int
 	return (0);
 }
 
-void Chunk::draw_chunk(Shader shader, glm::mat4 transform)
+void Chunk::draw_chunk(Shader shader)
 {
+	glm::mat4 transform(1.0f);
+	transform = glm::translate(transform, glm::vec3((float)xoff * 16.0f, 0.0f, (float)zoff * 16.0f));
 	for (int x = 0; x < CHUNK_X; x++)
 	{
 		for (int y = 0; y < CHUNK_Y; y++)
@@ -52,4 +51,16 @@ void Chunk::draw_chunk(Shader shader, glm::mat4 transform)
 		}
 		transform = glm::translate(transform, glm::vec3(1.0f, (float)CHUNK_Y, 0.0f));
 	}
+}
+
+void Chunk::draw_neighbors(Shader shader)
+{
+	if (mxneighbor)
+		mxneighbor->draw_chunk(shader);
+	if (pxneighbor)
+		pxneighbor->draw_chunk(shader);
+	if (mzneighbor)
+		mzneighbor->draw_chunk(shader);
+	if (pzneighbor)
+		pzneighbor->draw_chunk(shader);
 }

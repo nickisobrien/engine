@@ -1,30 +1,21 @@
 #pragma once
 
 #include "shader.h"
-
-#define AIR_BLOCK 0
-#define GRASS_BLOCK 1
+#include "block.h"
 
 #define CHUNK_Z 16
 #define CHUNK_X 16
-#define CHUNK_Y 5
-
-int airblock_near(int chunk[CHUNK_X][CHUNK_Y][CHUNK_Z], int x, int y, int z);
+#define CHUNK_Y 16
 
 class Chunk
 {
 public:
-	void init_chunk(void);
-	int chunk[CHUNK_X][CHUNK_Y][CHUNK_Z];
-	int airblock_near(int chunk[CHUNK_X][CHUNK_Y][CHUNK_Z], int x, int y, int z);
-	void draw_chunk(Shader shader);
-	void draw_neighbors(Shader shader, int round);
-	int xoff;
-	int zoff;
-	bool init = false;
-	Chunk *mxneighbor = NULL;
-	Chunk *pxneighbor = NULL;
-	Chunk *mzneighbor = NULL;
-	Chunk *pzneighbor = NULL;
+	Chunk(int xoff = 0, int zoff = 0);
+	~Chunk();
+	void update(void);
+	void render(Shader shader);
+	bool touchingAir(int x, int y, int z);
 private:
+	Block ***blocks;
+	glm::mat4 offsetMatrix;
 };

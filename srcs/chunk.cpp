@@ -1,80 +1,77 @@
 #include "engine.h"
 #include "chunk.h"
 
-void Chunk::init_chunk(void)
+Chunk::Chunk(int xoff, int zoff)
 {
-	for (int x = 0; x < CHUNK_X; x++)
+	blocks = new Block**[CHUNK_X];
+	for(int i = 0; i < CHUNK_X; i++)
 	{
-		for (int y = 0; y < CHUNK_Y; y++)
+		blocks[i] = new Block*[CHUNK_Y];
+
+		for(int j = 0; j < CHUNK_Y; j++)
 		{
-			for (int z = 0; z < CHUNK_Z; z++)
-			{
-				if (z < 60)
-					chunk[x][y][z] = GRASS_BLOCK;
-				else
-					chunk[x][y][z] = AIR_BLOCK;
-			}
+			blocks[i][j] = new Block[CHUNK_Z];
 		}
 	}
-	init = true;
+	offsetMatrix = glm::translate(glm::mat4(1.0f), glm::vec3((float)(xoff * CHUNK_X), 1.0f, (float)(zoff * CHUNK_Z)));
 }
 
-// can switch to using this to draw only sides of the cube exposed
-int Chunk::airblock_near(int chunk[CHUNK_X][CHUNK_Y][CHUNK_Z], int x, int y, int z)
+Chunk::~Chunk()
 {
-	if (!chunk[x][y][z])
-		return (0);
-	else if (!x || !y || !z || x >= CHUNK_X-1 || y >= CHUNK_Y-1 || z >= CHUNK_Z-1)
-		return (1);
-	else if (!chunk[x+1][y][z] || !chunk[x-1][y][z] || !chunk[x][y+1][z] ||
-						!chunk[x][y-1][z] || !chunk[x][y][z+1] || !chunk[x][y][z-1])
-		return (1);
-	return (0);
+	// for (int i = 0; i < CHUNK_X; ++i)
+	// {
+	// 	for (int j = 0; j < CHUNK_Y; ++j)
+	// 	{
+	// 		delete [] blocks[i][j];
+	// 	}
+
+	// 	delete [] blocks[i];
+	// }
+	// delete [] blocks;
 }
 
-void Chunk::draw_chunk(Shader shader)
+void Chunk::render(Shader shader)
 {
-	glm::mat4 transform(1.0f);
-	transform = glm::translate(transform, glm::vec3((float)xoff * 16.0f, 0.0f, (float)zoff * 16.0f));
-	for (int x = 0; x < CHUNK_X; x++)
+	glm::mat4 transform = offsetMatrix;
+	for(int i = 0; i < CHUNK_X; i++)
 	{
-		for (int y = 0; y < CHUNK_Y; y++)
+		for(int j = 0; j < CHUNK_Y; j++)
 		{
-			for (int z = 0; z < CHUNK_Z; z++)
+			for (int k = 0; k < CHUNK_Z; k++)
 			{
-				transform = glm::translate(transform, glm::vec3(0.0f, 0.0f, -1.0f));
+				transform = glm::translate(transform, glm::vec3(1.0f, 0.0f, 0.0f));
 				shader.setMat4("transform", transform);
-				if (airblock_near(chunk, x, y, z))
-					glDrawArrays(GL_TRIANGLES, 0, 36);
+				if (blocks[i][j][k].isActive() == true)
+					blocks[i][j][k].render();
 			}
-			transform = glm::translate(transform, glm::vec3(0.0f, -1.0f, (float)CHUNK_Z));
+			transform = glm::translate(transform, glm::vec3((float)-CHUNK_Z, 1.0f, 0.0f));
 		}
-		transform = glm::translate(transform, glm::vec3(1.0f, (float)CHUNK_Y, 0.0f));
+		transform = glm::translate(transform, glm::vec3(0.0f, (float)-CHUNK_Y, 1.0f));
 	}
 }
 
-void Chunk::draw_neighbors(Shader shader, int round)
+void Chunk::update(void)
 {
-	if (!round)
-		return ;
-	if (mxneighbor)
+	for(int i = 0; i < CHUNK_X; i++)
 	{
-		mxneighbor->draw_chunk(shader);
-		mxneighbor->draw_neighbors(shader, round - 1);
+		for(int j = 0; j < CHUNK_Y; j++)
+		{
+			for (int k = 0; k < CHUNK_Z; k++)
+			{
+				if (touchingAir(i, j, k) == true)
+					blocks[i][j][k].setActive(false);
+			}
+		}
 	}
-	if (pxneighbor)
-	{
-		pxneighbor->draw_chunk(shader);
-		pxneighbor->draw_neighbors(shader, round - 1);
-	}
-	if (mzneighbor)
-	{
-		mzneighbor->draw_chunk(shader);
-		mzneighbor->draw_neighbors(shader, round - 1);
-	}
-	if (pzneighbor)
-	{
-		pzneighbor->draw_chunk(shader);
-		pzneighbor->draw_neighbors(shader, round - 1);
-	}
+}
+
+bool Chunk::touchingAir(int x, int y, int z)
+{
+	if (!x || !z  || !y || z == CHUNK_Z - 1 || x == CHUNK_X - 1 || y == CHUNK_Y - 1)
+		return (false);
+	else if (blocks[x+1][y][z].getType() == 0 || blocks[x-1][y][z].getType() == 0 ||
+		blocks[x][y+1][z].getType() == 0 || blocks[x][y-1][z].getType() == 0 ||
+		blocks[x][y][z+1].getType() == 0 || blocks[x][y][z-1].getType() == 0)
+		return (false);
+	return (true);
 }

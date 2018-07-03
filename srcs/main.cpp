@@ -54,52 +54,7 @@ int main(void)
 	glfwSetScrollCallback(window, scroll_callback); // calls scroll_callback every time scrolling happens
 	glEnable(GL_DEPTH_TEST); //turn on z buffering
 
-	float skyboxVertices[] = {
-		// positions  
-		-1.0f,  1.0f, -1.0f,
-		-1.0f, -1.0f, -1.0f,
-		 1.0f, -1.0f, -1.0f,
-		 1.0f, -1.0f, -1.0f,
-		 1.0f,  1.0f, -1.0f,
-		-1.0f,  1.0f, -1.0f,
-
-		-1.0f, -1.0f,  1.0f,
-		-1.0f, -1.0f, -1.0f,
-		-1.0f,  1.0f, -1.0f,
-		-1.0f,  1.0f, -1.0f,
-		-1.0f,  1.0f,  1.0f,
-		-1.0f, -1.0f,  1.0f,
-
-		 1.0f, -1.0f, -1.0f,
-		 1.0f, -1.0f,  1.0f,
-		 1.0f,  1.0f,  1.0f,
-		 1.0f,  1.0f,  1.0f,
-		 1.0f,  1.0f, -1.0f,
-		 1.0f, -1.0f, -1.0f,
-
-		-1.0f, -1.0f,  1.0f,
-		-1.0f,  1.0f,  1.0f,
-		 1.0f,  1.0f,  1.0f,
-		 1.0f,  1.0f,  1.0f,
-		 1.0f, -1.0f,  1.0f,
-		-1.0f, -1.0f,  1.0f,
-
-		-1.0f,  1.0f, -1.0f,
-		 1.0f,  1.0f, -1.0f,
-		 1.0f,  1.0f,  1.0f,
-		 1.0f,  1.0f,  1.0f,
-		-1.0f,  1.0f,  1.0f,
-		-1.0f,  1.0f, -1.0f,
-
-		-1.0f, -1.0f, -1.0f,
-		-1.0f, -1.0f,  1.0f,
-		 1.0f, -1.0f, -1.0f,
-		 1.0f, -1.0f, -1.0f,
-		-1.0f, -1.0f,  1.0f,
-		 1.0f, -1.0f,  1.0f
-	};
-
-	float cubeVertices[] = { // can change to 0 and 1's?
+	float cubeVertices[] = {
 		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
 		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
@@ -143,47 +98,8 @@ int main(void)
 		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 	};
 
-	vector<std::string> faces
-	{
-		"../resources/skybox/skybox/right.jpg",
-		"../resources/skybox/skybox/left.jpg",
-		"../resources/skybox/skybox/top.jpg",
-		"../resources/skybox/skybox/bottom.jpg",
-		"../resources/skybox/skybox/front.jpg",
-		"../resources/skybox/skybox/back.jpg"
-	};
-
 	// // build and compile our shader program
-	// Shader terrainShader("../resources/shaders/shader.vs", "../resources/shaders/shader.fs");
-	Shader skyboxShader("../resources/shaders/skybox.vs", "../resources/shaders/skybox.fs");
 	Shader cubeShader("../resources/shaders/cube.vs", "../resources/shaders/cube.fs"); 
-	// Terrain terrain;
-	// terrain.generate_coordinates();
-	// terrain.generate_blocks();
-
-	// unsigned int VBO, VAO;
-	// glGenVertexArrays(1, &VAO);
-	// glGenBuffers(1, &VBO);
-	// // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-	// glBindVertexArray(VAO);
-	// glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	// glBufferData(GL_ARRAY_BUFFER, sizeof(terrain.vertices), terrain.vertices, GL_STATIC_DRAW);
-	// // position attribute
-	// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	// glEnableVertexAttribArray(0);
-
-	// skybox
-	unsigned int skyboxVAO, skyboxVBO;
-	glGenVertexArrays(1, &skyboxVAO);
-	glGenBuffers(1, &skyboxVBO);
-	glBindVertexArray(skyboxVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	unsigned int cubemapTexture = loadCubemap(faces);
-	skyboxShader.use();
-	skyboxShader.setInt("skybox", 0);
 
 	unsigned int cubeVBO, cubeVAO;
 	glGenVertexArrays(1, &cubeVAO);
@@ -200,9 +116,8 @@ int main(void)
 
 	unsigned int texture = loadTexture("../resources/textures/grass.png");
 
-	int lastChunkX = -1;
-	int lastChunkZ = -1;
-	int lastChunkIndex = -1;
+	Chunk c(0, 0);
+	c.update();
 
 	// render loop
 	while (!glfwWindowShouldClose(window))
@@ -219,25 +134,6 @@ int main(void)
 		glClearColor(0.5f, 0.8f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// // terrain render
-		// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		// terrainShader.use();
-		// glm::mat4 transform(1.0f);
-		// transform = glm::translate(transform, glm::vec3(-0.5f, -15.5f, 0.0f));
-		// transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		// terrainShader.setMat4("transform", transform);
-		// // view/projection transformations (render distances)
-		// glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 500.0f);
-		// glm::mat4 view = camera.GetViewMatrix();
-		// terrainShader.setMat4("projection", projection);
-		// terrainShader.setMat4("view", view);
-		// glBindVertexArray(VAO);
-		// for (int i = 0; i < terrain.rows; i++)
-		// {
-		// 	glDrawArrays(GL_TRIANGLE_STRIP, terrain.vertice_count * i / terrain.rows, terrain.vertice_count / terrain.rows);
-		// }
-		// glBindVertexArray(0);
-
 		// bind Texture
 		glBindTexture(GL_TEXTURE_2D, texture);
 		// render container
@@ -252,82 +148,7 @@ int main(void)
 		cubeShader.setMat4("view", view);
 		// render box
 		glBindVertexArray(cubeVAO);
-
-// todo: each chunk has neighbors linked, so just grab the chunk im on then draw the neighbors
-		// for (int k = camera.Position.z / 16 - 2; k < camera.Position.z / 16 + 2; k++)
-		// {
-		// 	bool found = false;
-		// 	for (int i = camera.Position.x / 16 - 2; i < camera.Position.x / 16 + 2; i++) // this is where to decide which chunks to draw around the camera
-		// 	{
-		// 		for (int j = 0; j < t.chunks.size(); j++)
-		// 		{
-		// 			if (t.chunks[j].xoff == i && t.chunks[j].zoff == k)//switch to camera position area
-		// 			{
-		// 				found = true;
-		// 				t.chunks[j].draw_chunk(cubeShader);
-		// 			}
-		// 		}
-		// 		if (found == false)
-		// 		{
-		// 			Chunk c;
-		// 			c.init_chunk();
-		// 			c.xoff = i;
-		// 			c.zoff = k;
-		// 			c.draw_chunk(cubeShader);
-		// 			t.chunks.push_back(c);
-		// 		}
-		// 	}
-		// }
-
-		int x = camera.Position.x / (float)CHUNK_X;
-		int z = camera.Position.z / (float)CHUNK_Z;
-		bool found = false;
-		int i = 0;
-		if (x == lastChunkX && z == lastChunkZ)
-			i = lastChunkIndex;
-		for (;i < t.chunks.size(); i++)
-		{
-			
-			if (t.chunks[i].xoff == x && t.chunks[i].zoff == z)
-			{
-				found = true;
-				if (t.chunks[i].init)
-				{
-					t.chunks[i].draw_chunk(cubeShader);
-					t.bind_neighbors(x, z, 3);
-					t.chunks[i].draw_neighbors(cubeShader, 3);
-				}
-				else
-					t.chunks[i].init_chunk();
-				break ;
-			}
-		}
-		if (!found)
-		{
-			Chunk c;
-			c.xoff = x;
-			c.zoff = z;
-			c.init_chunk();
-			t.chunks.push_back(c);
-		}
-		lastChunkX = x;
-		lastChunkZ = z;
-		lastChunkIndex = i;
-
-		// skybox
-		// // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		// glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
-		// skyboxShader.use();
-		// view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
-		// skyboxShader.setMat4("view", view);
-		// skyboxShader.setMat4("projection", projection);
-		// // skybox cube
-		// glBindVertexArray(skyboxVAO);
-		// glActiveTexture(GL_TEXTURE0);
-		// glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-		// glDrawArrays(GL_TRIANGLES, 0, 36);
-		// glBindVertexArray(0);
-		// glDepthFunc(GL_LESS); // set depth function back to default
+		c.render(cubeShader);
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);

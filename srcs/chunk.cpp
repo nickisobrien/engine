@@ -32,37 +32,50 @@ Chunk::~Chunk()
 
 void Chunk::render(Shader shader)
 {
-	glm::mat4 transform = offsetMatrix;
-	for(int i = 0; i < CHUNK_X; i++)
-	{
-		for(int j = 0; j < CHUNK_Y; j++)
-		{
-			for (int k = 0; k < CHUNK_Z; k++)
-			{
-				transform = glm::translate(transform, glm::vec3(1.0f, 0.0f, 0.0f));
-				shader.setMat4("transform", transform);
-				if (blocks[i][j][k].isActive() == true)
-					blocks[i][j][k].render();
-			}
-			transform = glm::translate(transform, glm::vec3((float)-CHUNK_Z, 1.0f, 0.0f));
-		}
-		transform = glm::translate(transform, glm::vec3(0.0f, (float)-CHUNK_Y, 1.0f));
-	}
+	shader.setMat4("transform", offsetMatrix);
+	glBindVertexArray(VAO);
+	glDrawArrays(GL_TRIANGLES, 0, points.size());
 }
 
 void Chunk::update(void)
 {
-	for(int i = 0; i < CHUNK_X; i++)
+	cleanVAO();
+	points.clear(); // only actually should clear on updates
+	for(int x = 0; x < CHUNK_X; x++)
 	{
-		for(int j = 0; j < CHUNK_Y; j++)
+		for(int y = 0; y < CHUNK_Y; y++)
 		{
-			for (int k = 0; k < CHUNK_Z; k++)
+			for (int z = 0; z < CHUNK_Z; z++)
 			{
-				if (touchingAir(i, j, k) == true)
-					blocks[i][j][k].setActive(false);
+				if (touchingAir(x, y, z) == true) // change this to which faces need rendering
+					blocks[x][y][z].setActive(false);
 			}
 		}
 	}
+
+	glm::mat4 transform = offsetMatrix;
+	for(int x = 0; x < CHUNK_X; x++)
+	{
+		for(int y = 0; y < CHUNK_Y; y++)
+		{
+			for (int z = 0; z < CHUNK_Z; z++)
+			{
+				if (blocks[x][y][z].isActive() == true) // should change to each side
+					this->add_face(0, x , y, z); //DOWN
+				if (blocks[x][y][z].isActive() == true)
+					this->add_face(1, x , y, z); //UP
+				if (blocks[x][y][z].isActive() == true)
+					this->add_face(2, x , y, z); //SIDE
+				if (blocks[x][y][z].isActive() == true)
+					this->add_face(3, x , y, z); //SIDE
+				if (blocks[x][y][z].isActive() == true)
+					this->add_face(4, x , y, z); //SIDE
+				if (blocks[x][y][z].isActive() == true)
+					this->add_face(5, x , y, z); //SIDE
+			}
+		}
+	}
+	buildVAO();
 }
 
 bool Chunk::touchingAir(int x, int y, int z)
@@ -74,4 +87,66 @@ bool Chunk::touchingAir(int x, int y, int z)
 		blocks[x][y][z+1].getType() == 0 || blocks[x][y][z-1].getType() == 0)
 		return (false);
 	return (true);
+}
+
+float *Chunk::getVertices(void)
+{
+	return (&this->points[0][0]);
+}
+
+size_t Chunk::getSizeVertices(void)
+{
+	return (this->points.size() * sizeof(glm::vec3));
+}
+
+void Chunk::buildVAO(void)
+{
+	glGenVertexArrays(1, &this->VAO);
+	glBindVertexArray(this->VAO);
+
+	//VBO //Positions
+	glGenBuffers(1, &this->VBO_VERT);
+	glBindBuffer(GL_ARRAY_BUFFER, this->VBO_VERT);
+	glBufferData(GL_ARRAY_BUFFER, this->getSizeVertices(), this->getVertices(), GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glEnableVertexAttribArray(0);
+
+	// //UV texture coords
+	// glGenBuffers(1, &this->VBO_UV);
+	// glBindBuffer(GL_ARRAY_BUFFER, this->VBO_UV);
+	// glBufferData(GL_ARRAY_BUFFER, this->getSizeUVs(), this->getUVs(), GL_STATIC_DRAW);
+	// glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)(0));
+	// glEnableVertexAttribArray(1);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+}
+
+void Chunk::add_face(int face, int x, int y, int z)
+{
+	static int oneFace = ((sizeof(VCUBE) / 4)/6/2);
+	int u = face + 1;
+
+	for (int i = oneFace * face; i < oneFace * u; i+=3)
+	{
+		glm::vec3 vec = glm::make_vec3(&VCUBE[i]);
+		vec.x = vec.x*0.5f + (float)x*1;
+		vec.y = vec.y*0.5f +(float)y*1;
+		vec.z = vec.z*0.5f +(float)z*1;
+		points.push_back(vec);
+	}
+
+	for (int i = oneFace * face + 54; i < oneFace * u + 54; i+=3)
+	{
+		glm::vec3 vec = glm::make_vec3(&VCUBE[i]);
+		vec.x = vec.x*0.5f + (float)x*1;
+		vec.y = vec.y*0.5f +(float)y*1;
+		vec.z = vec.z*0.5f +(float)z*1;
+		points.push_back(vec);
+	}
+}
+
+void Chunk::cleanVAO(void) {
+	glDeleteBuffers(1, &this->VBO_VERT);
+	glDeleteVertexArrays(1, &this->VAO);
 }

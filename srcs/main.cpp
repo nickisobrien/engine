@@ -101,23 +101,32 @@ int main(void)
 	// // build and compile our shader program
 	Shader cubeShader("../resources/shaders/cube.vs", "../resources/shaders/cube.fs"); 
 
-	unsigned int cubeVBO, cubeVAO;
-	glGenVertexArrays(1, &cubeVAO);
-	glGenBuffers(1, &cubeVBO);
-	glBindVertexArray(cubeVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
+	// unsigned int cubeVBO, cubeVAO;
+	// glGenVertexArrays(1, &cubeVAO);
+	// glGenBuffers(1, &cubeVBO);
+	// glBindVertexArray(cubeVAO);
+	// glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+	// glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
+	// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	// glEnableVertexAttribArray(0);
+	// glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	// glEnableVertexAttribArray(1);
 
-	Terrain t;
+	// Terrain t;
 
 	unsigned int texture = loadTexture("../resources/textures/grass.png");
 
-	Chunk c(0, 0);
-	c.update();
+	vector<Chunk> chunks;
+	for (int i = 0; i < 10; i++)
+	{
+		for (int j = 0; j < 10; j++)
+		{
+			Chunk c(i, j);
+			chunks.push_back(c);
+		}
+	}
+	for (int i = 0; i < chunks.size(); i++)
+		chunks[i].update();
 
 	// render loop
 	while (!glfwWindowShouldClose(window))
@@ -136,19 +145,16 @@ int main(void)
 
 		// bind Texture
 		glBindTexture(GL_TEXTURE_2D, texture);
-		// render container
+		// setup renderer
 		cubeShader.use();
-		glm::mat4 transform(1.0f);
-		transform = glm::translate(transform, glm::vec3(-2.0f, 0.0f, 0.0f));
-		transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		cubeShader.setMat4("transform", transform);
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 200.0f);
 		glm::mat4 view = camera.GetViewMatrix();
 		cubeShader.setMat4("projection", projection);
 		cubeShader.setMat4("view", view);
-		// render box
-		glBindVertexArray(cubeVAO);
-		c.render(cubeShader);
+
+		//render container
+		for (int i = 0; i < chunks.size(); i++)
+			chunks[i].render(cubeShader);
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);

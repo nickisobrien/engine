@@ -19,9 +19,8 @@ public:
 
 	bool isActive(void);
 	void setActive(bool act);
-	void render(void);
 	int getType(void);
 private:
-	bool active;
+	bool active; // can switch to having an array of active sides
 	Blocktype type = Grass;
 };

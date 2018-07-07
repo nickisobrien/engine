@@ -75,7 +75,15 @@ int main(void)
 		cubeShader.setMat4("projection", projection);
 		cubeShader.setMat4("view", view);
 
-		terr.render_chunk(glm::ivec2(camera.Position.x / CHUNK_X, camera.Position.z / CHUNK_Z), cubeShader);
+		int cx = round(camera.Position.x / CHUNK_X);
+		int cz = round(camera.Position.z / CHUNK_Z);
+		for (int i = -2; i < 2; i++)
+		{
+			for (int j = -2; j < 2; j++)
+			{
+				terr.render_chunk(glm::ivec2(cx + i, cz + j), cubeShader);
+			}
+		}
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);

@@ -40,7 +40,7 @@ void Chunk::render(Shader shader)
 void Chunk::update(void)
 {
 	cleanVAO();
-	points.clear(); // only actually should clear on updates
+	points.clear();
 	for(int x = 0; x < CHUNK_X; x++)
 	{
 		for(int y = 0; y < CHUNK_Y; y++)
@@ -60,7 +60,7 @@ void Chunk::update(void)
 		{
 			for (int z = 0; z < CHUNK_Z; z++)
 			{
-				if (blocks[x][y][z].isActive() == true) // should change to each side
+				if (blocks[x][y][z].isActive() == true) // should add variables to block saying which sides are active
 					this->add_face(0, x , y, z); //DOWN
 				if (blocks[x][y][z].isActive() == true)
 					this->add_face(1, x , y, z); //UP
@@ -104,19 +104,12 @@ void Chunk::buildVAO(void)
 	glGenVertexArrays(1, &this->VAO);
 	glBindVertexArray(this->VAO);
 
-	//VBO //Positions
+	// vertice VBO
 	glGenBuffers(1, &this->VBO_VERT);
 	glBindBuffer(GL_ARRAY_BUFFER, this->VBO_VERT);
 	glBufferData(GL_ARRAY_BUFFER, this->getSizeVertices(), this->getVertices(), GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glEnableVertexAttribArray(0);
-
-	// //UV texture coords
-	// glGenBuffers(1, &this->VBO_UV);
-	// glBindBuffer(GL_ARRAY_BUFFER, this->VBO_UV);
-	// glBufferData(GL_ARRAY_BUFFER, this->getSizeUVs(), this->getUVs(), GL_STATIC_DRAW);
-	// glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)(0));
-	// glEnableVertexAttribArray(1);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
@@ -130,9 +123,9 @@ void Chunk::add_face(int face, int x, int y, int z)
 	for (int i = oneFace * face; i < oneFace * u; i+=3)
 	{
 		glm::vec3 vec = glm::make_vec3(&VCUBE[i]);
-		vec.x = vec.x*0.5f + (float)x*1;
-		vec.y = vec.y*0.5f +(float)y*1;
-		vec.z = vec.z*0.5f +(float)z*1;
+		vec.x = vec.x*0.5f + (float)x;
+		vec.y = vec.y*0.5f +(float)y;
+		vec.z = vec.z*0.5f +(float)z;
 		points.push_back(vec);
 	}
 
@@ -149,4 +142,21 @@ void Chunk::add_face(int face, int x, int y, int z)
 void Chunk::cleanVAO(void) {
 	glDeleteBuffers(1, &this->VBO_VERT);
 	glDeleteVertexArrays(1, &this->VAO);
+}
+
+void Chunk::setXMinus(Chunk *chunk)
+{
+	this->xMinus = chunk;
+}
+void Chunk::setXPlus(Chunk *chunk)
+{
+	this->xPlus = chunk;
+}
+void Chunk::setZMinus(Chunk *chunk)
+{
+	this->zMinus = chunk;
+}
+void Chunk::setZPlus(Chunk *chunk)
+{
+	this->zPlus = chunk;
 }

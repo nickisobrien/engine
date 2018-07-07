@@ -14,6 +14,9 @@
 #include <glm/glm.hpp> // vec3, vec4, ivec4, mat4
 #include <glm/gtc/matrix_transform.hpp> // translate, rotate, scale, perspective 
 #include <glm/gtc/type_ptr.hpp> // value_ptr
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/hash.hpp>
+#include <unordered_map>
 
 #define WIDTH 800
 #define HEIGHT 600
@@ -70,4 +73,13 @@ static float VCUBE[108] = {
 		-1.000000, 1.000000, -1.000000
 };
 
-using namespace std;
+using namespace std; // should move to cpp files for locality
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void processInput(GLFWwindow *window);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+unsigned int loadTexture(char const * path);
+unsigned int TextureFromFile(const char *path, const string &directory);
+unsigned int skybox(void);
+unsigned int loadCubemap(vector<std::string> faces);

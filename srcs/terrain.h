@@ -2,12 +2,13 @@
 
 #include "chunk.h"
 
-#define MAP(VAL,A,B,AA,BB) ((VAL - A) / (B - A)) * (BB - AA) + AA;
-
 float noise(float x, float y);
 
 class Terrain
 {
 public:
+	void update_chunk(glm::ivec2 pos);
+	void render_chunk(glm::ivec2 pos, Shader shader);
 private:
+	unordered_map<glm::ivec2, Chunk *> world;
 };

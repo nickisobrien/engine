@@ -29,16 +29,16 @@ int	Chunk::getWorld(int x, int y, int z)
 
 Chunk::~Chunk(void)
 {
-	// for (int i = 0; i < CHUNK_X; ++i)
-	// {
-	// 	for (int j = 0; j < CHUNK_Y; ++j)
-	// 	{
-	// 		delete [] blocks[i][j];
-	// 	}
+	for (int i = 0; i < CHUNK_X; ++i)
+	{
+		for (int j = 0; j < CHUNK_Y; ++j)
+		{
+			delete [] blocks[i][j];
+		}
 
-	// 	delete [] blocks[i];
-	// }
-	// delete [] blocks;
+		delete [] blocks[i];
+	}
+	delete [] blocks;
 	points.clear();
 	uvs.clear();
 }

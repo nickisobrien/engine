@@ -75,8 +75,8 @@ int main(void)
 		cubeShader.setMat4("projection", projection);
 		cubeShader.setMat4("view", view);
 
-		int cx = round(camera.Position.x / CHUNK_X);
-		int cz = round(camera.Position.z / CHUNK_Z);
+		int cx = camera.Position.x / CHUNK_X;
+		int cz = camera.Position.z / CHUNK_Z;
 		for (int i = 0; i <= 0; i++)
 		{
 			for (int j = 0; j <= 0; j++)

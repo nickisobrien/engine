@@ -16,6 +16,17 @@ Chunk::Chunk(int xoff, int zoff)
 	offsetMatrix = glm::translate(glm::mat4(1.0f), glm::vec3((float)(xoff * CHUNK_X), 1.0f, (float)(zoff * CHUNK_Z)));
 }
 
+int	Chunk::getWorld(int x, int y, int z)
+{
+	if (y < 0)
+		return (0);
+	if (y >= CHUNK_Y)
+		return (0);
+	if (x > CHUNK_Z - 1 || x < 0 || z > CHUNK_Z - 1 || z < 0)
+		return (0);
+	return (x + (y * CHUNK_Y) + (z * (CHUNK_Z * CHUNK_Y)));
+}
+
 Chunk::~Chunk(void)
 {
 	// for (int i = 0; i < CHUNK_X; ++i)
@@ -28,6 +39,8 @@ Chunk::~Chunk(void)
 	// 	delete [] blocks[i];
 	// }
 	// delete [] blocks;
+	points.clear();
+	uvs.clear();
 }
 
 void Chunk::render(Shader shader)
@@ -75,18 +88,19 @@ void Chunk::update(void)
 		{
 			for (int z = 0; z < CHUNK_Z; z++)
 			{
+				int val = getWorld(x, y, z);
 				if (blocks[x][y][z].isActive() == true) // should add variables to block saying which sides are active
-					this->add_face(0, x , y, z); //DOWN
+					this->add_face(0, x , y, z, val); //DOWN
 				if (blocks[x][y][z].isActive() == true)
-					this->add_face(1, x , y, z); //UP
+					this->add_face(1, x , y, z, val); //UP
 				if (blocks[x][y][z].isActive() == true)
-					this->add_face(2, x , y, z); //SIDE
+					this->add_face(2, x , y, z, val); //SIDE
 				if (blocks[x][y][z].isActive() == true)
-					this->add_face(3, x , y, z); //SIDE
+					this->add_face(3, x , y, z, val); //SIDE
 				if (blocks[x][y][z].isActive() == true)
-					this->add_face(4, x , y, z); //SIDE
+					this->add_face(4, x , y, z, val); //SIDE
 				if (blocks[x][y][z].isActive() == true)
-					this->add_face(5, x , y, z); //SIDE
+					this->add_face(5, x , y, z, val); //SIDE
 			}
 		}
 	}
@@ -111,9 +125,9 @@ float *Chunk::getVertices(void)
 	return (&this->points[0][0]);
 }
 
-size_t Chunk::getSizeVertices(void)
+float *Chunk::getUVs(void)
 {
-	return (this->points.size() * sizeof(glm::vec3));
+	return (&this->uvs[0][0]);
 }
 
 void Chunk::buildVAO(void)
@@ -124,17 +138,38 @@ void Chunk::buildVAO(void)
 	// vertice VBO
 	glGenBuffers(1, &this->VBO_VERT);
 	glBindBuffer(GL_ARRAY_BUFFER, this->VBO_VERT);
-	glBufferData(GL_ARRAY_BUFFER, this->getSizeVertices(), this->getVertices(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, this->points.size() * sizeof(glm::vec3), this->getVertices(), GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glEnableVertexAttribArray(0);
+
+	// texture coords
+	glGenBuffers(1, &this->VBO_UV);
+	glBindBuffer(GL_ARRAY_BUFFER, this->VBO_UV);
+	glBufferData(GL_ARRAY_BUFFER, this->uvs.size() * sizeof(glm::vec3), this->getUVs(), GL_STATIC_DRAW);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)(0));
+	glEnableVertexAttribArray(1);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 }
 
-void Chunk::add_face(int face, int x, int y, int z)
+glm::vec3 Chunk::getUVBlock(int val, int i, int face)
+{
+	glm::vec2 vec = glm::make_vec2(&CUBEUV[i]);
+	float type;
+	if (face == 0 || face == 1)
+		type = 0.1f;
+	else
+		type = 1.1;
+	glm::vec3 f = glm::vec3(vec.x, vec.y, type);
+	return (f);
+}
+
+
+void Chunk::add_face(int face, int x, int y, int z, int val)
 {
 	static int oneFace = ((sizeof(VCUBE) / 4)/6/2);
+	static int oneFaceUV = ((sizeof(CUBEUV) / 4)/6/2);
 	int u = face + 1;
 
 	for (int i = oneFace * face; i < oneFace * u; i+=3)
@@ -153,6 +188,18 @@ void Chunk::add_face(int face, int x, int y, int z)
 		vec.y = vec.y*0.5f +(float)y*1;
 		vec.z = vec.z*0.5f +(float)z*1;
 		points.push_back(vec);
+	}
+
+	for (int i = oneFaceUV * face; i < oneFaceUV * u; i += 2)
+	{
+		glm::vec3 vec = this->getUVBlock(val, i, face);
+		uvs.push_back(vec);
+	}
+
+	for (int i = oneFaceUV * face + 36; i < oneFaceUV * u + 36; i+=2)
+	{
+		glm::vec3 vec = this->getUVBlock(val, i, face);
+		uvs.push_back(vec);
 	}
 }
 

@@ -19,7 +19,7 @@ class Chunk
 {
 public:
 	Chunk(int xoff = 0, int zoff = 0);
-	~Chunk();
+	~Chunk(void);
 	void update(void);
 	void render(Shader shader);
 	bool touchingAir(int x, int y, int z);
@@ -32,6 +32,7 @@ public:
 	void setXPlus(Chunk *chunk);
 	void setZMinus(Chunk *chunk);
 	void setZPlus(Chunk *chunk);
+	void set_terrain(void);
 private:
 	Block ***blocks;
 	glm::mat4 offsetMatrix;

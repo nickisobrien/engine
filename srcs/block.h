@@ -1,16 +1,5 @@
 #pragma once
 
-enum Blocktype
-{
-	Air = 0,
-	Grass,
-	Dirt,
-	Water,
-	Stone,
-    Wood,
-    Sand
-};
-
 class Block
 {
 public:
@@ -20,7 +9,8 @@ public:
 	bool isActive(void);
 	void setActive(bool act);
 	int getType(void);
+	void setType(int t);
 private:
 	bool active; // can switch to having an array of active sides
-	Blocktype type = Grass;
+	int type = 1;
 };

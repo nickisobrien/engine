@@ -11,6 +11,11 @@ void Block::setActive(bool act)
 	active = act;
 }
 
+void Block::setType(int t)
+{
+	this->type = t;
+}
+
 Block::Block(void)
 {
 	active = true;

@@ -16,7 +16,7 @@ Chunk::Chunk(int xoff, int zoff)
 	offsetMatrix = glm::translate(glm::mat4(1.0f), glm::vec3((float)(xoff * CHUNK_X), 1.0f, (float)(zoff * CHUNK_Z)));
 }
 
-Chunk::~Chunk()
+Chunk::~Chunk(void)
 {
 	// for (int i = 0; i < CHUNK_X; ++i)
 	// {
@@ -35,6 +35,21 @@ void Chunk::render(Shader shader)
 	shader.setMat4("transform", offsetMatrix);
 	glBindVertexArray(VAO);
 	glDrawArrays(GL_TRIANGLES, 0, points.size());
+}
+
+void Chunk::set_terrain(void)
+{
+	for (int x = 0; x < CHUNK_X; x++)
+	{
+		for (int z = 0; z < CHUNK_Z; z++)
+		{
+			int num = round(rand() % 2);
+			if (num > 0)
+				blocks[x][CHUNK_Y-1][z].setType(1);
+			else
+				blocks[x][CHUNK_Y-1][z].setType(0);
+		}
+	}
 }
 
 void Chunk::update(void)
@@ -80,6 +95,8 @@ void Chunk::update(void)
 
 bool Chunk::touchingAir(int x, int y, int z)
 {
+	if (blocks[x][y][z].getType() == 0)
+		return (true);
 	if (!x || !z  || !y || z == CHUNK_Z - 1 || x == CHUNK_X - 1 || y == CHUNK_Y - 1)
 		return (false);
 	else if (blocks[x+1][y][z].getType() == 0 || blocks[x-1][y][z].getType() == 0 ||

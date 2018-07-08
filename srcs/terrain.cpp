@@ -8,6 +8,7 @@ void Terrain::update_chunk(glm::ivec2 pos)
 	else
 	{
 		this->world[pos] = new Chunk(pos.x, pos.y);
+		this->world[pos]->set_terrain();
 		this->world[pos]->update();
 	}
 }

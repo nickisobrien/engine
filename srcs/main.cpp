@@ -77,9 +77,9 @@ int main(void)
 
 		int cx = round(camera.Position.x / CHUNK_X);
 		int cz = round(camera.Position.z / CHUNK_Z);
-		for (int i = -2; i < 2; i++)
+		for (int i = 0; i <= 0; i++)
 		{
-			for (int j = -2; j < 2; j++)
+			for (int j = 0; j <= 0; j++)
 			{
 				terr.render_chunk(glm::ivec2(cx + i, cz + j), cubeShader);
 			}

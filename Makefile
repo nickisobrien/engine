@@ -10,7 +10,7 @@ LIB_DIR := ./lib/
 HEADERS = ./srcs/*.h
 
 # engine
-FILES = main perlin chunk camera mesh model terrain block
+FILES = main chunk camera mesh model terrain block FastNoise
 CFILES = $(patsubst %, $(SRC_DIR)%.cpp, $(FILES))
 OFILES = $(patsubst %, $(OBJ_DIR)%.o, $(FILES))
 

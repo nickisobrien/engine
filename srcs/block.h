@@ -12,5 +12,5 @@ public:
 	void setType(int t);
 private:
 	bool active; // can switch to having an array of active sides
-	int type = 1; // 1 is grass, 0 is air
+	int type = 0; // 1 is grass, 0 is air
 };

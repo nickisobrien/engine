@@ -52,15 +52,18 @@ void Chunk::render(Shader shader)
 
 void Chunk::set_terrain(void)
 {
+
 	for (int x = 0; x < CHUNK_X; x++)
 	{
 		for (int z = 0; z < CHUNK_Z; z++)
 		{
-			int num = round(rand() % 2);
-			if (num > 0)
-				blocks[x][CHUNK_Y-1][z].setType(1);
-			else
-				blocks[x][CHUNK_Y-1][z].setType(0);
+			// Use the noise library to get the height value of x, z
+            float height = MAP(noise((float)x/1000.0f, (float)z/1000.0f), -1.0f, 1.0f, 5, CHUNK_Y-1);
+			for (int y = 0; y < height; y++)
+            {
+				// m_pBlocks[x][y][z].SetActive(true);
+                blocks[x][y][z].setType(1);
+            }
 		}
 	}
 }
@@ -91,6 +94,7 @@ void Chunk::update(void)
 				if (blocks[x][y][z].isActive())
 				{
 					int val = getWorld(x, y, z);
+					// TODO: change this to only render visible faces
 					this->add_face(0, x , y, z, val); //DOWN
 					this->add_face(1, x , y, z, val); //UP
 					this->add_face(2, x , y, z, val); //SIDE

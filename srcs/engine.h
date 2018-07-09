@@ -122,3 +122,4 @@ unsigned int loadTexture(char const * path);
 unsigned int TextureFromFile(const char *path, const string &directory);
 unsigned int skybox(void);
 unsigned int loadCubemap(vector<std::string> faces);
+float noise(float x, float y);

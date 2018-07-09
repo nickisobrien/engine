@@ -3,9 +3,9 @@
 #include "shader.h"
 #include "block.h"
 
-#define CHUNK_Z 16
-#define CHUNK_X 16
-#define CHUNK_Y 16
+#define CHUNK_Z 64
+#define CHUNK_X 64
+#define CHUNK_Y 64
 
 enum ChunkState
 {

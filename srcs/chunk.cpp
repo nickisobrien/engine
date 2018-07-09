@@ -88,19 +88,16 @@ void Chunk::update(void)
 		{
 			for (int z = 0; z < CHUNK_Z; z++)
 			{
-				int val = getWorld(x, y, z);
-				if (blocks[x][y][z].isActive() == true) // should add variables to block saying which sides are active
+				if (blocks[x][y][z].isActive())
+				{
+					int val = getWorld(x, y, z);
 					this->add_face(0, x , y, z, val); //DOWN
-				if (blocks[x][y][z].isActive() == true)
 					this->add_face(1, x , y, z, val); //UP
-				if (blocks[x][y][z].isActive() == true)
 					this->add_face(2, x , y, z, val); //SIDE
-				if (blocks[x][y][z].isActive() == true)
 					this->add_face(3, x , y, z, val); //SIDE
-				if (blocks[x][y][z].isActive() == true)
 					this->add_face(4, x , y, z, val); //SIDE
-				if (blocks[x][y][z].isActive() == true)
 					this->add_face(5, x , y, z, val); //SIDE
+				}
 			}
 		}
 	}

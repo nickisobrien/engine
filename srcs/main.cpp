@@ -77,14 +77,13 @@ int main(void)
 
 		int cx = camera.Position.x / CHUNK_X;
 		int cz = camera.Position.z / CHUNK_Z;
-		for (int i = 0; i <= 0; i++)
+		for (int i = -2; i <= 2; i++)
 		{
-			for (int j = 0; j <= 0; j++)
+			for (int j = -2; j <= 2; j++)
 			{
 				terr.render_chunk(glm::ivec2(cx + i, cz + j), cubeShader);
 			}
 		}
-
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);
 		glfwPollEvents();

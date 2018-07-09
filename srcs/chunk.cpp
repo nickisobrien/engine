@@ -1,6 +1,5 @@
 #include "engine.h"
 #include "chunk.h"
-#include "FastNoise.h"
 
 Chunk::Chunk(int xoff, int zoff)
 {
@@ -53,11 +52,9 @@ void Chunk::render(Shader shader)
 	glDrawArrays(GL_TRIANGLES, 0, points.size());
 }
 
-void Chunk::set_terrain(void)
+void Chunk::set_terrain(FastNoise myNoise)
 {
 	// prob should move the noise type to terrain and pass it in here
-	FastNoise myNoise;
-	myNoise.SetNoiseType(FastNoise::Perlin);
 	for (int x = 0; x < CHUNK_X; x++)
 	{
 		for (int z = 0; z < CHUNK_Z; z++)

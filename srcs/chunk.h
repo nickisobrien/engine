@@ -2,10 +2,11 @@
 
 #include "shader.h"
 #include "block.h"
+#include "FastNoise.h"
 
 #define CHUNK_Z 16
 #define CHUNK_X 16
-#define CHUNK_Y 64
+#define CHUNK_Y 128
 
 enum ChunkState
 {
@@ -32,7 +33,7 @@ public:
 	void setXPlus(Chunk *chunk);
 	void setZMinus(Chunk *chunk);
 	void setZPlus(Chunk *chunk);
-	void set_terrain(void);
+	void set_terrain(FastNoise myNoise);
 	int	getWorld(int x, int y, int z);
 	glm::vec3 getUVBlock(int val, int i, int face);
 private:

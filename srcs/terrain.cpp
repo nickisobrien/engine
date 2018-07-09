@@ -8,7 +8,7 @@ void Terrain::update_chunk(glm::ivec2 pos)
 	else
 	{
 		this->world[pos] = new Chunk(pos.x, pos.y);
-		this->world[pos]->set_terrain();
+		this->world[pos]->set_terrain(this->myNoise);
 		this->world[pos]->update();
 	}
 }
@@ -21,4 +21,9 @@ void Terrain::render_chunk(glm::ivec2 pos, Shader shader)
 	}
 	else
 		update_chunk(pos);// TODO add to generate list
+}
+
+void Terrain::set_noise(void)
+{
+	myNoise.SetNoiseType(FastNoise::Perlin);
 }

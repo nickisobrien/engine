@@ -20,10 +20,10 @@ void Terrain::render_chunk(glm::ivec2 pos, Shader shader)
 		this->world[pos]->render(shader);
 	}
 	else
-		update_chunk(pos);// TODO add to generate list
+		update_chunk(pos); // TODO: add to generate list
 }
 
 void Terrain::set_noise(void)
 {
-	myNoise.SetNoiseType(FastNoise::Perlin);
+	myNoise.SetNoiseType(FastNoise::PerlinFractal);
 }

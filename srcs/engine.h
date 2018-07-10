@@ -20,6 +20,9 @@
 
 #define WIDTH 800
 #define HEIGHT 600
+
+// #define WIDTH 1280
+// #define HEIGHT 720
 #define MAP(VAL,A,B,AA,BB) ((VAL - A) / (B - A)) * (BB - AA) + AA;
 
 static float VCUBE[108] = {

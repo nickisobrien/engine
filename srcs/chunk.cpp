@@ -91,7 +91,7 @@ void Chunk::update(void)
 	glm::mat4 transform = offsetMatrix;
 	for(int x = 0; x < CHUNK_X; x++)
 	{
-		for(int y = 0; y < CHUNK_Y; y++)
+		for(int y = 1; y < CHUNK_Y; y++) // NOTE: not rendering floor atm, can change back to y = 1 after TODO vvv
 		{
 			for (int z = 0; z < CHUNK_Z; z++)
 			{
@@ -99,12 +99,19 @@ void Chunk::update(void)
 				{
 					int val = getWorld(x, y, z);
 					// TODO: change this to only render visible faces
-					this->add_face(0, x , y, z, val); //DOWN
-					this->add_face(1, x , y, z, val); //UP
-					this->add_face(2, x , y, z, val); //SIDE
-					this->add_face(3, x , y, z, val); //SIDE
-					this->add_face(4, x , y, z, val); //SIDE
-					this->add_face(5, x , y, z, val); //SIDE
+					// if (y && (!blocks[x][y-1][z].getType() || !blocks[x][y-1][z].isActive()))
+						this->add_face(0, x , y, z, val); //DOWN
+					// if (y != CHUNK_Y-1 && (!blocks[x][y+1][z].getType() || !blocks[x][y+1][z].isActive()))
+						this->add_face(1, x , y, z, val); //UP
+					
+					if (x != CHUNK_X-1 && (!blocks[x+1][y][z].getType() || !blocks[x+1][y][z].isActive()))
+						this->add_face(2, x , y, z, val); //xpos SIDE
+					if (z != CHUNK_Z-1 && (!blocks[x][y][z+1].getType() || !blocks[x][y][z+1].isActive()))
+						this->add_face(3, x , y, z, val); //zpos SIDE
+					if (x && (!blocks[x-1][y][z].getType() || !blocks[x-1][y][z].isActive()))
+						this->add_face(4, x , y, z, val); //xneg SIDE
+					if (z && (!blocks[x][y][z-1].getType() || !blocks[x][y][z-1].isActive()))
+						this->add_face(5, x , y, z, val); //zneg SIDE
 				}
 			}
 		}
@@ -180,18 +187,18 @@ void Chunk::add_face(int face, int x, int y, int z, int val)
 	for (int i = oneFace * face; i < oneFace * u; i+=3)
 	{
 		glm::vec3 vec = glm::make_vec3(&VCUBE[i]);
-		vec.x = vec.x*0.5f + (float)x;
-		vec.y = vec.y*0.5f +(float)y;
-		vec.z = vec.z*0.5f +(float)z;
+		vec.x = vec.x * 0.5f + (float)x;
+		vec.y = vec.y * 0.5f + (float)y;
+		vec.z = vec.z * 0.5f + (float)z;
 		points.push_back(vec);
 	}
 
 	for (int i = oneFace * face + 54; i < oneFace * u + 54; i+=3)
 	{
 		glm::vec3 vec = glm::make_vec3(&VCUBE[i]);
-		vec.x = vec.x*0.5f + (float)x*1;
-		vec.y = vec.y*0.5f +(float)y*1;
-		vec.z = vec.z*0.5f +(float)z*1;
+		vec.x = vec.x * 0.5f + (float)x;
+		vec.y = vec.y * 0.5f + (float)y;
+		vec.z = vec.z * 0.5f + (float)z;
 		points.push_back(vec);
 	}
 

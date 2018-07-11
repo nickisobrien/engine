@@ -44,16 +44,19 @@ int main(void)
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // turn on mouse capturing
 	glfwSetCursorPosCallback(window, mouse_callback); // calls mouse_callback every time mouse moves
 	glfwSetScrollCallback(window, scroll_callback); // calls scroll_callback every time scrolling happens
-	glEnable(GL_DEPTH_TEST); //turn on z buffering
+	glEnable(GL_DEPTH_TEST); // turn on z buffering
+	// glEnable(GL_CULL_FACE); // face culling only renders visible faces of closed shapes ie. cube (needs speed testing to determine if worth)
 
 	// // build and compile our shader program
 	Shader cubeShader("../resources/shaders/cube.vs", "../resources/shaders/cube.fs");
 	unsigned int grassTexture = loadTexture("../resources/textures/grass.png");
 	unsigned int sandTexture = loadTexture("../resources/textures/sand.png");
+	unsigned int snowTexture = loadTexture("../resources/textures/snow.jpeg");
 
 	cubeShader.use();
 	cubeShader.setInt("grassTexture", 0);
 	cubeShader.setInt("sandTexture", 1);
+	cubeShader.setInt("snowTexture", 2);
 
 	// render loop
 	while (!glfwWindowShouldClose(window))
@@ -75,19 +78,21 @@ int main(void)
         glBindTexture(GL_TEXTURE_2D, grassTexture);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, sandTexture);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, snowTexture);
 
 		// setup renderer
 		cubeShader.use();
-		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 500.0f);
+		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 300.0f);
 		glm::mat4 view = camera.GetViewMatrix();
 		cubeShader.setMat4("projection", projection);
 		cubeShader.setMat4("view", view);
 
 		int cx = camera.Position.x / CHUNK_X;
 		int cz = camera.Position.z / CHUNK_Z;
-		for (int i = -14; i <= 14; i++)
+		for (int i = -12; i <= 12; i++)
 		{
-			for (int j = -14; j <= 14; j++)
+			for (int j = -12; j <= 12; j++)
 			{
 				terr.render_chunk(glm::ivec2(cx + i, cz + j), cubeShader);
 			}

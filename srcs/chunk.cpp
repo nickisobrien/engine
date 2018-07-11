@@ -104,13 +104,13 @@ void Chunk::update(void)
 					// if (y != CHUNK_Y-1 && (!blocks[x][y+1][z].getType() || !blocks[x][y+1][z].isActive()))
 						this->add_face(1, x , y, z, val); //UP
 					
-					if (x != CHUNK_X-1 && (!blocks[x+1][y][z].getType() || !blocks[x+1][y][z].isActive()))
+					// if (x != CHUNK_X-1 && (!blocks[x+1][y][z].getType() || !blocks[x+1][y][z].isActive()))
 						this->add_face(2, x , y, z, val); //xpos SIDE
-					if (z != CHUNK_Z-1 && (!blocks[x][y][z+1].getType() || !blocks[x][y][z+1].isActive()))
+					// if (z != CHUNK_Z-1 && (!blocks[x][y][z+1].getType() || !blocks[x][y][z+1].isActive()))
 						this->add_face(3, x , y, z, val); //zpos SIDE
-					if (x && (!blocks[x-1][y][z].getType() || !blocks[x-1][y][z].isActive()))
+					// if (x && (!blocks[x-1][y][z].getType() || !blocks[x-1][y][z].isActive()))
 						this->add_face(4, x , y, z, val); //xneg SIDE
-					if (z && (!blocks[x][y][z-1].getType() || !blocks[x][y][z-1].isActive()))
+					// if (z && (!blocks[x][y][z-1].getType() || !blocks[x][y][z-1].isActive()))
 						this->add_face(5, x , y, z, val); //zneg SIDE
 				}
 			}
@@ -202,15 +202,22 @@ void Chunk::add_face(int face, int x, int y, int z, int val)
 		points.push_back(vec);
 	}
 
+	if (y > CHUNK_Y / 2)
+		blocks[x][y][z].setType(2);
+
 	for (int i = oneFaceUV * face; i < oneFaceUV * u; i += 2)
 	{
 		glm::vec3 vec = this->getUVBlock(val, i, face);
+		vec.z = blocks[x][y][z].getType();
+		// cout << vec.z << endl;
 		uvs.push_back(vec);
 	}
 
 	for (int i = oneFaceUV * face + 36; i < oneFaceUV * u + 36; i+=2)
 	{
 		glm::vec3 vec = this->getUVBlock(val, i, face);
+		vec.z = blocks[x][y][z].getType();
+		// cout << vec.z << endl;
 		uvs.push_back(vec);
 	}
 }

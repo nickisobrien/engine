@@ -47,7 +47,13 @@ int main(void)
 
 	// // build and compile our shader program
 	Shader cubeShader("../resources/shaders/cube.vs", "../resources/shaders/cube.fs");
-	unsigned int texture = loadTexture("../resources/textures/grass.png");
+	unsigned int grassTexture = loadTexture("../resources/textures/grass.png");
+	unsigned int sandTexture = loadTexture("../resources/textures/sand.png");
+
+	cubeShader.use();
+	cubeShader.setInt("grassTexture", 0);
+	cubeShader.setInt("sandTexture", 1);
+
 
 	Terrain terr;
 
@@ -66,8 +72,12 @@ int main(void)
 		glClearColor(0.5f, 0.8f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// bind Texture
-		glBindTexture(GL_TEXTURE_2D, texture);
+		// bind textures on corresponding texture units
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, grassTexture);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, sandTexture);
+
 		// setup renderer
 		cubeShader.use();
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 200.0f);

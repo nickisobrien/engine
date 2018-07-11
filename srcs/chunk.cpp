@@ -82,7 +82,9 @@ void Chunk::update(void)
 		{
 			for (int z = 0; z < CHUNK_Z; z++)
 			{
-				if (touchingAir(x, y, z) == true) // change this to which faces need rendering
+				if (blocks[x][y][z].getType() == 0)
+					blocks[x][y][z].setActive(false);
+				else if (touchingAir(x, y, z) == false) // change this to which faces need rendering
 					blocks[x][y][z].setActive(false);
 			}
 		}
@@ -121,15 +123,57 @@ void Chunk::update(void)
 
 bool Chunk::touchingAir(int x, int y, int z)
 {
-	if (blocks[x][y][z].getType() == 0)
-		return (true);
-	if (!x || !z  || !y || z == CHUNK_Z - 1 || x == CHUNK_X - 1 || y == CHUNK_Y - 1)
-		return (false);
-	else if (blocks[x+1][y][z].getType() == 0 || blocks[x-1][y][z].getType() == 0 ||
-		blocks[x][y+1][z].getType() == 0 || blocks[x][y-1][z].getType() == 0 ||
-		blocks[x][y][z+1].getType() == 0 || blocks[x][y][z-1].getType() == 0)
-		return (false);
-	return (true);
+	int xMinusCheck;
+	int yMinusCheck;
+	int zMinusCheck;
+	int xPlusCheck;
+	int yPlusCheck;
+	int zPlusCheck;
+
+	// MINUS CHECKS
+	if (!x && xMinus)
+		xMinusCheck = this->xMinus->blocks[CHUNK_X-1][y][z].getType();
+	else if (!x)
+		xMinusCheck = 1; // can switch to return true?
+	else
+		xMinusCheck = this->blocks[x-1][y][z].getType();
+
+	if (!z && zMinus)
+		zMinusCheck = this->zMinus->blocks[x][y][CHUNK_Z-1].getType();
+	else if (!z)
+		zMinusCheck = 1;
+	else
+		zMinusCheck = this->blocks[x][y][z-1].getType();
+
+	if (!y)
+		yMinusCheck = 1;
+	 else
+	 	yMinusCheck = blocks[x][y-1][z].getType();
+
+	 //PLUS CHECKS
+	 if (x == CHUNK_X-1 && xPlus)
+	 	xPlusCheck = this->xPlus->blocks[0][y][z].getType();
+	 else if (x == CHUNK_X-1)
+	 	xPlusCheck = 1;
+	 else
+	 	xPlusCheck = blocks[x+1][y][z].getType();
+
+	 if (z == CHUNK_Z-1 && zPlus)
+	 	zPlusCheck = this->zPlus->blocks[x][y][0].getType();
+	 else if (z == CHUNK_Z-1)
+	 	zPlusCheck = 1;
+	 else
+	 	zPlusCheck = blocks[x][y][z+1].getType();
+
+	 if (y == CHUNK_Y-1)
+	 	yPlusCheck = 1;
+	 else
+	 	yPlusCheck = blocks[x][y+1][z].getType();
+
+	 // Final Check
+	 if (!xMinusCheck || !yMinusCheck || !zMinusCheck || !xPlusCheck || !yPlusCheck || !zPlusCheck)
+	 	return true;
+	 return false;
 }
 
 float *Chunk::getVertices(void)
@@ -242,4 +286,21 @@ void Chunk::setZMinus(Chunk *chunk)
 void Chunk::setZPlus(Chunk *chunk)
 {
 	this->zPlus = chunk;
+}
+
+Chunk *Chunk::getXMinus()
+{
+	return (this->xMinus);
+}
+Chunk *Chunk::getXPlus()
+{
+	return (this->xPlus);
+}
+Chunk *Chunk::getZMinus()
+{
+	return (this->zMinus);
+}
+Chunk *Chunk::getZPlus()
+{
+	return (this->zPlus);
 }

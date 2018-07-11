@@ -13,7 +13,7 @@ float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
 
 // camera
-Camera camera(glm::vec3(0.0f, (float)CHUNK_Y + 6.0f, 3.0f));
+Camera camera(glm::vec3(0.0f, (float)CHUNK_Y, 3.0f));
 float lastX = WIDTH / 2.0f;
 float lastY = HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -87,9 +87,9 @@ int main(void)
 
 		int cx = camera.Position.x / CHUNK_X;
 		int cz = camera.Position.z / CHUNK_Z;
-		for (int i = -2; i <= 2; i++)
+		for (int i = -4; i <= 4; i++)
 		{
-			for (int j = -2; j <= 2; j++)
+			for (int j = -4; j <= 4; j++)
 			{
 				terr.render_chunk(glm::ivec2(cx + i, cz + j), cubeShader);
 			}

@@ -33,9 +33,14 @@ public:
 	void setXPlus(Chunk *chunk);
 	void setZMinus(Chunk *chunk);
 	void setZPlus(Chunk *chunk);
+	Chunk *getXMinus();
+	Chunk *getXPlus();
+	Chunk *getZMinus();
+	Chunk *getZPlus();
 	void set_terrain(FastNoise myNoise);
 	int	getWorld(int x, int y, int z);
 	glm::vec3 getUVBlock(int val, int i, int face);
+	bool neighborsSet = false;
 private:
 	int xoff;
 	int zoff;

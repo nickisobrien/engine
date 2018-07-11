@@ -13,7 +13,7 @@ void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
         if (direction == RIGHT)
             Position += Right * velocity;
         // Position.y = 0.0f; //removes y movement
-        cout << "x: " << Position.x << ", " << "y: " << Position.y << ", " << "z: " << Position.z << endl;
+        // cout << "x: " << Position.x << ", " << "y: " << Position.y << ", " << "z: " << Position.z << endl;
     }
 
 void Camera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch)

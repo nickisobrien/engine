@@ -90,30 +90,75 @@ void Chunk::update(void)
 		}
 	}
 
+	int xMinusCheck;
+	int yMinusCheck;
+	int zMinusCheck;
+	int xPlusCheck;
+	int yPlusCheck;
+	int zPlusCheck;
 	glm::mat4 transform = offsetMatrix;
 	for(int x = 0; x < CHUNK_X; x++)
 	{
-		for(int y = 1; y < CHUNK_Y; y++) // NOTE: not rendering floor atm, can change back to y = 1 after TODO vvv
+		for(int y = 0; y < CHUNK_Y; y++) // NOTE: not rendering floor atm, can change back to y = 1 after TODO vvv
 		{
 			for (int z = 0; z < CHUNK_Z; z++)
 			{
 				if (blocks[x][y][z].isActive())
 				{
 					int val = getWorld(x, y, z);
-					// TODO: change this to only render visible faces
-					// if (y && (!blocks[x][y-1][z].getType() || !blocks[x][y-1][z].isActive()))
+
+					// MINUS checks
+					if (!x && this->xMinus)
+						xMinusCheck = this->xMinus->blocks[CHUNK_X-1][y][z].getType();
+					else if (!x)
+						xMinusCheck = 1;
+					else
+						xMinusCheck = this->blocks[x-1][y][z].getType();
+
+					if (!z && this->zMinus)
+						zMinusCheck = this->zMinus->blocks[x][y][CHUNK_Z-1].getType();
+					else if (!z)
+						zMinusCheck = 1;
+					else
+						zMinusCheck = this->blocks[x][y][z-1].getType();
+
+					if (!y)
+						yMinusCheck = 1;
+					 else
+					 	yMinusCheck = blocks[x][y-1][z].getType();
+
+					 // PLUS CHECKS
+					if (x == CHUNK_X-1 && this->xPlus)
+						xPlusCheck = this->xPlus->blocks[0][y][z].getType();
+					else if (x == CHUNK_X-1)
+						xPlusCheck = 1;
+					else
+						xPlusCheck = this->blocks[x+1][y][z].getType();
+
+					if (z == CHUNK_Z-1 && this->zPlus)
+						zPlusCheck = this->zPlus->blocks[x][y][0].getType();
+					else if (z == CHUNK_Z-1)
+						zPlusCheck = 1;
+					else
+						zPlusCheck = this->blocks[x][y][z+1].getType();
+
+					if (y == CHUNK_Y-1)
+						yPlusCheck = 1;
+					else
+						yPlusCheck = blocks[x][y+1][z].getType();
+
+					if (!yMinusCheck)
 						this->add_face(0, x , y, z, val); //DOWN
-					// if (y != CHUNK_Y-1 && (!blocks[x][y+1][z].getType() || !blocks[x][y+1][z].isActive()))
+					if (!yPlusCheck)
 						this->add_face(1, x , y, z, val); //UP
-					
-					// if (x != CHUNK_X-1 && (!blocks[x+1][y][z].getType() || !blocks[x+1][y][z].isActive()))
+					if (!xPlusCheck)
 						this->add_face(2, x , y, z, val); //xpos SIDE
-					// if (z != CHUNK_Z-1 && (!blocks[x][y][z+1].getType() || !blocks[x][y][z+1].isActive()))
-						this->add_face(3, x , y, z, val); //zpos SIDE
-					// if (x && (!blocks[x-1][y][z].getType() || !blocks[x-1][y][z].isActive()))
+					if (!xMinusCheck)
 						this->add_face(4, x , y, z, val); //xneg SIDE
-					// if (z && (!blocks[x][y][z-1].getType() || !blocks[x][y][z-1].isActive()))
+					if (!zMinusCheck)
 						this->add_face(5, x , y, z, val); //zneg SIDE
+					if (!zPlusCheck)
+						this->add_face(3, x , y, z, val); //zpos SIDE
 				}
 			}
 		}
@@ -131,14 +176,14 @@ bool Chunk::touchingAir(int x, int y, int z)
 	int zPlusCheck;
 
 	// MINUS CHECKS
-	if (!x && xMinus)
+	if (!x && this->xMinus)
 		xMinusCheck = this->xMinus->blocks[CHUNK_X-1][y][z].getType();
 	else if (!x)
-		xMinusCheck = 1; // can switch to return true?
+		xMinusCheck = 1;
 	else
 		xMinusCheck = this->blocks[x-1][y][z].getType();
 
-	if (!z && zMinus)
+	if (!z && this->zMinus)
 		zMinusCheck = this->zMinus->blocks[x][y][CHUNK_Z-1].getType();
 	else if (!z)
 		zMinusCheck = 1;
@@ -151,24 +196,24 @@ bool Chunk::touchingAir(int x, int y, int z)
 	 	yMinusCheck = blocks[x][y-1][z].getType();
 
 	 //PLUS CHECKS
-	 if (x == CHUNK_X-1 && xPlus)
-	 	xPlusCheck = this->xPlus->blocks[0][y][z].getType();
-	 else if (x == CHUNK_X-1)
-	 	xPlusCheck = 1;
-	 else
-	 	xPlusCheck = blocks[x+1][y][z].getType();
+	if (x == CHUNK_X-1 && this->xPlus)
+		xPlusCheck = this->xPlus->blocks[0][y][z].getType();
+	else if (x == CHUNK_X-1)
+		xPlusCheck = 1;
+	else
+		xPlusCheck = this->blocks[x+1][y][z].getType();
 
-	 if (z == CHUNK_Z-1 && zPlus)
-	 	zPlusCheck = this->zPlus->blocks[x][y][0].getType();
-	 else if (z == CHUNK_Z-1)
-	 	zPlusCheck = 1;
-	 else
-	 	zPlusCheck = blocks[x][y][z+1].getType();
+	if (z == CHUNK_Z-1 && this->zPlus)
+		zPlusCheck = this->zPlus->blocks[x][y][0].getType();
+	else if (z == CHUNK_Z-1)
+		zPlusCheck = 1;
+	else
+		zPlusCheck = this->blocks[x][y][z+1].getType();
 
-	 if (y == CHUNK_Y-1)
-	 	yPlusCheck = 1;
-	 else
-	 	yPlusCheck = blocks[x][y+1][z].getType();
+	if (y == CHUNK_Y-1)
+		yPlusCheck = 1;
+	else
+		yPlusCheck = blocks[x][y+1][z].getType();
 
 	 // Final Check
 	 if (!xMinusCheck || !yMinusCheck || !zMinusCheck || !xPlusCheck || !yPlusCheck || !zPlusCheck)

@@ -17,6 +17,7 @@ Camera camera(glm::vec3(0.0f, (float)CHUNK_Y, 3.0f));
 float lastX = WIDTH / 2.0f;
 float lastY = HEIGHT / 2.0f;
 bool firstMouse = true;
+Terrain terr;
 
 int main(void)
 {
@@ -54,9 +55,6 @@ int main(void)
 	cubeShader.setInt("grassTexture", 0);
 	cubeShader.setInt("sandTexture", 1);
 
-
-	Terrain terr;
-
 	// render loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -80,16 +78,16 @@ int main(void)
 
 		// setup renderer
 		cubeShader.use();
-		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 200.0f);
+		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 300.0f);
 		glm::mat4 view = camera.GetViewMatrix();
 		cubeShader.setMat4("projection", projection);
 		cubeShader.setMat4("view", view);
 
 		int cx = camera.Position.x / CHUNK_X;
 		int cz = camera.Position.z / CHUNK_Z;
-		for (int i = -4; i <= 4; i++)
+		for (int i = -8; i <= 8; i++)
 		{
-			for (int j = -4; j <= 4; j++)
+			for (int j = -8; j <= 8; j++)
 			{
 				terr.render_chunk(glm::ivec2(cx + i, cz + j), cubeShader);
 			}

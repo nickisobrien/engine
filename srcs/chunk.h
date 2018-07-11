@@ -23,7 +23,7 @@ public:
 	~Chunk(void);
 	void update(void);
 	void render(Shader shader);
-	bool touchingAir(int x, int y, int z);
+	void faceRendering(void);
 	void buildVAO(void);
 	float *getVertices(void);
 	float *getUVs(void);

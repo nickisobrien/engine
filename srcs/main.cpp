@@ -13,7 +13,7 @@ float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
 
 // camera
-Camera camera(glm::vec3(0.0f, (float)CHUNK_Y, 3.0f));
+Camera camera(glm::vec3(0.0f, (float)CHUNK_Y, 0.0f));
 float lastX = WIDTH / 2.0f;
 float lastY = HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -66,20 +66,23 @@ int main(void)
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
+		// get current chunk early so i can pass it to input
+		int cx = camera.Position.x >= 0.0f ? camera.Position.x / CHUNK_X : ceil(camera.Position.x) / CHUNK_X - 1.0f;
+		int cz = camera.Position.z >= 0.0f ? camera.Position.z / CHUNK_Z : ceil(camera.Position.z) / CHUNK_X - 1.0f;
 		// input
-		processInput(window);
+		processInput(window, cx, cz);
 
 		// render
 		glClearColor(0.5f, 0.8f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// bind textures on corresponding texture units
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, grassTexture);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, sandTexture);
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, snowTexture);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, grassTexture);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, sandTexture);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, snowTexture);
 
 		// setup renderer
 		cubeShader.use();
@@ -88,8 +91,6 @@ int main(void)
 		cubeShader.setMat4("projection", projection);
 		cubeShader.setMat4("view", view);
 
-		int cx = camera.Position.x / CHUNK_X;
-		int cz = camera.Position.z / CHUNK_Z;
 		for (int i = -12; i <= 12; i++)
 		{
 			for (int j = -12; j <= 12; j++)
@@ -107,19 +108,19 @@ int main(void)
 }
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
-void processInput(GLFWwindow *window)
+void processInput(GLFWwindow *window, int cx, int cz)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		camera.ProcessKeyboard(FORWARD, deltaTime);
+		camera.ProcessKeyboard(FORWARD, deltaTime, terr.get_chunk(glm::ivec2(cx, cz)));
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		camera.ProcessKeyboard(BACKWARD, deltaTime);
+		camera.ProcessKeyboard(BACKWARD, deltaTime, terr.get_chunk(glm::ivec2(cx, cz)));
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		camera.ProcessKeyboard(LEFT, deltaTime);
+		camera.ProcessKeyboard(LEFT, deltaTime, terr.get_chunk(glm::ivec2(cx, cz)));
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		camera.ProcessKeyboard(RIGHT, deltaTime);
+		camera.ProcessKeyboard(RIGHT, deltaTime, terr.get_chunk(glm::ivec2(cx, cz)));
 }
 
 // calculate mouse movement

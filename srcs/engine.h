@@ -18,11 +18,11 @@
 #include <glm/gtx/hash.hpp>
 #include <unordered_map>
 
-// #define WIDTH 800
-// #define HEIGHT 600
+#define WIDTH 800
+#define HEIGHT 600
 
-#define WIDTH 1280
-#define HEIGHT 720
+// #define WIDTH 1280
+// #define HEIGHT 720
 #define MAP(VAL,A,B,AA,BB) ((VAL - A) / (B - A)) * (BB - AA) + AA;
 
 static float VCUBE[108] = {
@@ -118,7 +118,7 @@ static float CUBEUV[72] = {
 using namespace std; // should move to cpp files for locality
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow *window);
+void processInput(GLFWwindow *window, int cx, int cz);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 unsigned int loadTexture(char const * path);

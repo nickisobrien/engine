@@ -1,9 +1,10 @@
 #include "engine.h"
 #include "camera.h"
 
-void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
+void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime, Chunk *chunk)
 {
         float velocity = MovementSpeed * deltaTime;
+        glm::vec3 Save = Position;
         if (direction == FORWARD)
             Position += Front * velocity;
         if (direction == BACKWARD)
@@ -12,8 +13,21 @@ void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
             Position -= Right * velocity;
         if (direction == RIGHT)
             Position += Right * velocity;
-        // Position.y = 0.0f; //removes y movement
-        // cout << "x: " << Position.x << ", " << "y: " << Position.y << ", " << "z: " << Position.z << endl;
+        
+        int x = (int)floor(Position.x) % CHUNK_X;
+        int y = floor(Position.y);
+        int z = (int)floor(Position.z) % CHUNK_Z;
+        if (x < 0)
+            x = CHUNK_X + x;
+        if (z < 0)
+            z = CHUNK_Z + z;
+
+        Block *b = chunk->get_block(x,y,z);
+        if (b != NULL && b->isActive())
+            Position = Save; // need to change to only reverting x/y/z, not necessarily all of them
+
+        // cout << "Block:  (" << x << ", " << y << ", " << z << ")" << endl;
+        // cout << "Player: (" << Position.x << ", " << Position.y << ", " << Position.z << ")" << endl;
     }
 
 void Camera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch)

@@ -1,6 +1,13 @@
 #include "engine.h"
 #include "terrain.h"
 
+Chunk *Terrain::get_chunk(glm::ivec2 pos)
+{
+	if (this->world.find(pos) != this->world.end())
+		return (this->world[pos]);
+	return (NULL);
+}
+
 void Terrain::update_chunk(glm::ivec2 pos)
 {
 	if (this->world.find(pos) != this->world.end())

@@ -16,6 +16,7 @@ Chunk::Chunk(int xoff, int zoff)
 		}
 	}
 	offsetMatrix = glm::translate(glm::mat4(1.0f), glm::vec3((float)(xoff * CHUNK_X), 1.0f, (float)(zoff * CHUNK_Z)));
+	offsetMatrix = glm::translate(offsetMatrix, glm::vec3(0.5f, -0.5f, 0.5f));
 }
 
 int	Chunk::getWorld(int x, int y, int z)
@@ -27,6 +28,13 @@ int	Chunk::getWorld(int x, int y, int z)
 	if (x > CHUNK_Z - 1 || x < 0 || z > CHUNK_Z - 1 || z < 0)
 		return (0);
 	return (x + (y * CHUNK_Y) + (z * (CHUNK_Z * CHUNK_Y)));
+}
+
+Block *Chunk::get_block(int x, int y, int z)
+{
+	if (x >= 0 && x < CHUNK_X && y >= 0 && y < CHUNK_Y && z >= 0 && z < CHUNK_Z)
+		return (&blocks[x][y][z]);
+	return (NULL);
 }
 
 Chunk::~Chunk(void)
@@ -60,14 +68,12 @@ void Chunk::set_terrain(FastNoise myNoise)
 		for (int z = 0; z < CHUNK_Z; z++)
 		{
 			// Use the noise library to get the height value of x, z
-            // float height = MAP(noise((float)x/1000.0f, (float)z/1000.0f), -1.0f, 1.0f, 5, CHUNK_Y-1);
-            float height = MAP(myNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
-            // cout << height << endl;
+			// float height = MAP(noise((float)x/1000.0f, (float)z/1000.0f), -1.0f, 1.0f, 5, CHUNK_Y-1);
+			float height = MAP(myNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
 			for (int y = 0; y < height; y++)
-            {
-				// m_pBlocks[x][y][z].SetActive(true);
-                blocks[x][y][z].setType(1);
-            }
+			{
+				blocks[x][y][z].setType(1);
+			}
 		}
 	}
 }
@@ -143,13 +149,14 @@ void Chunk::faceRendering(void)
 				else
 					yPlusCheck = this->blocks[x][y+1][z].getType();
 
+				// Deactivating hidden blocks
 				if (!(!xMinusCheck || !yMinusCheck || !zMinusCheck || !xPlusCheck || !yPlusCheck || !zPlusCheck))
 				{
 					this->blocks[x][y][z].setActive(false);
 					continue ;
 				}
-					
-
+				
+				// Facing
 				if (!yMinusCheck)
 					this->add_face(0, x , y, z, val); //DOWN
 				if (!yPlusCheck)

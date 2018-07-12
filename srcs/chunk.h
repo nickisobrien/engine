@@ -41,6 +41,7 @@ public:
 	int	getWorld(int x, int y, int z);
 	glm::vec3 getUVBlock(int val, int i, int face);
 	bool neighborsSet = false;
+	Block *get_block(int x, int y, int z);
 private:
 	int xoff;
 	int zoff;

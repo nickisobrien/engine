@@ -23,7 +23,7 @@ void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime, Chunk *
             z = CHUNK_Z + z;
 
         Block *b = chunk->get_block(x,y,z);
-        if (b != NULL && b->isActive())
+        if (b != NULL && (b->isActive())) 
             Position = Save; // need to change to only reverting x/y/z, not necessarily all of them
 
         // cout << "Block:  (" << x << ", " << y << ", " << z << ")" << endl;

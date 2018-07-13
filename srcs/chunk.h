@@ -42,6 +42,8 @@ public:
 	glm::vec3 getUVBlock(int val, int i, int face);
 	bool neighborsSet = false;
 	Block *get_block(int x, int y, int z);
+	inline int getXOff() { return xoff; }
+	inline int getZOff() { return zoff; }
 private:
 	int xoff;
 	int zoff;

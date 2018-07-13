@@ -5,6 +5,7 @@
 #include "model.h"
 #include "terrain.h"
 #include "chunk.h"
+#include "player.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h" // https://github.com/nothings/stb/blob/master/stb_image.h
@@ -13,7 +14,8 @@ float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
 
 // camera
-Camera camera(glm::vec3(0.0f, (float)CHUNK_Y, 0.0f));
+// Camera camera(glm::vec3(0.0f, (float)CHUNK_Y, 0.0f));
+Player player(glm::vec3(0.0f, (float)CHUNK_Y, 0.0f));
 float lastX = WIDTH / 2.0f;
 float lastY = HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -66,11 +68,8 @@ int main(void)
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
-		// get current chunk early so i can pass it to input
-		int cx = camera.Position.x >= 0.0f ? camera.Position.x / CHUNK_X : ceil(camera.Position.x) / CHUNK_X - 1.0f;
-		int cz = camera.Position.z >= 0.0f ? camera.Position.z / CHUNK_Z : ceil(camera.Position.z) / CHUNK_X - 1.0f;
 		// input
-		processInput(window, cx, cz);
+		processInput(window);
 
 		// render
 		glClearColor(0.5f, 0.8f, 0.9f, 1.0f);
@@ -86,14 +85,18 @@ int main(void)
 
 		// setup renderer
 		cubeShader.use();
-		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 300.0f);
-		glm::mat4 view = camera.GetViewMatrix();
+		glm::mat4 projection = glm::perspective(glm::radians(player.camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 500.0f);
+		glm::mat4 view = player.camera.GetViewMatrix();
 		cubeShader.setMat4("projection", projection);
 		cubeShader.setMat4("view", view);
 
-		for (int i = -12; i <= 12; i++)
+		Chunk *c = player.getChunk(&terr);
+		int cx, cz;
+		cx = !c ? 0 : c->getXOff();
+		cz = !c ? 0 : c->getZOff();
+		for (int i = -10; i <= 10; i++)
 		{
-			for (int j = -12; j <= 12; j++)
+			for (int j = -10; j <= 10; j++)
 			{
 				terr.render_chunk(glm::ivec2(cx + i, cz + j), cubeShader);
 			}
@@ -108,19 +111,19 @@ int main(void)
 }
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
-void processInput(GLFWwindow *window, int cx, int cz)
+void processInput(GLFWwindow *window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		camera.ProcessKeyboard(FORWARD, deltaTime, terr.get_chunk(glm::ivec2(cx, cz)));
+		player.camera.ProcessKeyboard(FORWARD, deltaTime, player.getChunk(&terr));
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		camera.ProcessKeyboard(BACKWARD, deltaTime, terr.get_chunk(glm::ivec2(cx, cz)));
+		player.camera.ProcessKeyboard(BACKWARD, deltaTime, player.getChunk(&terr));
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		camera.ProcessKeyboard(LEFT, deltaTime, terr.get_chunk(glm::ivec2(cx, cz)));
+		player.camera.ProcessKeyboard(LEFT, deltaTime, player.getChunk(&terr));
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		camera.ProcessKeyboard(RIGHT, deltaTime, terr.get_chunk(glm::ivec2(cx, cz)));
+		player.camera.ProcessKeyboard(RIGHT, deltaTime, player.getChunk(&terr));
 }
 
 // calculate mouse movement
@@ -139,12 +142,12 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	lastX = xpos;
 	lastY = ypos;
 
-	camera.ProcessMouseMovement(xoffset, yoffset);
+	player.camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	camera.ProcessMouseScroll(yoffset);
+	player.camera.ProcessMouseScroll(yoffset);
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function execute

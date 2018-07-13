@@ -72,7 +72,7 @@ void Chunk::set_terrain(FastNoise myNoise)
 			float height = MAP(myNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
 			for (int y = 0; y < height; y++)
 			{
-				blocks[x][y][z].setType(1);
+				this->blocks[x][y][z].setType(1);
 			}
 		}
 	}

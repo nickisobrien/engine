@@ -1,13 +1,6 @@
 #include "engine.h"
 #include "terrain.h"
 
-Chunk *Terrain::get_chunk(glm::ivec2 pos)
-{
-	if (this->world.find(pos) != this->world.end())
-		return (this->world[pos]);
-	return (NULL);
-}
-
 void Terrain::update_chunk(glm::ivec2 pos)
 {
 	if (this->world.find(pos) != this->world.end())
@@ -37,7 +30,7 @@ void Terrain::render_chunk(glm::ivec2 pos, Shader shader)
 
 void Terrain::set_noise(void)
 {
-	myNoise.SetNoiseType(FastNoise::Perlin);
+	myNoise.SetNoiseType(FastNoise::PerlinFractal);
 }
 
 void Terrain::set_neighbors(glm::ivec2 pos)

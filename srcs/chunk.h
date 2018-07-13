@@ -29,6 +29,8 @@ public:
 	float *getUVs(void);
 	void add_face(int face, int x, int y, int z, int val);
 	void cleanVAO(void);
+	
+	// neighbors
 	void setXMinus(Chunk *chunk);
 	void setXPlus(Chunk *chunk);
 	void setZMinus(Chunk *chunk);
@@ -37,6 +39,7 @@ public:
 	Chunk *getXPlus();
 	Chunk *getZMinus();
 	Chunk *getZPlus();
+
 	void set_terrain(FastNoise myNoise);
 	int	getWorld(int x, int y, int z);
 	glm::vec3 getUVBlock(int val, int i, int face);

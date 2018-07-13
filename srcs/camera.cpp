@@ -13,18 +13,6 @@ void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime, Chunk *
         Position -= Right * velocity;
     if (direction == RIGHT)
         Position += Right * velocity;
-    
-    // int x = (int)floor(Position.x) % CHUNK_X;
-    // int y = floor(Position.y);
-    // int z = (int)floor(Position.z) % CHUNK_Z;
-    // if (x < 0)
-    //     x = CHUNK_X + x;
-    // if (z < 0)
-    //     z = CHUNK_Z + z;
-
-    // Block *b = chunk->get_block(x,y,z);
-    // if (b != NULL && (b->isActive())) 
-    //     Position = Save; // need to change to only reverting x/y/z, not necessarily all of them
 
     // cout << "Block:  (" << x << ", " << y << ", " << z << ")" << endl;
     // cout << "Player: (" << Position.x << ", " << Position.y << ", " << Position.z << ")" << endl;

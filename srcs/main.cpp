@@ -101,6 +101,9 @@ int main(void)
 				terr.render_chunk(glm::ivec2(cx + i, cz + j), cubeShader);
 			}
 		}
+		// for physics
+		// player.update();
+		
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);
 		glfwPollEvents();

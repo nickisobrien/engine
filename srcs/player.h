@@ -8,7 +8,7 @@
 class Player
 {
 public:
-	Player (glm::vec3 pos)
+	Player(glm::vec3 pos)
 	{
 		camera = Camera(pos);
 	}
@@ -22,5 +22,34 @@ public:
 			return (terr->world[pos]);
 		return (NULL);
 	}
+	void processInput(GLFWwindow *window, Terrain *terr, float deltaTime)
+	{
+		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+			glfwSetWindowShouldClose(window, true);
+
+		glm::vec3 savePos = camera.GetPosition();
+
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+			this->camera.ProcessKeyboard(FORWARD, deltaTime, this->getChunk(terr));
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+			this->camera.ProcessKeyboard(BACKWARD, deltaTime, this->getChunk(terr));
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+			this->camera.ProcessKeyboard(LEFT, deltaTime, this->getChunk(terr));
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+			this->camera.ProcessKeyboard(RIGHT, deltaTime, this->getChunk(terr));
+
+		glm::vec3 newPos = camera.GetPosition();
+
+		int x = (int)floor(newPos.x) % CHUNK_X;
+	    int y = floor(newPos.y);
+	    int z = (int)floor(newPos.z) % CHUNK_Z;
+	    if (x < 0)
+	        x = CHUNK_X + x;
+	    if (z < 0)
+	        z = CHUNK_Z + z;
+
+	    Block *b = getChunk(terr)->get_block(x,y,z);
+	    if (b != NULL && (b->isActive())) 
+	        this->camera.SetPosition(savePos);	}
 private:
 };

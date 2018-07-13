@@ -69,7 +69,7 @@ int main(void)
 		lastFrame = currentFrame;
 
 		// input
-		processInput(window);
+		player.processInput(window, &terr, deltaTime);
 
 		// render
 		glClearColor(0.5f, 0.8f, 0.9f, 1.0f);
@@ -108,22 +108,6 @@ int main(void)
 	// glfw: terminate, clearing all previously allocated GLFW resources
 	glfwTerminate();
 	return 0;
-}
-
-// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
-void processInput(GLFWwindow *window)
-{
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, true);
-
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		player.camera.ProcessKeyboard(FORWARD, deltaTime, player.getChunk(&terr));
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		player.camera.ProcessKeyboard(BACKWARD, deltaTime, player.getChunk(&terr));
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		player.camera.ProcessKeyboard(LEFT, deltaTime, player.getChunk(&terr));
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		player.camera.ProcessKeyboard(RIGHT, deltaTime, player.getChunk(&terr));
 }
 
 // calculate mouse movement

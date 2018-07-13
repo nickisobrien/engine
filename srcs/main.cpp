@@ -15,11 +15,11 @@ float lastFrame = 0.0f; // Time of last frame
 
 // camera
 // Camera camera(glm::vec3(0.0f, (float)CHUNK_Y, 0.0f));
-Player player(glm::vec3(0.0f, (float)CHUNK_Y, 0.0f));
 float lastX = WIDTH / 2.0f;
 float lastY = HEIGHT / 2.0f;
 bool firstMouse = true;
 Terrain terr;
+Player player(glm::vec3(0.0f, (float)CHUNK_Y, 0.0f), &terr);
 
 int main(void)
 {
@@ -69,7 +69,7 @@ int main(void)
 		lastFrame = currentFrame;
 
 		// input
-		player.processInput(window, &terr, deltaTime);
+		player.processInput(window, deltaTime);
 
 		// render
 		glClearColor(0.5f, 0.8f, 0.9f, 1.0f);
@@ -83,14 +83,7 @@ int main(void)
 		glActiveTexture(GL_TEXTURE2);
 		glBindTexture(GL_TEXTURE_2D, snowTexture);
 
-		// setup renderer
-		cubeShader.use();
-		glm::mat4 projection = glm::perspective(glm::radians(player.camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 500.0f);
-		glm::mat4 view = player.camera.GetViewMatrix();
-		cubeShader.setMat4("projection", projection);
-		cubeShader.setMat4("view", view);
-
-		Chunk *c = player.getChunk(&terr);
+		Chunk *c = player.getChunk();
 		int cx, cz;
 		cx = !c ? 0 : c->getXOff();
 		cz = !c ? 0 : c->getZOff();
@@ -101,8 +94,17 @@ int main(void)
 				terr.render_chunk(glm::ivec2(cx + i, cz + j), cubeShader);
 			}
 		}
+
 		// for physics
-		player.update(deltaTime, &terr);
+		player.update(deltaTime);
+		// setup renderer
+		cubeShader.use();
+		glm::mat4 projection = glm::perspective(glm::radians(player.camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 500.0f);
+		glm::mat4 view = player.camera.GetViewMatrix();
+		view = glm::translate(view, glm::vec3(0.0f, -2.0f, 0.0f));
+		cubeShader.setMat4("projection", projection);
+		cubeShader.setMat4("view", view);
+
 		
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);

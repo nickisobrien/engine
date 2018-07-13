@@ -31,6 +31,7 @@ void Terrain::render_chunk(glm::ivec2 pos, Shader shader)
 void Terrain::set_noise(void)
 {
 	myNoise.SetNoiseType(FastNoise::PerlinFractal);
+	myNoise.SetFrequency(0.005f);
 }
 
 void Terrain::set_neighbors(glm::ivec2 pos)

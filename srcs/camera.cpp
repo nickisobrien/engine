@@ -5,17 +5,16 @@ void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime, Chunk *
 {
     float velocity = MovementSpeed * deltaTime;
     
+    // int y = Position.y;
     if (direction == FORWARD)
-        Position += Front * velocity;
+        Position += glm::vec3(Front.x, 0.0f, Front.z) * velocity;
     if (direction == BACKWARD)
-        Position -= Front * velocity;
+        Position -= glm::vec3(Front.x, 0.0f, Front.z) * velocity;
     if (direction == LEFT)
-        Position -= Right * velocity;
+        Position -= glm::vec3(Right.x, 0.0f, Right.z) * velocity;
     if (direction == RIGHT)
-        Position += Right * velocity;
-
-    // cout << "Block:  (" << x << ", " << y << ", " << z << ")" << endl;
-    // cout << "Player: (" << Position.x << ", " << Position.y << ", " << Position.z << ")" << endl;
+        Position += glm::vec3(Right.x, 0.0f, Right.z) * velocity;
+    // Position.y = y;
 }
 
 void Camera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch)

@@ -102,7 +102,7 @@ int main(void)
 			}
 		}
 		// for physics
-		// player.update();
+		player.update(deltaTime, &terr);
 		
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);

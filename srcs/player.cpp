@@ -5,7 +5,7 @@ void Player::processInput(GLFWwindow *window, Terrain *terr, float deltaTime)
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 
-	glm::vec3 savePos = camera.GetPosition();
+	glm::vec3 savePos = this->getPosition();
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		this->camera.ProcessKeyboard(FORWARD, deltaTime, this->getChunk(terr));
@@ -16,7 +16,7 @@ void Player::processInput(GLFWwindow *window, Terrain *terr, float deltaTime)
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		this->camera.ProcessKeyboard(RIGHT, deltaTime, this->getChunk(terr));
 
-	glm::vec3 newPos = camera.GetPosition();
+	glm::vec3 newPos = this->getPosition();
 
 	int x = (int)floor(newPos.x) % CHUNK_X;
 	int y = floor(newPos.y);
@@ -26,9 +26,13 @@ void Player::processInput(GLFWwindow *window, Terrain *terr, float deltaTime)
 	if (z < 0)
 		z = CHUNK_Z + z;
 
-	Block *b = getChunk(terr)->get_block(x,y,z);
-	if (b != NULL && (b->isActive())) 
-		this->camera.SetPosition(savePos); // need to change to only reverting x/y/z, not necessarily all of them
+	Chunk *c;
+	if ((c = this->getChunk(terr)) != NULL)
+	{
+		Block *b = c->get_block(x,y,z);
+		if (b != NULL && (b->isActive())) 
+			this->setPosition(savePos); // need to change to only reverting x/y/z, not necessarily all of them
+	}
 }
 
 Chunk *Player::getChunk(Terrain *terr)

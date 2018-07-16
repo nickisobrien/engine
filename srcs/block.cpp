@@ -8,7 +8,7 @@ bool Block::isActive(void)
 
 void Block::setActive(bool act)
 {
-	active = act;
+	this->active = act;
 }
 
 void Block::setType(int t)
@@ -18,7 +18,7 @@ void Block::setType(int t)
 
 Block::Block(void)
 {
-	active = true;
+	this->active = true;
 }
 
 Block::~Block(void)
@@ -27,5 +27,5 @@ Block::~Block(void)
 
 int Block::getType(void)
 {
-	return type;
+	return this->type;
 }

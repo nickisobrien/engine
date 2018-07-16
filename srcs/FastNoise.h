@@ -45,7 +45,7 @@ typedef float FN_DECIMAL;
 class FastNoise
 {
 public:
-	explicit FastNoise(int seed = 1337) { SetSeed(seed); CalculateFractalBounding(); }
+	explicit FastNoise(int seed = 1637) { SetSeed(seed); CalculateFractalBounding(); }
 
 	enum NoiseType { Value, ValueFractal, Perlin, PerlinFractal, Simplex, SimplexFractal, Cellular, WhiteNoise, Cubic, CubicFractal };
 	enum Interp { Linear, Hermite, Quintic };

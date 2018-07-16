@@ -60,6 +60,14 @@ int main(void)
 	cubeShader.setInt("sandTexture", 1);
 	cubeShader.setInt("snowTexture", 2);
 
+	for (int i = -3; i <= 3; i++)
+	{
+		for (int j = -3; j <= 3; j++)
+		{
+			terr.render_chunk(glm::ivec2(player.getPosition().x/CHUNK_X + i, player.getPosition().z/CHUNK_Z + j), cubeShader);
+		}
+	}
+
 	// render loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -83,18 +91,6 @@ int main(void)
 		glActiveTexture(GL_TEXTURE2);
 		glBindTexture(GL_TEXTURE_2D, snowTexture);
 
-		Chunk *c = player.getChunk();
-		int cx, cz;
-		cx = !c ? 0 : c->getXOff();
-		cz = !c ? 0 : c->getZOff();
-		for (int i = -10; i <= 10; i++)
-		{
-			for (int j = -10; j <= 10; j++)
-			{
-				terr.render_chunk(glm::ivec2(cx + i, cz + j), cubeShader);
-			}
-		}
-
 		// for physics
 		player.update(deltaTime);
 		// setup renderer
@@ -104,6 +100,18 @@ int main(void)
 		view = glm::translate(view, glm::vec3(0.0f, -2.0f, 0.0f));
 		cubeShader.setMat4("projection", projection);
 		cubeShader.setMat4("view", view);
+
+		Chunk *c = player.getChunk();
+		int cx, cz;
+		cx = !c ? 0 : c->getXOff();
+		cz = !c ? 0 : c->getZOff();
+		for (int i = -12; i <= 12; i++)
+		{
+			for (int j = -12; j <= 12; j++)
+			{
+				terr.render_chunk(glm::ivec2(cx + i, cz + j), cubeShader);
+			}
+		}
 
 		
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

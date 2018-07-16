@@ -72,7 +72,12 @@ void Chunk::set_terrain(FastNoise myNoise)
 			float height = MAP(myNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
 			for (int y = 0; y < height; y++)
 			{
-				this->blocks[x][y][z].setType(1);
+				if (y < 60)
+					this->blocks[x][y][z].setType(2);
+				else if (y < 80)
+					this->blocks[x][y][z].setType(1);
+				else
+					this->blocks[x][y][z].setType(3);
 			}
 		}
 	}
@@ -243,9 +248,6 @@ void Chunk::add_face(int face, int x, int y, int z, int val)
 		vec.z = vec.z * 0.5f + (float)z;
 		points.push_back(vec);
 	}
-
-	if (y > CHUNK_Y / 2)
-		blocks[x][y][z].setType(2);
 
 	for (int i = oneFaceUV * face; i < oneFaceUV * u; i += 2)
 	{

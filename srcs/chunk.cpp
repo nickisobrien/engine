@@ -166,17 +166,17 @@ void Chunk::faceRendering(void)
 				}
 				
 				// Facing
-				if (yMinusCheck==0)// || yMinusCheck==4)
-					this->add_face(0, x , y, z, val); //DOWN
-				if (yPlusCheck==0)// || yPlusCheck==4)
+				if (yPlusCheck==0 || (yPlusCheck==4 && this->blocks[x][y][z].getType() != 4))// || yPlusCheck==4)
 					this->add_face(1, x , y, z, val); //UP
-				if (xPlusCheck==0)// || xPlusCheck==4)
+				if (yMinusCheck==0 || (yMinusCheck==4 && this->blocks[x][y][z].getType() != 4))// || yMinusCheck==4)
+					this->add_face(0, x , y, z, val); //DOWN
+				if (xPlusCheck==0 || (xPlusCheck==4 && this->blocks[x][y][z].getType() != 4))// || xPlusCheck==4)
 					this->add_face(2, x , y, z, val); //xpos SIDE
-				if (xMinusCheck==0)// || xMinusCheck==4)
+				if (xMinusCheck==0 || (xMinusCheck==4 && this->blocks[x][y][z].getType() != 4))// || xMinusCheck==4)
 					this->add_face(4, x , y, z, val); //xneg SIDE
-				if (zMinusCheck==0)// || zMinusCheck==4)
+				if (zMinusCheck==0 || (zMinusCheck==4 && this->blocks[x][y][z].getType() != 4))// || zMinusCheck==4)
 					this->add_face(5, x , y, z, val); //zneg SIDE
-				if (zPlusCheck==0)// || zPlusCheck==4)
+				if (zPlusCheck==0 || (zPlusCheck==4 && this->blocks[x][y][z].getType() != 4))// || zPlusCheck==4)
 					this->add_face(3, x , y, z, val); //zpos SIDE
 			}
 		}

@@ -30,7 +30,7 @@ int	Chunk::getWorld(int x, int y, int z)
 	return (x + (y * CHUNK_Y) + (z * (CHUNK_Z * CHUNK_Y)));
 }
 
-Block *Chunk::get_block(int x, int y, int z)
+Block *Chunk::getBlock(int x, int y, int z)
 {
 	if (x >= 0 && x < CHUNK_X && y >= 0 && y < CHUNK_Y && z >= 0 && z < CHUNK_Z)
 		return (&blocks[x][y][z]);
@@ -60,7 +60,7 @@ void Chunk::render(Shader shader)
 	glDrawArrays(GL_TRIANGLES, 0, points.size());
 }
 
-void Chunk::set_terrain(FastNoise myNoise)
+void Chunk::setTerrain(FastNoise myNoise)
 {
 	// prob should move the noise type to terrain and pass it in here
 	for (int x = 0; x < CHUNK_X; x++)
@@ -167,17 +167,17 @@ void Chunk::faceRendering(void)
 				
 				// Facing
 				if (yPlusCheck==0 || (yPlusCheck==4 && this->blocks[x][y][z].getType() != 4))// || yPlusCheck==4)
-					this->add_face(1, x , y, z, val); //UP
+					this->addFace(1, x , y, z, val); //UP
 				if (yMinusCheck==0 || (yMinusCheck==4 && this->blocks[x][y][z].getType() != 4))// || yMinusCheck==4)
-					this->add_face(0, x , y, z, val); //DOWN
+					this->addFace(0, x , y, z, val); //DOWN
 				if (xPlusCheck==0 || (xPlusCheck==4 && this->blocks[x][y][z].getType() != 4))// || xPlusCheck==4)
-					this->add_face(2, x , y, z, val); //xpos SIDE
+					this->addFace(2, x , y, z, val); //xpos SIDE
 				if (xMinusCheck==0 || (xMinusCheck==4 && this->blocks[x][y][z].getType() != 4))// || xMinusCheck==4)
-					this->add_face(4, x , y, z, val); //xneg SIDE
+					this->addFace(4, x , y, z, val); //xneg SIDE
 				if (zMinusCheck==0 || (zMinusCheck==4 && this->blocks[x][y][z].getType() != 4))// || zMinusCheck==4)
-					this->add_face(5, x , y, z, val); //zneg SIDE
+					this->addFace(5, x , y, z, val); //zneg SIDE
 				if (zPlusCheck==0 || (zPlusCheck==4 && this->blocks[x][y][z].getType() != 4))// || zPlusCheck==4)
-					this->add_face(3, x , y, z, val); //zpos SIDE
+					this->addFace(3, x , y, z, val); //zpos SIDE
 			}
 		}
 	}
@@ -216,7 +216,7 @@ void Chunk::buildVAO(void)
 	glBindVertexArray(0);
 }
 
-void Chunk::add_face(int face, int x, int y, int z, int val)
+void Chunk::addFace(int face, int x, int y, int z, int val)
 {
 	static int oneFace = ((sizeof(VCUBE) / 4)/6/2);
 	static int oneFaceUV = ((sizeof(CUBEUV) / 4)/6/2);

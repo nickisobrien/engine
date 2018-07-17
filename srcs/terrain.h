@@ -10,12 +10,12 @@ class Terrain
 public:
 	Terrain(void)
 	{
-		this->set_noise();
+		this->setNoise();
 	}
-	void update_chunk(glm::ivec2 pos);
-	void render_chunk(glm::ivec2 pos, Shader shader);
-	void set_noise(void);
-	void set_neighbors(glm::ivec2 pos);
+	void updateChunk(glm::ivec2 pos);
+	void renderChunk(glm::ivec2 pos, Shader shader);
+	void setNoise(void);
+	void setNeighbors(glm::ivec2 pos);
 	unordered_map<glm::ivec2, Chunk *> world;
 private:
 	

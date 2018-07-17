@@ -1,40 +1,40 @@
 #include "engine.h"
 #include "terrain.h"
 
-void Terrain::update_chunk(glm::ivec2 pos)
+void Terrain::updateChunk(glm::ivec2 pos)
 {
 	if (this->world.find(pos) != this->world.end())
 		this->world[pos]->update();
 	else
 	{
 		this->world[pos] = new Chunk(pos.x, pos.y);
-		this->world[pos]->set_terrain(this->myNoise);
+		this->world[pos]->setTerrain(this->myNoise);
 		this->world[pos]->update();
 	}
 }
 
-void Terrain::render_chunk(glm::ivec2 pos, Shader shader)
+void Terrain::renderChunk(glm::ivec2 pos, Shader shader)
 {
 	if (this->world.find(pos) != this->world.end())
 	{
 		this->world[pos]->render(shader);
 		if (!this->world[pos]->neighborsSet)
-			set_neighbors(pos);
+			this->setNeighbors(pos);
 	}
 	else
 	{
-		update_chunk(pos); // TODO: add to generate list
+		this->updateChunk(pos); // TODO: add to generate list
 		this->world[pos]->render(shader);
 	}
 }
 
-void Terrain::set_noise(void)
+void Terrain::setNoise(void)
 {
 	myNoise.SetNoiseType(FastNoise::PerlinFractal);
 	myNoise.SetFrequency(0.005f);
 }
 
-void Terrain::set_neighbors(glm::ivec2 pos)
+void Terrain::setNeighbors(glm::ivec2 pos)
 {
 	if (!this->world[pos]->getXMinus() && this->world.find(glm::ivec2(pos.x-1, pos.y)) != this->world.end())
 		this->world[pos]->setXMinus(this->world[glm::ivec2(pos.x-1, pos.y)]);

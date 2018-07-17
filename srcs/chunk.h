@@ -27,7 +27,7 @@ public:
 	void buildVAO(void);
 	float *getVertices(void);
 	float *getUVs(void);
-	void add_face(int face, int x, int y, int z, int val);
+	void addFace(int face, int x, int y, int z, int val);
 	void cleanVAO(void);
 	
 	// neighbors
@@ -40,10 +40,10 @@ public:
 	Chunk *getZMinus();
 	Chunk *getZPlus();
 
-	void set_terrain(FastNoise myNoise);
+	void setTerrain(FastNoise myNoise);
 	int	getWorld(int x, int y, int z);
 	bool neighborsSet = false;
-	Block *get_block(int x, int y, int z);
+	Block *getBlock(int x, int y, int z);
 	inline int getXOff() { return xoff; }
 	inline int getZOff() { return zoff; }
 private:

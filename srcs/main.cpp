@@ -68,7 +68,7 @@ int main(void)
 	{
 		for (int j = -3; j <= 3; j++)
 		{
-			terr.render_chunk(glm::ivec2(player.getPosition().x/CHUNK_X + i, player.getPosition().z/CHUNK_Z + j), cubeShader);
+			terr.renderChunk(glm::ivec2(player.getPosition().x/CHUNK_X + i, player.getPosition().z/CHUNK_Z + j), cubeShader);
 		}
 	}
 
@@ -115,7 +115,7 @@ int main(void)
 		{
 			for (int j = -RENDER_DIST; j <= RENDER_DIST; j++)
 			{
-				terr.render_chunk(glm::ivec2(cx + i, cz + j), cubeShader);
+				terr.renderChunk(glm::ivec2(cx + i, cz + j), cubeShader);
 			}
 		}
 

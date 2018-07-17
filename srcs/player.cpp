@@ -31,10 +31,10 @@ void Player::processInput(GLFWwindow *window, float deltaTime)
 	Chunk *c;
 	if ((c = this->getChunk()) != NULL)
 	{
-		Block *b = c->get_block(x,y,z);
+		Block *b = c->getBlock(x,y,z);
 		if (b != NULL && b->isActive())
 		{
-			b = c->get_block(x, y+1, z);
+			b = c->getBlock(x, y+1, z);
 			if (b != NULL && !b->isActive())
 				this->setPosition(glm::vec3(newPos.x, newPos.y+1, newPos.z));
 			else

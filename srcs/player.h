@@ -38,7 +38,7 @@ public:
 
 		// cout << "Block:  (" << x << ", " << y << ", " << z << ")" << endl;
   		// cout << "Player: (" << current.x << ", " << current.y << ", " << current.z << ")" << endl;
-		Block *b = getChunk()->get_block(x,y-1,z);
+		Block *b = getChunk()->getBlock(x,y-1,z);
 		if (b != NULL && (b->isActive()))
 			return (true);
 		return (false);

@@ -69,7 +69,7 @@ void Chunk::set_terrain(FastNoise myNoise)
 		{
 			// Use the noise library to get the height value of x, z
 			// float height = MAP(noise((float)x/1000.0f, (float)z/1000.0f), -1.0f, 1.0f, 5, CHUNK_Y-1);
-			float height = MAP(myNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
+			int height = MAP(myNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
 			for (int y = 0; y < height; y++)
 			{
 				if (y < 60)
@@ -79,6 +79,8 @@ void Chunk::set_terrain(FastNoise myNoise)
 				else
 					this->blocks[x][y][z].setType(3);
 			}
+			for (int y = height; y < 52; y++)
+				this->blocks[x][y][z].setType(4);
 		}
 	}
 }
@@ -112,6 +114,8 @@ void Chunk::faceRendering(void)
 					this->blocks[x][y][z].setActive(false);
 					continue ;
 				}
+				else if (this->blocks[x][y][z].getType() == 4)
+					this->blocks[x][y][z].setActive(false);
 				int val = this->getWorld(x, y, z);
 
 				// MINUS checks
@@ -155,24 +159,24 @@ void Chunk::faceRendering(void)
 					yPlusCheck = this->blocks[x][y+1][z].getType();
 
 				// Deactivating hidden blocks
-				if (!(!xMinusCheck || !yMinusCheck || !zMinusCheck || !xPlusCheck || !yPlusCheck || !zPlusCheck))
+				if (xMinusCheck==0 && yMinusCheck==0 && zMinusCheck==0 && xPlusCheck==0 && yPlusCheck==0 && zPlusCheck==0)
 				{
 					this->blocks[x][y][z].setActive(false);
 					continue ;
 				}
 				
 				// Facing
-				if (!yMinusCheck)
+				if (yMinusCheck==0)// || yMinusCheck==4)
 					this->add_face(0, x , y, z, val); //DOWN
-				if (!yPlusCheck)
+				if (yPlusCheck==0)// || yPlusCheck==4)
 					this->add_face(1, x , y, z, val); //UP
-				if (!xPlusCheck)
+				if (xPlusCheck==0)// || xPlusCheck==4)
 					this->add_face(2, x , y, z, val); //xpos SIDE
-				if (!xMinusCheck)
+				if (xMinusCheck==0)// || xMinusCheck==4)
 					this->add_face(4, x , y, z, val); //xneg SIDE
-				if (!zMinusCheck)
+				if (zMinusCheck==0)// || zMinusCheck==4)
 					this->add_face(5, x , y, z, val); //zneg SIDE
-				if (!zPlusCheck)
+				if (zPlusCheck==0)// || zPlusCheck==4)
 					this->add_face(3, x , y, z, val); //zpos SIDE
 			}
 		}

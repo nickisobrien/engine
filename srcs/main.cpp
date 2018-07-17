@@ -54,11 +54,13 @@ int main(void)
 	unsigned int grassTexture = loadTexture("../resources/textures/grass.png");
 	unsigned int sandTexture = loadTexture("../resources/textures/sand.png");
 	unsigned int snowTexture = loadTexture("../resources/textures/snow.jpeg");
+	unsigned int waterTexture = loadTexture("../resources/textures/water.jpeg");
 
 	cubeShader.use();
 	cubeShader.setInt("grassTexture", 0);
 	cubeShader.setInt("sandTexture", 1);
 	cubeShader.setInt("snowTexture", 2);
+	cubeShader.setInt("waterTexture", 3);
 
 	for (int i = -3; i <= 3; i++)
 	{
@@ -90,6 +92,8 @@ int main(void)
 		glBindTexture(GL_TEXTURE_2D, sandTexture);
 		glActiveTexture(GL_TEXTURE2);
 		glBindTexture(GL_TEXTURE_2D, snowTexture);
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, waterTexture);
 
 		// for physics
 		player.update(deltaTime);

@@ -11,6 +11,6 @@ public:
 	int getType(void);
 	void setType(int t);
 private:
-	bool active; // can switch to having an array of active sides
-	int type = 0; // 1==grass, 0==air, 2==sand, 3==snow
+	bool active;
+	int type = 0; //need to change to smaller data size ie. char/short// 1==grass, 0==air, 2==sand, 3==snow 
 };

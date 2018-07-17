@@ -216,19 +216,6 @@ void Chunk::buildVAO(void)
 	glBindVertexArray(0);
 }
 
-glm::vec3 Chunk::getUVBlock(int val, int i, int face)
-{
-	glm::vec2 vec = glm::make_vec2(&CUBEUV[i]);
-	float type;
-	if (face == 0 || face == 1)
-		type = 0.1f;
-	else
-		type = 1.1;
-	glm::vec3 f = glm::vec3(vec.x, vec.y, type);
-	return (f);
-}
-
-
 void Chunk::add_face(int face, int x, int y, int z, int val)
 {
 	static int oneFace = ((sizeof(VCUBE) / 4)/6/2);
@@ -255,17 +242,13 @@ void Chunk::add_face(int face, int x, int y, int z, int val)
 
 	for (int i = oneFaceUV * face; i < oneFaceUV * u; i += 2)
 	{
-		glm::vec3 vec = this->getUVBlock(val, i, face);
-		vec.z = blocks[x][y][z].getType();
-		// cout << vec.z << endl;
+		glm::vec3 vec = glm::vec3(glm::make_vec2(&CUBEUV[i]), blocks[x][y][z].getType());
 		uvs.push_back(vec);
 	}
 
 	for (int i = oneFaceUV * face + 36; i < oneFaceUV * u + 36; i+=2)
 	{
-		glm::vec3 vec = this->getUVBlock(val, i, face);
-		vec.z = blocks[x][y][z].getType();
-		// cout << vec.z << endl;
+		glm::vec3 vec = glm::vec3(glm::make_vec2(&CUBEUV[i]), blocks[x][y][z].getType());
 		uvs.push_back(vec);
 	}
 }

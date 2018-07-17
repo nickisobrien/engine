@@ -42,7 +42,6 @@ public:
 
 	void set_terrain(FastNoise myNoise);
 	int	getWorld(int x, int y, int z);
-	glm::vec3 getUVBlock(int val, int i, int face);
 	bool neighborsSet = false;
 	Block *get_block(int x, int y, int z);
 	inline int getXOff() { return xoff; }

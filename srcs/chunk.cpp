@@ -62,13 +62,11 @@ void Chunk::render(Shader shader)
 
 void Chunk::setTerrain(FastNoise myNoise)
 {
-	// prob should move the noise type to terrain and pass it in here
 	for (int x = 0; x < CHUNK_X; x++)
 	{
 		for (int z = 0; z < CHUNK_Z; z++)
 		{
 			// Use the noise library to get the height value of x, z
-			// float height = MAP(noise((float)x/1000.0f, (float)z/1000.0f), -1.0f, 1.0f, 5, CHUNK_Y-1);
 			int height = MAP(myNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
 			for (int y = 0; y < height; y++)
 			{

@@ -60,22 +60,29 @@ void Chunk::render(Shader shader)
 	glDrawArrays(GL_TRIANGLES, 0, points.size());
 }
 
-void Chunk::setTerrain(FastNoise myNoise)
+void Chunk::setTerrain(FastNoise terrainNoise, FastNoise biomeNoise)
 {
 	for (int x = 0; x < CHUNK_X; x++)
 	{
 		for (int z = 0; z < CHUNK_Z; z++)
 		{
 			// Use the noise library to get the height value of x, z
-			int height = MAP(myNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
+			int height = MAP(terrainNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
+			float biome = biomeNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
 			for (int y = 0; y < height; y++)
 			{
-				if (y < 60)
-					this->blocks[x][y][z].setType(2);
-				else if (y < 80)
+				if (biome < -0.33f)
 					this->blocks[x][y][z].setType(1);
+				else if (biome < 0.33f)
+					this->blocks[x][y][z].setType(2);
 				else
 					this->blocks[x][y][z].setType(3);
+				// if (y < 60)
+				// 	this->blocks[x][y][z].setType(2);
+				// else if (y < 80)
+				// 	this->blocks[x][y][z].setType(1);
+				// else
+				// 	this->blocks[x][y][z].setType(3);
 			}
 			for (int y = height; y < 52; y++)
 				this->blocks[x][y][z].setType(4);

@@ -17,6 +17,10 @@ void Player::processInput(GLFWwindow *window, float deltaTime)
 		this->camera.ProcessKeyboard(RIGHT, deltaTime, this->getChunk());
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 		this->jump();
+	// if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
+	// {
+	// 	this->getChunk()->update();
+	// }
 
 	glm::vec3 newPos = this->getPosition();
 

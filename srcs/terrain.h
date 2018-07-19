@@ -18,6 +18,6 @@ public:
 	void setNeighbors(glm::ivec2 pos);
 	unordered_map<glm::ivec2, Chunk *> world;
 private:
-	
-	FastNoise myNoise;
+	FastNoise biomeNoise;
+	FastNoise terrainNoise;
 };

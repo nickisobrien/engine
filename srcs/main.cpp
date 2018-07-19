@@ -10,7 +10,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h" // https://github.com/nothings/stb/blob/master/stb_image.h
 
-#define RENDER_DIST 10
+#define RENDER_RADIUS 12
 
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
@@ -111,9 +111,9 @@ int main(void)
 		int cx, cz;
 		cx = !c ? 0 : c->getXOff();
 		cz = !c ? 0 : c->getZOff();
-		for (int i = -RENDER_DIST; i <= RENDER_DIST; i++)
+		for (int i = -RENDER_RADIUS; i <= RENDER_RADIUS; i++)
 		{
-			for (int j = -RENDER_DIST; j <= RENDER_DIST; j++)
+			for (int j = -RENDER_RADIUS; j <= RENDER_RADIUS; j++)
 			{
 				terr.renderChunk(glm::ivec2(cx + i, cz + j), cubeShader);
 			}

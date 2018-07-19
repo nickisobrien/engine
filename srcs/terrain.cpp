@@ -8,7 +8,7 @@ void Terrain::updateChunk(glm::ivec2 pos)
 	else
 	{
 		this->world[pos] = new Chunk(pos.x, pos.y);
-		this->world[pos]->setTerrain(this->myNoise);
+		this->world[pos]->setTerrain(this->terrainNoise, this->biomeNoise);
 		this->world[pos]->update();
 	}
 }
@@ -30,8 +30,11 @@ void Terrain::renderChunk(glm::ivec2 pos, Shader shader)
 
 void Terrain::setNoise(void)
 {
-	myNoise.SetNoiseType(FastNoise::PerlinFractal);
-	myNoise.SetFrequency(0.005f);
+	this->terrainNoise.SetNoiseType(FastNoise::PerlinFractal);
+	this->terrainNoise.SetFrequency(0.005f);
+
+	this->biomeNoise.SetNoiseType(FastNoise::Simplex);
+	this->biomeNoise.SetFrequency(0.005f);
 }
 
 void Terrain::setNeighbors(glm::ivec2 pos)

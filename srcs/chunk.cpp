@@ -72,9 +72,9 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise biomeNoise)
 			for (int y = 0; y < height; y++)
 			{
 				if (biome < -0.33f)
-					this->blocks[x][y][z].setType(1);
-				else if (biome < 0.33f)
 					this->blocks[x][y][z].setType(2);
+				else if (biome < 0.33f)
+					this->blocks[x][y][z].setType(1);
 				else
 					this->blocks[x][y][z].setType(3);
 				// if (y < 60)

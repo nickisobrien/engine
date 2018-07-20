@@ -49,7 +49,7 @@ int main(void)
 	glfwSetCursorPosCallback(window, mouse_callback); // calls mouse_callback every time mouse moves
 	glfwSetScrollCallback(window, scroll_callback); // calls scroll_callback every time scrolling happens
 	glEnable(GL_DEPTH_TEST); // turn on z buffering
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
 	// glEnable(GL_CULL_FACE); // face culling only renders visible faces of closed shapes ie. cube (needs speed testing to determine if worth)
 
 	// // build and compile our shader program

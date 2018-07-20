@@ -1,7 +1,7 @@
 #version 330 core
 out vec4 FragColor;
 
-in vec3 TexCoord;
+in vec2 TexCoord;
 in vec3 pos;
 
 // texture sampler
@@ -21,7 +21,7 @@ void main()
 	// else
 	// 	FragColor = texture(waterTexture, vec2(TexCoord.x, TexCoord.y));
 
-	FragColor = texture(atlas, vec2(TexCoord.x, TexCoord.y));
+	FragColor = texture(atlas, TexCoord);
 
 
 	// if (pos.y <= 60) // can take out comparison opperator by making a simple array of textures and doing texture[0]+TexCoord.z

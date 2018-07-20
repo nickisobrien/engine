@@ -55,7 +55,7 @@ private:
 	unsigned int VBO_VERT;
 	unsigned int VBO_UV;
 	vector<glm::vec3> points;
-	vector<glm::vec3> uvs;
+	vector<glm::vec2> uvs;
 	ChunkState state = GENERATE;
 	Chunk *xMinus = NULL;
 	Chunk *xPlus = NULL;

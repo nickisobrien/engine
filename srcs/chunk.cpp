@@ -228,8 +228,8 @@ void Chunk::buildVAO(void)
 	// texture coords
 	glGenBuffers(1, &this->VBO_UV);
 	glBindBuffer(GL_ARRAY_BUFFER, this->VBO_UV);
-	glBufferData(GL_ARRAY_BUFFER, this->uvs.size() * sizeof(glm::vec3), this->getUVs(), GL_STATIC_DRAW);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)(0));
+	glBufferData(GL_ARRAY_BUFFER, this->uvs.size() * sizeof(glm::vec2), this->getUVs(), GL_STATIC_DRAW);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)(0));
 	glEnableVertexAttribArray(1);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -262,7 +262,7 @@ void Chunk::addFace(int face, int x, int y, int z, int val)
 
 	for (int i = oneFaceUV * face; i < oneFaceUV * u; i += 2)
 	{
-		glm::vec3 vec = glm::vec3(glm::make_vec2(&CUBEUV[i]), blocks[x][y][z].getType());
+		glm::vec2 vec = glm::make_vec2(&CUBEUV[i]);
 		vec.x /= 16;
 		vec.x += 0.0625 * (blocks[x][y][z].getType() - 1);
 		// vec.x += blocks[x][y][z].getType() * 16;
@@ -272,7 +272,7 @@ void Chunk::addFace(int face, int x, int y, int z, int val)
 
 	for (int i = oneFaceUV * face + 36; i < oneFaceUV * u + 36; i+=2)
 	{
-		glm::vec3 vec = glm::vec3(glm::make_vec2(&CUBEUV[i]), blocks[x][y][z].getType());
+		glm::vec2 vec = glm::make_vec2(&CUBEUV[i]);
 		vec.x /= 16;
 		vec.x += 0.0625 * (blocks[x][y][z].getType() - 1);
 		// vec.x += blocks[x][y][z].getType() * 16;

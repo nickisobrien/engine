@@ -58,7 +58,7 @@ int main(void)
 	// unsigned int sandTexture = loadTexture("../resources/textures/sand.png");
 	// unsigned int snowTexture = loadTexture("../resources/textures/snow.jpeg");
 	// unsigned int waterTexture = loadTexture("../resources/textures/water.jpeg");
-	unsigned int atlas = loadTexture("../resources/textures/atlas.png");
+	unsigned int atlas = loadTexture("../resources/textures/atlas2.png");
 
 	cubeShader.use();
 	// cubeShader.setInt("grassTexture", 0);

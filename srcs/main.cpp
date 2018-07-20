@@ -10,7 +10,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h" // https://github.com/nothings/stb/blob/master/stb_image.h
 
-#define RENDER_RADIUS 12
+#define RENDER_RADIUS 15
 
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
@@ -49,20 +49,23 @@ int main(void)
 	glfwSetCursorPosCallback(window, mouse_callback); // calls mouse_callback every time mouse moves
 	glfwSetScrollCallback(window, scroll_callback); // calls scroll_callback every time scrolling happens
 	glEnable(GL_DEPTH_TEST); // turn on z buffering
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	// glEnable(GL_CULL_FACE); // face culling only renders visible faces of closed shapes ie. cube (needs speed testing to determine if worth)
 
 	// // build and compile our shader program
 	Shader cubeShader("../resources/shaders/cube.vs", "../resources/shaders/cube.fs");
-	unsigned int grassTexture = loadTexture("../resources/textures/grass.png");
-	unsigned int sandTexture = loadTexture("../resources/textures/sand.png");
-	unsigned int snowTexture = loadTexture("../resources/textures/snow.jpeg");
-	unsigned int waterTexture = loadTexture("../resources/textures/water.jpeg");
+	// unsigned int grassTexture = loadTexture("../resources/textures/grass.png");
+	// unsigned int sandTexture = loadTexture("../resources/textures/sand.png");
+	// unsigned int snowTexture = loadTexture("../resources/textures/snow.jpeg");
+	// unsigned int waterTexture = loadTexture("../resources/textures/water.jpeg");
+	unsigned int atlas = loadTexture("../resources/textures/atlas.png");
 
 	cubeShader.use();
-	cubeShader.setInt("grassTexture", 0);
-	cubeShader.setInt("sandTexture", 1);
-	cubeShader.setInt("snowTexture", 2);
-	cubeShader.setInt("waterTexture", 3);
+	// cubeShader.setInt("grassTexture", 0);
+	// cubeShader.setInt("sandTexture", 1);
+	// cubeShader.setInt("snowTexture", 2);
+	// cubeShader.setInt("waterTexture", 3);
+	cubeShader.setInt("atlas", 0);
 
 	for (int i = -3; i <= 3; i++)
 	{
@@ -88,14 +91,16 @@ int main(void)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// bind textures on corresponding texture units
+		// glActiveTexture(GL_TEXTURE0);
+		// glBindTexture(GL_TEXTURE_2D, grassTexture);
+		// glActiveTexture(GL_TEXTURE1);
+		// glBindTexture(GL_TEXTURE_2D, sandTexture);
+		// glActiveTexture(GL_TEXTURE2);
+		// glBindTexture(GL_TEXTURE_2D, snowTexture);
+		// glActiveTexture(GL_TEXTURE3);
+		// glBindTexture(GL_TEXTURE_2D, waterTexture);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, grassTexture);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, sandTexture);
-		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, snowTexture);
-		glActiveTexture(GL_TEXTURE3);
-		glBindTexture(GL_TEXTURE_2D, waterTexture);
+		glBindTexture(GL_TEXTURE_2D, atlas);
 
 		// for physics
 		player.update(deltaTime);

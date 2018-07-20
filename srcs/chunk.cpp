@@ -1,6 +1,8 @@
 #include "engine.h"
 #include "chunk.h"
 
+#define WATER 9
+
 Chunk::Chunk(int xoff, int zoff)
 {
 	this->xoff = xoff;
@@ -72,11 +74,24 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise biomeNoise)
 			for (int y = 0; y < height; y++)
 			{
 				if (biome < -0.33f)
-					this->blocks[x][y][z].setType(2);
+					this->blocks[x][y][z].setType(8); //sand
 				else if (biome < 0.33f)
-					this->blocks[x][y][z].setType(1);
+					this->blocks[x][y][z].setType(1); //grass
 				else
-					this->blocks[x][y][z].setType(3);
+					this->blocks[x][y][z].setType(4); //rock/snow
+
+				/*
+					noise layer #1 "Temperature"
+					noise layer #2 "Humidity"
+					Derived biomes:
+					Temp < 33%	 		Humidity < 50% => Cold rocky biome
+					Temp < 33%	 		Humidity > 50% => Ice and frozen lakes
+					33% < Temp < 66%	Humidity < 50% => Grassland
+					33% < Temp < 66%	Humidity > 50% => Forest or swamp
+					Temp > 66%	 		Humidity < 50% => Dessert
+					Temp > 66%	 		Humidity > 50% => Tropical rainforest
+				*/
+
 				// if (y < 60)
 				// 	this->blocks[x][y][z].setType(2);
 				// else if (y < 80)
@@ -85,7 +100,7 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise biomeNoise)
 				// 	this->blocks[x][y][z].setType(3);
 			}
 			for (int y = height; y < 52; y++)
-				this->blocks[x][y][z].setType(4);
+				this->blocks[x][y][z].setType(WATER);
 		}
 	}
 }
@@ -119,7 +134,7 @@ void Chunk::faceRendering(void)
 					this->blocks[x][y][z].setActive(false);
 					continue ;
 				}
-				else if (this->blocks[x][y][z].getType() == 4)
+				else if (this->blocks[x][y][z].getType() == WATER) //water
 					this->blocks[x][y][z].setActive(false);
 				int val = this->getWorld(x, y, z);
 
@@ -171,17 +186,17 @@ void Chunk::faceRendering(void)
 				}
 				
 				// Facing
-				if (yPlusCheck==0 || (yPlusCheck==4 && this->blocks[x][y][z].getType() != 4))// || yPlusCheck==4)
+				if (yPlusCheck==0 || (yPlusCheck==WATER && this->blocks[x][y][z].getType() != WATER))// || yPlusCheck==4)
 					this->addFace(1, x , y, z, val); //UP
-				if (yMinusCheck==0 || (yMinusCheck==4 && this->blocks[x][y][z].getType() != 4))// || yMinusCheck==4)
+				if (yMinusCheck==0 || (yMinusCheck==WATER && this->blocks[x][y][z].getType() != WATER))// || yMinusCheck==4)
 					this->addFace(0, x , y, z, val); //DOWN
-				if (xPlusCheck==0 || (xPlusCheck==4 && this->blocks[x][y][z].getType() != 4))// || xPlusCheck==4)
+				if (xPlusCheck==0 || (xPlusCheck==WATER && this->blocks[x][y][z].getType() != WATER))// || xPlusCheck==4)
 					this->addFace(2, x , y, z, val); //xpos SIDE
-				if (xMinusCheck==0 || (xMinusCheck==4 && this->blocks[x][y][z].getType() != 4))// || xMinusCheck==4)
+				if (xMinusCheck==0 || (xMinusCheck==WATER && this->blocks[x][y][z].getType() != WATER))// || xMinusCheck==4)
 					this->addFace(4, x , y, z, val); //xneg SIDE
-				if (zMinusCheck==0 || (zMinusCheck==4 && this->blocks[x][y][z].getType() != 4))// || zMinusCheck==4)
+				if (zMinusCheck==0 || (zMinusCheck==WATER && this->blocks[x][y][z].getType() != WATER))// || zMinusCheck==4)
 					this->addFace(5, x , y, z, val); //zneg SIDE
-				if (zPlusCheck==0 || (zPlusCheck==4 && this->blocks[x][y][z].getType() != 4))// || zPlusCheck==4)
+				if (zPlusCheck==0 || (zPlusCheck==WATER && this->blocks[x][y][z].getType() != WATER))// || zPlusCheck==4)
 					this->addFace(3, x , y, z, val); //zpos SIDE
 			}
 		}
@@ -248,12 +263,20 @@ void Chunk::addFace(int face, int x, int y, int z, int val)
 	for (int i = oneFaceUV * face; i < oneFaceUV * u; i += 2)
 	{
 		glm::vec3 vec = glm::vec3(glm::make_vec2(&CUBEUV[i]), blocks[x][y][z].getType());
+		vec.x /= 16;
+		vec.x += 0.0625 * (blocks[x][y][z].getType() - 1);
+		// vec.x += blocks[x][y][z].getType() * 16;
+		vec.y /= 16;
 		uvs.push_back(vec);
 	}
 
 	for (int i = oneFaceUV * face + 36; i < oneFaceUV * u + 36; i+=2)
 	{
 		glm::vec3 vec = glm::vec3(glm::make_vec2(&CUBEUV[i]), blocks[x][y][z].getType());
+		vec.x /= 16;
+		vec.x += 0.0625 * (blocks[x][y][z].getType() - 1);
+		// vec.x += blocks[x][y][z].getType() * 16;
+		vec.y /= 16;
 		uvs.push_back(vec);
 	}
 }

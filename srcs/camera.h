@@ -57,6 +57,12 @@ public:
     // Returns the view matrix calculated using Euler Angles and the LookAt Matrix
     inline glm::mat4 GetViewMatrix() { return glm::lookAt(Position, Position + Front, Up); }
 
+    inline glm::vec3 GetViewVector()
+    {
+        glm::mat4 matInverseView = glm::inverse(this->GetViewMatrix());
+        return (glm::vec3(matInverseView[2][0], matInverseView[2][1], matInverseView[2][2]));
+    }
+
     inline glm::vec3 GetPosition() { return this->Position; }
     void SetPosition(glm::vec3 pos) { this->Position = pos; }
 
@@ -70,4 +76,5 @@ public:
 private:
     // Calculates the front vector from the Camera's (updated) Euler Angles
     void updateCameraVectors();
+    friend class Player;
 };

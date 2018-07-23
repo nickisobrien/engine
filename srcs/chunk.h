@@ -47,6 +47,7 @@ public:
 	inline int getXOff() { return xoff; }
 	inline int getZOff() { return zoff; }
 private:
+	friend class Player;
 	int xoff;
 	int zoff;
 	Block ***blocks;

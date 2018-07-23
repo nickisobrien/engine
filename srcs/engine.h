@@ -18,11 +18,11 @@
 #include <glm/gtx/hash.hpp>
 #include <unordered_map>
 
-// #define WIDTH 800
-// #define HEIGHT 600
+#define WIDTH 800
+#define HEIGHT 600
 
-#define WIDTH 1280
-#define HEIGHT 720
+// #define WIDTH 1280
+// #define HEIGHT 720
 #define MAP(VAL,A,B,AA,BB) ((VAL - A) / (B - A)) * (BB - AA) + AA;
 #define ATLAS_SIZE 256
 #define TEXTURE_SIZE 16
@@ -128,3 +128,4 @@ unsigned int TextureFromFile(const char *path, const string &directory);
 unsigned int skybox(void);
 unsigned int loadCubemap(vector<std::string> faces);
 float noise(float x, float y);
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);

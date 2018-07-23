@@ -56,3 +56,80 @@ Chunk *Player::getChunk()
 		return (this->terr->world[pos]);
 	return (NULL);
 }
+
+bool Player::isGrounded()
+{
+	glm::vec3 current = this->getPosition();
+	int x = (int)floor(current.x) % CHUNK_X;
+	int y = floor(current.y);
+	int z = (int)floor(current.z) % CHUNK_Z;
+	if (x < 0)
+		x = CHUNK_X + x;
+	if (z < 0)
+		z = CHUNK_Z + z;
+
+	// cout << "Block:  (" << x << ", " << y << ", " << z << ")" << endl;
+	// cout << "Player: (" << current.x << ", " << current.y << ", " << current.z << ")" << endl;
+	Block *b = getChunk()->getBlock(x,y-1,z);
+	if (b != NULL && (b->isActive()))
+		return (true);
+	return (false);
+}
+
+void Player::jump()
+{
+	glm::vec3 cur = this->getPosition();
+	if (this->isGrounded())
+		this->setPosition(glm::vec3(cur.x, cur.y+5.0f, cur.z));
+}
+
+void Player::applyGravity(float time)
+{
+	glm::vec3 current = this->getPosition();
+	if (!this->isGrounded())
+		current.y -= this->gravity * time;
+	this->setPosition(current);
+}
+
+void Player::mouseClickEvent()
+{
+	glm::vec3 current = this->getPosition();
+	int x = (int)floor(current.x) % CHUNK_X;
+	int y = floor(current.y);
+	int z = (int)floor(current.z) % CHUNK_Z;
+	if (x < 0)
+		x = CHUNK_X + x;
+	if (z < 0)
+		z = CHUNK_Z + z;
+	cout << "Block:  (" << x << ", " << y << ", " << z << ")" << endl;
+	cout << "View vector: "<< this->camera.GetViewVector().x << " " <<
+	this->camera.GetViewVector().y << " " << this->camera.GetViewVector().z << endl;
+
+	glm::vec3 currentCheck = this->getPosition();
+	glm::vec3 currentView = this->camera.GetViewVector();
+	int ctr = 0;
+
+	while (ctr < 20)
+	{
+		cout << "Current check(s): "<< (int)currentCheck.x << " " <<
+		(int)currentCheck.y << " " << (int)currentCheck.z << " floats: " << currentCheck.x << " "
+		<< currentCheck.y << " " << currentCheck.z << endl;
+		
+		// need to implement a way to do checks where i only subtract certain axis's line bresenham
+		if (this->getChunk()->getBlock(round(currentCheck.x),round(currentCheck.y),round(currentCheck.z)) &&
+			this->getChunk()->getBlock(round(currentCheck.x),round(currentCheck.y),round(currentCheck.z))->getType()!=0)
+		{
+			this->getChunk()->getBlock(round(currentCheck.x),round(currentCheck.y),round(currentCheck.z))->setType(0);
+			this->getChunk()->update();
+			break;
+		}
+		currentCheck.x -= currentView.x/10.0f;
+		currentCheck.y -= currentView.y/10.0f;
+		currentCheck.z -= currentView.z/10.0f;
+		ctr++;
+	}
+
+
+
+	
+}

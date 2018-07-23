@@ -10,7 +10,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h" // https://github.com/nothings/stb/blob/master/stb_image.h
 
-#define RENDER_RADIUS 15
+#define RENDER_RADIUS 14
 
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
@@ -48,23 +48,16 @@ int main(void)
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // turn on mouse capturing
 	glfwSetCursorPosCallback(window, mouse_callback); // calls mouse_callback every time mouse moves
 	glfwSetScrollCallback(window, scroll_callback); // calls scroll_callback every time scrolling happens
+	glfwSetMouseButtonCallback(window, mouse_button_callback);
 	glEnable(GL_DEPTH_TEST); // turn on z buffering
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
 	// glEnable(GL_CULL_FACE); // face culling only renders visible faces of closed shapes ie. cube (needs speed testing to determine if worth)
 
 	// // build and compile our shader program
 	Shader cubeShader("../resources/shaders/cube.vs", "../resources/shaders/cube.fs");
-	// unsigned int grassTexture = loadTexture("../resources/textures/grass.png");
-	// unsigned int sandTexture = loadTexture("../resources/textures/sand.png");
-	// unsigned int snowTexture = loadTexture("../resources/textures/snow.jpeg");
-	// unsigned int waterTexture = loadTexture("../resources/textures/water.jpeg");
 	unsigned int atlas = loadTexture("../resources/textures/atlas2.png");
 
 	cubeShader.use();
-	// cubeShader.setInt("grassTexture", 0);
-	// cubeShader.setInt("sandTexture", 1);
-	// cubeShader.setInt("snowTexture", 2);
-	// cubeShader.setInt("waterTexture", 3);
 	cubeShader.setInt("atlas", 0);
 
 	for (int i = -3; i <= 3; i++)
@@ -90,15 +83,7 @@ int main(void)
 		glClearColor(0.5f, 0.8f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// bind textures on corresponding texture units
-		// glActiveTexture(GL_TEXTURE0);
-		// glBindTexture(GL_TEXTURE_2D, grassTexture);
-		// glActiveTexture(GL_TEXTURE1);
-		// glBindTexture(GL_TEXTURE_2D, sandTexture);
-		// glActiveTexture(GL_TEXTURE2);
-		// glBindTexture(GL_TEXTURE_2D, snowTexture);
-		// glActiveTexture(GL_TEXTURE3);
-		// glBindTexture(GL_TEXTURE_2D, waterTexture);
+		// texture atlas binding
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, atlas);
 
@@ -151,6 +136,13 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	lastY = ypos;
 
 	player.camera.ProcessMouseMovement(xoffset, yoffset);
+}
+
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+	int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
+	if (state == GLFW_PRESS)
+		player.mouseClickEvent();
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)

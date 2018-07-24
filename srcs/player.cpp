@@ -101,44 +101,11 @@ void Player::mouseClickEvent()
 		x = CHUNK_X + x;
 	if (z < 0)
 		z = CHUNK_Z + z;
-	cout << "Block:	(" << x << ", " << y << ", " << z << ")" << endl;
-	cout << "Player: (" << current.x << ", " << current.y << ", " << current.z << ")" << endl;
-	cout << "View vector: "<< this->camera.GetViewVector().x << " " <<
-	this->camera.GetViewVector().y << " " << this->camera.GetViewVector().z << endl;
-
-	// glm::vec3 current = this->getPosition();
+	// cout << "Block:	(" << x << ", " << y << ", " << z << ")" << endl;
+	// cout << "Player: (" << current.x << ", " << current.y << ", " << current.z << ")" << endl;
+	// cout << "View vector: "<< this->camera.GetViewVector().x << " " <<
+	// this->camera.GetViewVector().y << " " << this->camera.GetViewVector().z << endl;
 	glm::vec3 currentView = this->camera.GetViewVector();
-
-	// float tMaxX, tMaxY, tMaxZ; // distance to edge of current voxel
-	// int stepX, stepY, stepZ; // -1 or 1 depending on direction
-	// float tDeltaX, tDeltaY, tDeltaZ; // change in
-
-	// int X = (int)floor(current.x) % CHUNK_X;
-	// int Y = floor(current.y);
-	// int Z = (int)floor(current.z) % CHUNK_Z;
-
-	// int stepX = currentView.x >= 0 ? 1 : -1;
-	// int stepY = currentView.y >= 0 ? 1 : -1;
-	// int stepZ = currentView.z >= 0 ? 1 : -1;
-
-	// float next_voxel_boundary_x = (X+stepX);
-	// float next_voxel_boundary_y = (Y+stepY);
-	// float next_voxel_boundary_z = (Z+stepZ);
-
-	// // float tMaxX = (stepX == 1) ? ceil(current.x) - current.x : current.x - floor(current.x);
-	// // float tMaxY = (stepY == 1) ? ceil(current.y) - current.y : current.y - floor(current.y);
-	// // float tMaxZ = (stepZ == 1) ? ceil(current.z) - current.z : current.z - floor(current.z);
-	// float tMaxX = (next_voxel_boundary_x - X)/currentView.x;
-	// float tMaxY = (next_voxel_boundary_y - Y)/currentView.y;
-	// float tMaxZ = (next_voxel_boundary_z - Z)/currentView.z;
-
-
-	// // float tDeltaX = stepX/currentView.x;
-	// // float tDeltaY = stepY/currentView.y;
-	// // float tDeltaZ = stepZ/currentView.z;
-	// double tDeltaX = 1.0f/currentView.x*stepX;
-	// double tDeltaY = 1.0f/currentView.y*stepY;
-	// double tDeltaZ = 1.0f/currentView.z*stepZ;
 
 	float _bin_size = 1.0f;
 
@@ -177,11 +144,11 @@ void Player::mouseClickEvent()
 	float tDeltaY = _bin_size/ray.y*stepY;
 	float tDeltaZ = _bin_size/ray.z*stepZ;
 
-	cout << "Current_voxel" << current_voxel.x << " " << current_voxel.y << " " << current_voxel.z << endl;
-	cout << "Steps:" << stepX <<" "<<stepY<<" "<<stepZ<<endl;
-	cout << "Next boundary:"<<next_voxel_boundary_x<<" "<<next_voxel_boundary_y<<" "<<next_voxel_boundary_z<<endl;
-	cout << "tMaxs:"<< tMaxX << " " << tMaxY << " " << tMaxZ << endl;
-	cout << "tDeltas:"<<tDeltaX<<" "<<tDeltaY<< " " << tDeltaZ << endl;
+	// cout << "Current_voxel" << current_voxel.x << " " << current_voxel.y << " " << current_voxel.z << endl;
+	// cout << "Steps:" << stepX <<" "<<stepY<<" "<<stepZ<<endl;
+	// cout << "Next boundary:"<<next_voxel_boundary_x<<" "<<next_voxel_boundary_y<<" "<<next_voxel_boundary_z<<endl;
+	// cout << "tMaxs:"<< tMaxX << " " << tMaxY << " " << tMaxZ << endl;
+	// cout << "tDeltas:"<<tDeltaX<<" "<<tDeltaY<< " " << tDeltaZ << endl;
 
 
 
@@ -217,10 +184,10 @@ void Player::mouseClickEvent()
 			b = this->getChunk()->getBlock(current_voxel.x,current_voxel.y,current_voxel.z);
 			ctr++;
 		}
-	} while ((!b || b->getType() == 0) && ctr < 20);
-	if (b && b->getType()!=0)
+	} while ((!b || !b->isActive()) && ctr < 20);
+	if (b && b->isActive())
 	{
-		cout << "FOUND " << current_voxel.x << " " << current_voxel.y << " " << current_voxel.z << endl;
+		// cout << "FOUND " << current_voxel.x << " " << current_voxel.y << " " << current_voxel.z << endl;
 		b->setType(0);
 		this->getChunk()->update();
 	}

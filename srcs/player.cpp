@@ -116,9 +116,6 @@ void Player::mouseClickEvent()
 
 	// Compute normalized ray direction.
 	glm::vec3 ray = this->camera.GetViewVector();
-	ray.x = -ray.x;
-	ray.y = -ray.y;
-	ray.z = -ray.z;
 
 	// In which direction the voxel ids are incremented.
 	int stepX = (ray.x >= 0) ? 1:-1;
@@ -150,9 +147,46 @@ void Player::mouseClickEvent()
 	// cout << "tMaxs:"<< tMaxX << " " << tMaxY << " " << tMaxZ << endl;
 	// cout << "tDeltas:"<<tDeltaX<<" "<<tDeltaY<< " " << tDeltaZ << endl;
 
-
-
-	Block *b = NULL;
+	glm::ivec3 diff(0,0,0);
+	bool neg = false;
+	if (ray.x < 0)
+	{
+		diff.x--;
+		neg = true;
+	}
+	if (ray.y < 0)
+	{
+		diff.y++;
+		neg = true;
+	}
+	if (ray.z < 0)
+	{
+		diff.z--;
+		neg = true;
+	}
+	
+	Block *b = this->getChunk()->getBlock(current_voxel.x,current_voxel.y,current_voxel.z);
+	if (b && b->isActive())
+	{
+		// cout << "EARLY FIND1" << endl;
+		// cout << "FOUND " << current_voxel.x << " " << current_voxel.y << " " << current_voxel.z << endl;
+		b->setType(0);
+		this->getChunk()->update();
+		return;
+	}
+	if (neg)
+	{
+		current_voxel += diff;
+		b = this->getChunk()->getBlock(current_voxel.x,current_voxel.y,current_voxel.z);
+		if (b && b->isActive())
+		{
+			// cout << "EARLY FIND2" << endl;
+			// cout << "FOUND " << current_voxel.x << " " << current_voxel.y << " " << current_voxel.z << endl;
+			b->setType(0);
+			this->getChunk()->update();
+			return;
+		}
+	}
 	int ctr = 0;
 	do
 	{

@@ -60,7 +60,7 @@ public:
     inline glm::vec3 GetViewVector()
     {
         glm::mat4 matInverseView = glm::inverse(this->GetViewMatrix());
-        return (glm::vec3(matInverseView[2][0], matInverseView[2][1], matInverseView[2][2]));
+        return (glm::vec3(-matInverseView[2][0], -matInverseView[2][1], -matInverseView[2][2]));
     }
 
     inline glm::vec3 GetPosition() { return this->Position; }

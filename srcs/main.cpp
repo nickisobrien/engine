@@ -32,7 +32,7 @@ int main(void)
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 #ifdef __APPLE__
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
 	// glfw window creation
@@ -53,7 +53,7 @@ int main(void)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
 	// glEnable(GL_CULL_FACE); // face culling only renders visible faces of closed shapes ie. cube (needs speed testing to determine if worth)
 
-	// // build and compile our shader program
+	// build and compile our shader program
 	Shader cubeShader("../resources/shaders/cube.vs", "../resources/shaders/cube.fs");
 	unsigned int atlas = loadTexture("../resources/textures/atlas2.png");
 
@@ -93,7 +93,7 @@ int main(void)
 		cubeShader.use();
 		glm::mat4 projection = glm::perspective(glm::radians(player.camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 500.0f);
 		glm::mat4 view = player.camera.GetViewMatrix();
-		view = glm::translate(view, glm::vec3(0.0f, -2.0f, 0.0f));
+		// view = glm::translate(view, glm::vec3(0.0f, -2.0f, 0.0f));
 		cubeShader.setMat4("projection", projection);
 		cubeShader.setMat4("view", view);
 

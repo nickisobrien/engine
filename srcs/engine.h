@@ -18,8 +18,8 @@
 #include <glm/gtx/hash.hpp>
 #include <unordered_map>
 
-#define WIDTH 800
-#define HEIGHT 600
+#define WIDTH 720
+#define HEIGHT 480
 
 // #define WIDTH 1280
 // #define HEIGHT 720

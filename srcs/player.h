@@ -4,7 +4,6 @@
 #include "camera.h"
 #include "chunk.h"
 #include "terrain.h"
-#include "ray.h"
 
 class Player
 {

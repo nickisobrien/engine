@@ -17,10 +17,27 @@ void Player::processInput(GLFWwindow *window, float deltaTime)
 		this->camera.ProcessKeyboard(RIGHT, deltaTime, this->getChunk());
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 		this->jump();
-	// if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
-	// {
-	// 	this->getChunk()->update();
-	// }
+
+	// DEBUGGERS
+	if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
+		this->getChunk()->update();
+	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+		cout << "Player position: (" << this->getPosition().x << ", " << this->getPosition().y << ", " << this->getPosition().z << ") " << endl;
+	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
+	{
+		glm::vec3 current = this->getPosition();
+		int x = (int)floor(current.x) % CHUNK_X;
+		int y = floor(current.y);
+		int z = (int)floor(current.z) % CHUNK_Z;
+		if (x < 0)
+			x = CHUNK_X + x;
+		if (z < 0)
+			z = CHUNK_Z + z;
+
+		cout << "Block:	(" << x << ", " << y << ", " << z << ")" << endl;
+	}
+
+
 
 	glm::vec3 newPos = this->getPosition();
 
@@ -35,7 +52,7 @@ void Player::processInput(GLFWwindow *window, float deltaTime)
 	Chunk *c;
 	if ((c = this->getChunk()) != NULL)
 	{
-		Block *b = c->getBlock(x,y,z);
+		Block *b = c->getBlock(x,y-2,z);
 		if (b != NULL && b->isActive())
 		{
 			b = c->getBlock(x, y+1, z);
@@ -68,9 +85,7 @@ bool Player::isGrounded()
 	if (z < 0)
 		z = CHUNK_Z + z;
 
-	// cout << "Block:	(" << x << ", " << y << ", " << z << ")" << endl;
-	// cout << "Player: (" << current.x << ", " << current.y << ", " << current.z << ")" << endl;
-	Block *b = getChunk()->getBlock(x,y-1,z);
+	Block *b = getChunk()->getBlock(x,y-3,z);
 	if (b != NULL && (b->isActive()))
 		return (true);
 	return (false);
@@ -91,55 +106,81 @@ void Player::applyGravity(float time)
 	this->setPosition(current);
 }
 
+int signum(int x)
+{
+		return x == 0 ? 0 : x < 0 ? -1 : 1;
+}
+
+float mod(float value, float modulus)
+{
+	return fmod(fmod(value, modulus) + modulus,	modulus);
+}
+
+float intbound(float s, float ds)
+{
+	// Find the smallest positive t such that s+t*ds is an integer.
+	if (ds < 0)
+	{
+		return intbound(-s, -ds);
+	}
+	else
+	{
+		s = mod(s, 1);
+		// problem is now s+t*ds = 1
+		return (1-s)/ds;
+	}
+}
+
 void Player::mouseClickEvent()
 {
 	glm::vec3 current = this->getPosition();
 	int x = (int)floor(current.x) % CHUNK_X;
 	int y = floor(current.y);
 	int z = (int)floor(current.z) % CHUNK_Z;
-	if (x < 0)
-		x = CHUNK_X + x;
-	if (z < 0)
-		z = CHUNK_Z + z;
+	// if (x < 0)
+	// 	x = CHUNK_X + x;
+	// if (z < 0)
+	// 	z = CHUNK_Z + z;
 	// cout << "Block:	(" << x << ", " << y << ", " << z << ")" << endl;
 	// cout << "Player: (" << current.x << ", " << current.y << ", " << current.z << ")" << endl;
 	// cout << "View vector: "<< this->camera.GetViewVector().x << " " <<
 	// this->camera.GetViewVector().y << " " << this->camera.GetViewVector().z << endl;
 	glm::vec3 currentView = this->camera.GetViewVector();
 
-	float _bin_size = 1.0f;
-
 	// This id of the first/current voxel hit by the ray.
 	// Using floor (round down) is actually very important,
 	// the implicit int-casting will round up for negative numbers.
-	glm::ivec3 current_voxel((int)floor(current.x) % CHUNK_X, floor(current.y), (int)floor(current.z) % CHUNK_Z);
+	glm::ivec3 current_voxel(x, y, z);
 
 	// Compute normalized ray direction.
 	glm::vec3 ray = this->camera.GetViewVector();
 
 	// In which direction the voxel ids are incremented.
-	int stepX = (ray.x >= 0) ? 1:-1;
-	int stepY = (ray.y >= 0) ? 1:-1;
-	int stepZ = (ray.z >= 0) ? 1:-1;
+	int stepX = ray.x > 0.0f ? 1 : ray.x < 0.0f ? -1 : 0;
+	int stepY = ray.y > 0.0f ? 1 : ray.y < 0.0f ? -1 : 0;
+	int stepZ = ray.z > 0.0f ? 1 : ray.z < 0.0f ? -1 : 0;
 
 	// Distance along the ray to the next voxel border from the current position (tMaxX, tMaxY, tMaxZ).
-	float next_voxel_boundary_x = (current_voxel.x+stepX)*_bin_size;
-	float next_voxel_boundary_y = (current_voxel.y+stepY)*_bin_size;
-	float next_voxel_boundary_z = (current_voxel.z+stepZ)*_bin_size;
+	// float next_voxel_boundary_x = (current_voxel.x+stepX);
+	// float next_voxel_boundary_y = (current_voxel.y+stepY);
+	// float next_voxel_boundary_z = (current_voxel.z+stepZ);
 
 	// tMaxX, tMaxY, tMaxZ -- distance until next intersection with voxel-border
 	// the value of t at which the ray crosses the first vertical voxel boundary
-	float tMaxX = (next_voxel_boundary_x - current.x) / ray.x;
-	float tMaxY = (next_voxel_boundary_y - current.y) / ray.y;
-	float tMaxZ = (next_voxel_boundary_z - current.z) / ray.z;
+	// float tMaxX = (next_voxel_boundary_x - current.x) / ray.x;
+	// float tMaxY = (next_voxel_boundary_y - current.y) / ray.y;
+	// float tMaxZ = (next_voxel_boundary_z - current.z) / ray.z;
+	float tMaxX = intbound(current.x,ray.x);
+	float tMaxY = intbound(current.y,ray.y);
+	float tMaxZ = intbound(current.z,ray.z);
 
 	// tDeltaX, tDeltaY, tDeltaZ --
 	// how far along the ray we must move for the horizontal component to equal the width of a voxel
 	// the direction in which we traverse the grid
 	// can only be FLT_MAX if we never go in that direction
-	float tDeltaX = _bin_size/ray.x*stepX;
-	float tDeltaY = _bin_size/ray.y*stepY;
-	float tDeltaZ = _bin_size/ray.z*stepZ;
+	float tDeltaX = ((float)stepX) / ray.x;
+    float tDeltaY = ((float)stepY) / ray.y;
+    float tDeltaZ = ((float)stepZ) / ray.z;
 
 	// cout << "Current_voxel" << current_voxel.x << " " << current_voxel.y << " " << current_voxel.z << endl;
 	// cout << "Steps:" << stepX <<" "<<stepY<<" "<<stepZ<<endl;
@@ -147,45 +188,12 @@ void Player::mouseClickEvent()
 	// cout << "tMaxs:"<< tMaxX << " " << tMaxY << " " << tMaxZ << endl;
 	// cout << "tDeltas:"<<tDeltaX<<" "<<tDeltaY<< " " << tDeltaZ << endl;
 
-	glm::ivec3 diff(0,0,0);
-	bool neg = false;
-	if (ray.x < 0)
-	{
-		diff.x--;
-		neg = true;
-	}
-	if (ray.y < 0)
-	{
-		diff.y++;
-		neg = true;
-	}
-	if (ray.z < 0)
-	{
-		diff.z--;
-		neg = true;
-	}
-	
 	Block *b = this->getChunk()->getBlock(current_voxel.x,current_voxel.y,current_voxel.z);
 	if (b && b->isActive())
 	{
-		// cout << "EARLY FIND1" << endl;
-		// cout << "FOUND " << current_voxel.x << " " << current_voxel.y << " " << current_voxel.z << endl;
 		b->setType(0);
 		this->getChunk()->update();
 		return;
-	}
-	if (neg)
-	{
-		current_voxel += diff;
-		b = this->getChunk()->getBlock(current_voxel.x,current_voxel.y,current_voxel.z);
-		if (b && b->isActive())
-		{
-			// cout << "EARLY FIND2" << endl;
-			// cout << "FOUND " << current_voxel.x << " " << current_voxel.y << " " << current_voxel.z << endl;
-			b->setType(0);
-			this->getChunk()->update();
-			return;
-		}
 	}
 	int ctr = 0;
 	do
@@ -215,40 +223,15 @@ void Player::mouseClickEvent()
 				current_voxel.z += stepZ;
 				tMaxZ += tDeltaZ;
 			}
-			b = this->getChunk()->getBlock(current_voxel.x,current_voxel.y,current_voxel.z);
-			ctr++;
 		}
-	} while ((!b || !b->isActive()) && ctr < 20);
+		b = this->getChunk()->getBlock(current_voxel.x,current_voxel.y,current_voxel.z);
+		ctr++;
+	} while ((!b || !b->isActive()) && ctr < 10);
 	if (b && b->isActive())
 	{
 		// cout << "FOUND " << current_voxel.x << " " << current_voxel.y << " " << current_voxel.z << endl;
 		b->setType(0);
 		this->getChunk()->update();
 	}
-
-
-	// int ctr = 0;
-	// while (ctr < 20)
-	// {
-	// 	cout << "Current check(s): "<< (int)currentCheck.x << " " <<
-	// 	(int)currentCheck.y << " " << (int)currentCheck.z << " floats: " << currentCheck.x << " "
-	// 	<< currentCheck.y << " " << currentCheck.z << endl;
-		
-	// 	// need to implement a way to do checks where i only subtract certain axis's line bresenham
-	// 	if (this->getChunk()->getBlock(round(currentCheck.x),round(currentCheck.y),round(currentCheck.z)) &&
-	// 		this->getChunk()->getBlock(round(currentCheck.x),round(currentCheck.y),round(currentCheck.z))->getType()!=0)
-	// 	{
-	// 		this->getChunk()->getBlock(round(currentCheck.x),round(currentCheck.y),round(currentCheck.z))->setType(0);
-	// 		this->getChunk()->update();
-	// 		break;
-	// 	}
-	// 	currentCheck.x -= currentView.x/10.0f;
-	// 	currentCheck.y -= currentView.y/10.0f;
-	// 	currentCheck.z -= currentView.z/10.0f;
-	// 	ctr++;
-	// }
-
-
-
 	
 }

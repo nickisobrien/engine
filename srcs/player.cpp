@@ -135,7 +135,6 @@ void Player::mouseClickEvent()
 {
 
 	// block traversal algorithm http://www.cse.yorku.ca/~amana/research/grid.pdf
-
 	glm::vec3 current = this->getPosition();
 	glm::vec3 currentView = this->camera.GetViewVector();
 	glm::ivec3 current_voxel((int)floor(current.x) % CHUNK_X,
@@ -166,16 +165,10 @@ void Player::mouseClickEvent()
 	float tDeltaX = ((float)stepX) / ray.x;
 	float tDeltaY = ((float)stepY) / ray.y;
 	float tDeltaZ = ((float)stepZ) / ray.z;
-
-	Block *b = this->getChunk()->getBlock(current_voxel.x,current_voxel.y,current_voxel.z);
-	if (b && b->isActive())
-	{
-		b->setType(0);
-		this->getChunk()->update();
-		return;
-	}
+	
 	int ctr = 0;
-	do
+	Block *b = this->getChunk()->getBlock(current_voxel.x,current_voxel.y,current_voxel.z);
+	while ((!b || !b->isActive()) && ctr < 10)
 	{
 		if (tMaxX < tMaxY)
 		{
@@ -205,11 +198,10 @@ void Player::mouseClickEvent()
 		}
 		b = this->getChunk()->getBlock(current_voxel.x,current_voxel.y,current_voxel.z);
 		ctr++;
-	} while ((!b || !b->isActive()) && ctr < 10);
+	}
 	if (b && b->isActive())
 	{
 		b->setType(0);
 		this->getChunk()->update();
 	}
-	
 }

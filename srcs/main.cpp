@@ -14,9 +14,6 @@
 
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
-
-// camera
-// Camera camera(glm::vec3(0.0f, (float)CHUNK_Y, 0.0f));
 float lastX = WIDTH / 2.0f;
 float lastY = HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -108,8 +105,6 @@ int main(void)
 				terr.renderChunk(glm::ivec2(cx + i, cz + j), cubeShader);
 			}
 		}
-
-		
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);
 		glfwPollEvents();

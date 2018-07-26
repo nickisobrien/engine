@@ -106,17 +106,17 @@ void Player::applyGravity(float time)
 	this->setPosition(current);
 }
 
-int signum(int x)
+static int signum(int x)
 {
 		return x == 0 ? 0 : x < 0 ? -1 : 1;
 }
 
-float mod(float value, float modulus)
+static float mod(float value, float modulus)
 {
 	return fmod(fmod(value, modulus) + modulus,	modulus);
 }
 
-float intbound(float s, float ds)
+static float intbound(float s, float ds)
 {
 	// Find the smallest positive t such that s+t*ds is an integer.
 	if (ds < 0)
@@ -133,60 +133,39 @@ float intbound(float s, float ds)
 
 void Player::mouseClickEvent()
 {
+
+	// block traversal algorithm http://www.cse.yorku.ca/~amana/research/grid.pdf
+
 	glm::vec3 current = this->getPosition();
-	int x = (int)floor(current.x) % CHUNK_X;
-	int y = floor(current.y);
-	int z = (int)floor(current.z) % CHUNK_Z;
-	// if (x < 0)
-	// 	x = CHUNK_X + x;
-	// if (z < 0)
-	// 	z = CHUNK_Z + z;
-	// cout << "Block:	(" << x << ", " << y << ", " << z << ")" << endl;
-	// cout << "Player: (" << current.x << ", " << current.y << ", " << current.z << ")" << endl;
-	// cout << "View vector: "<< this->camera.GetViewVector().x << " " <<
-	// this->camera.GetViewVector().y << " " << this->camera.GetViewVector().z << endl;
 	glm::vec3 currentView = this->camera.GetViewVector();
+	glm::ivec3 current_voxel((int)floor(current.x) % CHUNK_X,
+							floor(current.y),
+							(int)floor(current.z) % CHUNK_Z);
+	if (current_voxel.x < 0)
+		current_voxel.x = CHUNK_X + current_voxel.x;
+	if (current_voxel.z < 0)
+		current_voxel.z = CHUNK_Z + current_voxel.z;
 
-	// This id of the first/current voxel hit by the ray.
-	// Using floor (round down) is actually very important,
-	// the implicit int-casting will round up for negative numbers.
-	glm::ivec3 current_voxel(x, y, z);
-
-	// Compute normalized ray direction.
+	// normalized ray direction.
 	glm::vec3 ray = this->camera.GetViewVector();
 
-	// In which direction the voxel ids are incremented.
+	// in which direction the voxel ids are incremented.
 	int stepX = ray.x > 0.0f ? 1 : ray.x < 0.0f ? -1 : 0;
 	int stepY = ray.y > 0.0f ? 1 : ray.y < 0.0f ? -1 : 0;
 	int stepZ = ray.z > 0.0f ? 1 : ray.z < 0.0f ? -1 : 0;
 
-	// Distance along the ray to the next voxel border from the current position (tMaxX, tMaxY, tMaxZ).
-	// float next_voxel_boundary_x = (current_voxel.x+stepX);
-	// float next_voxel_boundary_y = (current_voxel.y+stepY);
-	// float next_voxel_boundary_z = (current_voxel.z+stepZ);
-
-	// tMaxX, tMaxY, tMaxZ -- distance until next intersection with voxel-border
+	// distance until next intersection with voxel-border
 	// the value of t at which the ray crosses the first vertical voxel boundary
-	// float tMaxX = (next_voxel_boundary_x - current.x) / ray.x;
-	// float tMaxY = (next_voxel_boundary_y - current.y) / ray.y;
-	// float tMaxZ = (next_voxel_boundary_z - current.z) / ray.z;
 	float tMaxX = intbound(current.x,ray.x);
 	float tMaxY = intbound(current.y,ray.y);
 	float tMaxZ = intbound(current.z,ray.z);
 
-	// tDeltaX, tDeltaY, tDeltaZ --
+	// tDeltaX, tDeltaY, tDeltaZ
 	// how far along the ray we must move for the horizontal component to equal the width of a voxel
 	// the direction in which we traverse the grid
-	// can only be FLT_MAX if we never go in that direction
 	float tDeltaX = ((float)stepX) / ray.x;
-    float tDeltaY = ((float)stepY) / ray.y;
-    float tDeltaZ = ((float)stepZ) / ray.z;
-
-	// cout << "Current_voxel" << current_voxel.x << " " << current_voxel.y << " " << current_voxel.z << endl;
-	// cout << "Steps:" << stepX <<" "<<stepY<<" "<<stepZ<<endl;
-	// cout << "Next boundary:"<<next_voxel_boundary_x<<" "<<next_voxel_boundary_y<<" "<<next_voxel_boundary_z<<endl;
-	// cout << "tMaxs:"<< tMaxX << " " << tMaxY << " " << tMaxZ << endl;
-	// cout << "tDeltas:"<<tDeltaX<<" "<<tDeltaY<< " " << tDeltaZ << endl;
+	float tDeltaY = ((float)stepY) / ray.y;
+	float tDeltaZ = ((float)stepZ) / ray.z;
 
 	Block *b = this->getChunk()->getBlock(current_voxel.x,current_voxel.y,current_voxel.z);
 	if (b && b->isActive())
@@ -229,7 +208,6 @@ void Player::mouseClickEvent()
 	} while ((!b || !b->isActive()) && ctr < 10);
 	if (b && b->isActive())
 	{
-		// cout << "FOUND " << current_voxel.x << " " << current_voxel.y << " " << current_voxel.z << endl;
 		b->setType(0);
 		this->getChunk()->update();
 	}

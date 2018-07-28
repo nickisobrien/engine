@@ -16,7 +16,7 @@ void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime, Chunk *
         Position += glm::vec3(Right.x, 0.0f, Right.z) * velocity;
     // Position.y = y;
 
-
+    // DEBUGGING CAMERA MODE
     // if (direction == FORWARD)
     //     Position += glm::vec3(Front.x, Front.y, Front.z) * velocity;
     // if (direction == BACKWARD)

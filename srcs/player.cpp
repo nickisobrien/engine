@@ -131,7 +131,7 @@ static float intbound(float s, float ds)
 	}
 }
 
-void Player::mouseClickEvent()
+void Player::leftMouseClickEvent()
 {
 
 	// block traversal algorithm http://www.cse.yorku.ca/~amana/research/grid.pdf
@@ -166,9 +166,10 @@ void Player::mouseClickEvent()
 	float tDeltaY = ((float)stepY) / ray.y;
 	float tDeltaZ = ((float)stepZ) / ray.z;
 	
-	int ctr = 0;
-	Block *b = this->getChunk()->getBlock(current_voxel.x,current_voxel.y,current_voxel.z);
-	while ((!b || !b->isActive()) && ctr < 10)
+	int breakDist = 0;
+	Chunk *c = this->getChunk();
+	Block *b = c->getBlock(current_voxel.x,current_voxel.y,current_voxel.z);
+	while ((!b || !b->isActive()) && breakDist < 10)
 	{
 		if (tMaxX < tMaxY)
 		{
@@ -196,12 +197,48 @@ void Player::mouseClickEvent()
 				tMaxZ += tDeltaZ;
 			}
 		}
-		b = this->getChunk()->getBlock(current_voxel.x,current_voxel.y,current_voxel.z);
-		ctr++;
+
+		// Chunk boundry
+		if (current_voxel.x < 0)
+		{
+			c = c->getXMinus();
+			current_voxel.x = CHUNK_X + current_voxel.x;
+		}
+		else if (current_voxel.x >= CHUNK_X)
+		{
+			c = c->getXPlus();
+			current_voxel.x -= CHUNK_X;
+		}
+
+		if (current_voxel.z < 0)
+		{
+			c = c->getZMinus();
+			current_voxel.z = CHUNK_Z + current_voxel.z;
+		}
+		else if (current_voxel.z >= CHUNK_Z)
+		{
+			c = c->getZPlus();
+			current_voxel.z -= CHUNK_Z;
+		}
+
+
+
+		b = c->getBlock(current_voxel.x,current_voxel.y,current_voxel.z);
+		breakDist++;
 	}
 	if (b && b->isActive())
 	{
 		b->setType(0);
-		this->getChunk()->update();
+		c->update();
+		if (current_voxel.x == 0)
+			c->getXMinus()->update();
+		if (current_voxel.x == CHUNK_X-1)
+			c->getXPlus()->update();
+		if (current_voxel.z == 0)
+			c->getZMinus()->update();
+		if (current_voxel.z == CHUNK_Z-1)
+			c->getZPlus()->update();
+		
+
 	}
 }

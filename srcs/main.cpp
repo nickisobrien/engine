@@ -90,7 +90,6 @@ int main(void)
 		cubeShader.use();
 		glm::mat4 projection = glm::perspective(glm::radians(player.camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 500.0f);
 		glm::mat4 view = player.camera.GetViewMatrix();
-		// view = glm::translate(view, glm::vec3(0.0f, -2.0f, 0.0f));
 		cubeShader.setMat4("projection", projection);
 		cubeShader.setMat4("view", view);
 
@@ -137,7 +136,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
 	int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
 	if (state == GLFW_PRESS)
-		player.mouseClickEvent();
+		player.leftMouseClickEvent();
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)

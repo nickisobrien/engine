@@ -18,11 +18,11 @@
 #include <glm/gtx/hash.hpp>
 #include <unordered_map>
 
-#define WIDTH 720
-#define HEIGHT 480
+// #define WIDTH 720
+// #define HEIGHT 480
 
-// #define WIDTH 1280
-// #define HEIGHT 720
+#define WIDTH 1280
+#define HEIGHT 720
 #define MAP(VAL,A,B,AA,BB) ((VAL - A) / (B - A)) * (BB - AA) + AA;
 #define ATLAS_SIZE 256
 #define TEXTURE_SIZE 16

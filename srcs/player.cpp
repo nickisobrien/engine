@@ -230,6 +230,7 @@ void Player::leftMouseClickEvent()
 	{
 		b->setType(0);
 		c->update();
+		// edge blocks broken require neighbor chunk updates too
 		if (current_voxel.x == 0)
 			c->getXMinus()->update();
 		if (current_voxel.x == CHUNK_X-1)

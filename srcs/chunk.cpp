@@ -1,7 +1,7 @@
 #include "engine.h"
 #include "chunk.h"
 
-#define WATER_BLOCK 9
+#define WATER_BLOCK 15
 #define AIR_BLOCK 0
 
 Chunk::Chunk(int xoff, int zoff)
@@ -63,7 +63,7 @@ void Chunk::render(Shader shader)
 	glDrawArrays(GL_TRIANGLES, 0, points.size());
 }
 
-void Chunk::setTerrain(FastNoise terrainNoise, FastNoise biomeNoise)
+void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastNoise humidityNoise)
 {
 	for (int x = 0; x < CHUNK_X; x++)
 	{
@@ -71,16 +71,10 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise biomeNoise)
 		{
 			// Use the noise library to get the height value of x, z
 			int height = MAP(terrainNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
-			float biome = biomeNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
+			float temp = temperatureNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
+			float hum = humidityNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
 			for (int y = 0; y < height; y++)
 			{
-				if (biome < -0.33f)
-					this->blocks[x][y][z].setType(8); //sand
-				else if (biome < 0.33f)
-					this->blocks[x][y][z].setType(1); //grass
-				else
-					this->blocks[x][y][z].setType(4); //rock/snow
-
 				/*
 					noise layer #1 "Temperature"
 					noise layer #2 "Humidity"
@@ -92,6 +86,28 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise biomeNoise)
 					Temp > 66%	 		Humidity < 50% => Dessert
 					Temp > 66%	 		Humidity > 50% => Tropical rainforest
 				*/
+
+				if (temp < -0.33f)
+				{
+					if (hum < 0.0f)
+						this->blocks[x][y][z].setType(195);
+					else
+						this->blocks[x][y][z].setType(83);
+				}
+				else if (temp >= -0.33f && temp >= 0.33f)
+				{
+					if (hum < 0.0f)
+						this->blocks[x][y][z].setType(162);
+					else
+						this->blocks[x][y][z].setType(3);
+				}
+				else
+				{
+					if (hum < 0.0f)
+						this->blocks[x][y][z].setType(179);
+					else
+						this->blocks[x][y][z].setType(37);
+				}
 			}
 			for (int y = height; y < 52; y++)
 				this->blocks[x][y][z].setType(WATER_BLOCK);
@@ -226,6 +242,8 @@ void Chunk::buildVAO(void)
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)(0));
 	glEnableVertexAttribArray(1);
 
+	// texture type
+
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 }
@@ -254,12 +272,15 @@ void Chunk::addFace(int face, int x, int y, int z, int val)
 		points.push_back(vec);
 	}
 
+	int xtype = blocks[x][y][z].getType() - 1 % 16;
+	int ytype = blocks[x][y][z].getType() / 17;
 	for (int i = oneFaceUV * face; i < oneFaceUV * u; i += 2)
 	{
 		glm::vec2 vec = glm::make_vec2(&CUBEUV[i]);
 		vec.x /= 16;
-		vec.x += 0.0625 * (blocks[x][y][z].getType() - 1);
+		vec.x += 0.0625 * (xtype);
 		vec.y /= 16;
+		vec.y += 0.0625 * (ytype);
 		uvs.push_back(vec);
 	}
 
@@ -267,8 +288,9 @@ void Chunk::addFace(int face, int x, int y, int z, int val)
 	{
 		glm::vec2 vec = glm::make_vec2(&CUBEUV[i]);
 		vec.x /= 16;
-		vec.x += 0.0625 * (blocks[x][y][z].getType() - 1);
+		vec.x += 0.0625 * (xtype);
 		vec.y /= 16;
+		vec.y += 0.0625 * (ytype);
 		uvs.push_back(vec);
 	}
 }

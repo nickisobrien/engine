@@ -40,7 +40,7 @@ public:
 	Chunk *getZMinus();
 	Chunk *getZPlus();
 
-	void setTerrain(FastNoise terrainNoise, FastNoise biomeNoise);
+	void setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastNoise humidityNoise);
 	int	getWorld(int x, int y, int z);
 	bool neighborsSet = false;
 	Block *getBlock(int x, int y, int z);

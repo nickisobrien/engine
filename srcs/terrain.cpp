@@ -8,7 +8,7 @@ void Terrain::updateChunk(glm::ivec2 pos)
 	else
 	{
 		this->world[pos] = new Chunk(pos.x, pos.y);
-		this->world[pos]->setTerrain(this->terrainNoise, this->biomeNoise);
+		this->world[pos]->setTerrain(this->terrainNoise, this->temperatureNoise, this->humidityNoise);
 		this->world[pos]->update();
 	}
 }
@@ -33,8 +33,13 @@ void Terrain::setNoise(void)
 	this->terrainNoise.SetNoiseType(FastNoise::PerlinFractal);
 	this->terrainNoise.SetFrequency(0.005f);
 
-	this->biomeNoise.SetNoiseType(FastNoise::Simplex);
-	this->biomeNoise.SetFrequency(0.005f);
+	this->temperatureNoise.SetNoiseType(FastNoise::PerlinFractal);
+	this->temperatureNoise.SetFrequency(0.005f);
+
+	this->humidityNoise.SetNoiseType(FastNoise::PerlinFractal);
+	this->humidityNoise.SetFrequency(0.005f);
+
+
 }
 
 void Terrain::setNeighbors(glm::ivec2 pos)

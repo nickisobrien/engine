@@ -228,6 +228,7 @@ void Player::leftMouseClickEvent()
 	}
 	if (b && b->isActive())
 	{
+		cout << b->getType() << endl;
 		b->setType(0);
 		c->update();
 		// edge blocks broken require neighbor chunk updates too

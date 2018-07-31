@@ -104,9 +104,9 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 				else
 				{
 					if (hum < 0.0f)
-						this->blocks[x][y][z].setType(179);
-					else
 						this->blocks[x][y][z].setType(19);
+					else
+						this->blocks[x][y][z].setType(17);
 				}
 			}
 			for (int y = height; y < 52; y++)

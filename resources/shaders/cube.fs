@@ -2,14 +2,12 @@
 out vec4 FragColor;
 
 in vec2 TexCoord;
-in vec3 pos;
 
 // texture sampler
 uniform sampler2D atlas;
 // uniform sampler2D sandTexture;
 // uniform sampler2D snowTexture;
 // uniform sampler2D waterTexture;
-
 void main()
 {
 	// if (TexCoord.z == 1 && TexCoord.z < 2)

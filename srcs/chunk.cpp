@@ -90,14 +90,14 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 				if (temp < -0.33f)
 				{
 					if (hum < 0.0f)
-						this->blocks[x][y][z].setType(195);
+						this->blocks[x][y][z].setType(67);
 					else
-						this->blocks[x][y][z].setType(83);
+						this->blocks[x][y][z].setType(68);
 				}
 				else if (temp >= -0.33f && temp >= 0.33f)
 				{
 					if (hum < 0.0f)
-						this->blocks[x][y][z].setType(162);
+						this->blocks[x][y][z].setType(4);
 					else
 						this->blocks[x][y][z].setType(3);
 				}
@@ -106,7 +106,7 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 					if (hum < 0.0f)
 						this->blocks[x][y][z].setType(179);
 					else
-						this->blocks[x][y][z].setType(37);
+						this->blocks[x][y][z].setType(19);
 				}
 			}
 			for (int y = height; y < 52; y++)
@@ -117,12 +117,14 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 
 void Chunk::update(void)
 {
-	cleanVAO();
-	points.clear();
+	this->cleanVAO();
+	this->points.clear();
+	this->uvs.clear();
+
 	glm::mat4 transform = this->offsetMatrix;
 
 	this->faceRendering();
-	buildVAO();
+	this->buildVAO();
 }
 
 void Chunk::faceRendering(void)
@@ -196,18 +198,32 @@ void Chunk::faceRendering(void)
 				}
 				
 				// Facing
-				if (yMinusCheck==AIR_BLOCK || (yMinusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))// || yMinusCheck==4)
+				if (yMinusCheck==AIR_BLOCK)
 					this->addFace(0, x , y, z, val); //DOWN
-				if (yPlusCheck==AIR_BLOCK || (yPlusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))// || yPlusCheck==4)
+				if (yPlusCheck==AIR_BLOCK)
 					this->addFace(1, x , y, z, val); //UP
-				if (xPlusCheck==AIR_BLOCK || (xPlusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))// || xPlusCheck==4)
+				if (xPlusCheck==AIR_BLOCK)
 					this->addFace(2, x , y, z, val); //xpos SIDE
-				if (zPlusCheck==AIR_BLOCK || (zPlusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))// || zPlusCheck==4)
+				if (zPlusCheck==AIR_BLOCK)
 					this->addFace(3, x , y, z, val); //zpos SIDE
-				if (xMinusCheck==AIR_BLOCK || (xMinusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))// || xMinusCheck==4)
+				if (xMinusCheck==AIR_BLOCK)
 					this->addFace(4, x , y, z, val); //xneg SIDE
-				if (zMinusCheck==AIR_BLOCK || (zMinusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))// || zMinusCheck==4)
+				if (zMinusCheck==AIR_BLOCK)
 					this->addFace(5, x , y, z, val); //zneg SIDE
+
+				// // Facing
+				// if (yMinusCheck==AIR_BLOCK || (yMinusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))// || yMinusCheck==4)
+				// 	this->addFace(0, x , y, z, val); //DOWN
+				// if (yPlusCheck==AIR_BLOCK || (yPlusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))// || yPlusCheck==4)
+				// 	this->addFace(1, x , y, z, val); //UP
+				// if (xPlusCheck==AIR_BLOCK || (xPlusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))// || xPlusCheck==4)
+				// 	this->addFace(2, x , y, z, val); //xpos SIDE
+				// if (zPlusCheck==AIR_BLOCK || (zPlusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))// || zPlusCheck==4)
+				// 	this->addFace(3, x , y, z, val); //zpos SIDE
+				// if (xMinusCheck==AIR_BLOCK || (xMinusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))// || xMinusCheck==4)
+				// 	this->addFace(4, x , y, z, val); //xneg SIDE
+				// if (zMinusCheck==AIR_BLOCK || (zMinusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))// || zMinusCheck==4)
+				// 	this->addFace(5, x , y, z, val); //zneg SIDE
 			}
 		}
 	}
@@ -296,6 +312,7 @@ void Chunk::addFace(int face, int x, int y, int z, int val)
 }
 
 void Chunk::cleanVAO(void) {
+	glDeleteBuffers(1, &this->VBO_UV);
 	glDeleteBuffers(1, &this->VBO_VERT);
 	glDeleteVertexArrays(1, &this->VAO);
 }

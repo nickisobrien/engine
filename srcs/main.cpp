@@ -10,7 +10,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h" // https://github.com/nothings/stb/blob/master/stb_image.h
 
-#define RENDER_RADIUS 14
+#define RENDER_RADIUS 12
 
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
@@ -52,7 +52,7 @@ int main(void)
 
 	// build and compile our shader program
 	Shader cubeShader("../resources/shaders/cube.vs", "../resources/shaders/cube.fs");
-	unsigned int atlas = loadTexture("../resources/textures/atlas3.jpeg");
+	unsigned int atlas = loadTexture("../resources/textures/atlas4.png");
 
 	cubeShader.use();
 	cubeShader.setInt("atlas", 0);

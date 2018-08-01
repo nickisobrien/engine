@@ -62,7 +62,7 @@ void Chunk::render(Shader shader)
 	glBindVertexArray(VAO);
 	glDrawArrays(GL_TRIANGLES, 0, points.size());
 
-	shader.setFloat("transparency", 0.3f);
+	shader.setFloat("transparency", 0.6f);
 	glBindVertexArray(transparentVAO);
 	glDrawArrays(GL_TRIANGLES, 0, transparentPoints.size());
 }

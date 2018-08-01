@@ -23,6 +23,7 @@ public:
 	~Chunk(void);
 	void update(void);
 	void render(Shader shader);
+	void renderWater(Shader shader);
 	void faceRendering(void);
 	void buildVAO(void);
 	void addFace(int face, int x, int y, int z, int val);

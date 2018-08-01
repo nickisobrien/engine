@@ -14,6 +14,7 @@ public:
 	}
 	void updateChunk(glm::ivec2 pos);
 	void renderChunk(glm::ivec2 pos, Shader shader);
+	void renderWaterChunk(glm::ivec2 pos, Shader shader);
 	void setNoise(void);
 	void setNeighbors(glm::ivec2 pos);
 	unordered_map<glm::ivec2, Chunk *> world;

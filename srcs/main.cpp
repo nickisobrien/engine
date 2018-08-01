@@ -99,6 +99,10 @@ int main(void)
 			for (int j = -RENDER_RADIUS; j <= RENDER_RADIUS; j++)
 				terr.renderChunk(glm::ivec2(player.getChunk()->getXOff() + i, player.getChunk()->getZOff() + j), cubeShader);
 
+		for (int i = -RENDER_RADIUS; i <= RENDER_RADIUS; i++)
+			for (int j = -RENDER_RADIUS; j <= RENDER_RADIUS; j++)
+				terr.renderWaterChunk(glm::ivec2(player.getChunk()->getXOff() + i, player.getChunk()->getZOff() + j), cubeShader);
+
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);
 		glfwPollEvents();

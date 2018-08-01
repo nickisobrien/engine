@@ -18,13 +18,13 @@ void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime, Chunk *
 
     // DEBUGGING CAMERA MODE
     // if (direction == FORWARD)
-    //     Position += glm::vec3(Front.x, Front.y, Front.z) * velocity;
+    //   Position += glm::vec3(Front.x, Front.y, Front.z) * velocity;
     // if (direction == BACKWARD)
-    //     Position -= glm::vec3(Front.x, Front.y, Front.z) * velocity;
+    //   Position -= glm::vec3(Front.x, Front.y, Front.z) * velocity;
     // if (direction == LEFT)
-    //     Position -= glm::vec3(Right.x, Right.y, Right.z) * velocity;
+    //   Position -= glm::vec3(Right.x, Right.y, Right.z) * velocity;
     // if (direction == RIGHT)
-    //     Position += glm::vec3(Right.x, Right.y, Right.z) * velocity;
+    //   Position += glm::vec3(Right.x, Right.y, Right.z) * velocity;
 }
 
 void Camera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch)

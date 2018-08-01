@@ -228,7 +228,6 @@ void Player::leftMouseClickEvent()
 	}
 	if (b && b->isActive())
 	{
-		cout << b->getType() << endl;
 		b->setType(0);
 		c->update();
 		// edge blocks broken require neighbor chunk updates too
@@ -240,7 +239,5 @@ void Player::leftMouseClickEvent()
 			c->getZMinus()->update();
 		if (current_voxel.z == CHUNK_Z-1)
 			c->getZPlus()->update();
-		
-
 	}
 }

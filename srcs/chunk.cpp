@@ -196,34 +196,20 @@ void Chunk::faceRendering(void)
 					this->blocks[x][y][z].setActive(false);
 					continue ;
 				}
-				
-				// Facing
-				if (yMinusCheck==AIR_BLOCK)
-					this->addFace(0, x , y, z, val); //DOWN
-				if (yPlusCheck==AIR_BLOCK)
-					this->addFace(1, x , y, z, val); //UP
-				if (xPlusCheck==AIR_BLOCK)
-					this->addFace(2, x , y, z, val); //xpos SIDE
-				if (zPlusCheck==AIR_BLOCK)
-					this->addFace(3, x , y, z, val); //zpos SIDE
-				if (xMinusCheck==AIR_BLOCK)
-					this->addFace(4, x , y, z, val); //xneg SIDE
-				if (zMinusCheck==AIR_BLOCK)
-					this->addFace(5, x , y, z, val); //zneg SIDE
 
-				// // Facing
-				// if (yMinusCheck==AIR_BLOCK || (yMinusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))// || yMinusCheck==4)
-				// 	this->addFace(0, x , y, z, val); //DOWN
-				// if (yPlusCheck==AIR_BLOCK || (yPlusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))// || yPlusCheck==4)
-				// 	this->addFace(1, x , y, z, val); //UP
-				// if (xPlusCheck==AIR_BLOCK || (xPlusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))// || xPlusCheck==4)
-				// 	this->addFace(2, x , y, z, val); //xpos SIDE
-				// if (zPlusCheck==AIR_BLOCK || (zPlusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))// || zPlusCheck==4)
-				// 	this->addFace(3, x , y, z, val); //zpos SIDE
-				// if (xMinusCheck==AIR_BLOCK || (xMinusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))// || xMinusCheck==4)
-				// 	this->addFace(4, x , y, z, val); //xneg SIDE
-				// if (zMinusCheck==AIR_BLOCK || (zMinusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))// || zMinusCheck==4)
-				// 	this->addFace(5, x , y, z, val); //zneg SIDE
+				// Facing
+				if (yMinusCheck==AIR_BLOCK || (yMinusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
+					this->addFace(0, x , y, z, val); //DOWN
+				if (yPlusCheck==AIR_BLOCK || (yPlusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
+					this->addFace(1, x , y, z, val); //UP
+				if (xPlusCheck==AIR_BLOCK || (xPlusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
+					this->addFace(2, x , y, z, val); //xpos SIDE
+				if (zPlusCheck==AIR_BLOCK || (zPlusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
+					this->addFace(3, x , y, z, val); //zpos SIDE
+				if (xMinusCheck==AIR_BLOCK || (xMinusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
+					this->addFace(4, x , y, z, val); //xneg SIDE
+				if (zMinusCheck==AIR_BLOCK || (zMinusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
+					this->addFace(5, x , y, z, val); //zneg SIDE
 			}
 		}
 	}

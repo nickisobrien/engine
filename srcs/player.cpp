@@ -37,10 +37,8 @@ void Player::processInput(GLFWwindow *window, float deltaTime)
 		cout << "Block:	(" << x << ", " << y << ", " << z << ")" << endl;
 	}
 
-
-
+	// collision checks/allows running up 1 block
 	glm::vec3 newPos = this->getPosition();
-
 	int x = (int)floor(newPos.x) % CHUNK_X;
 	int y = floor(newPos.y);
 	int z = (int)floor(newPos.z) % CHUNK_Z;
@@ -71,7 +69,9 @@ Chunk *Player::getChunk()
 	glm::ivec2 pos(cx, cz);
 	if (this->terr->world.find(pos) != this->terr->world.end())
 		return (this->terr->world[pos]);
-	return (NULL);
+	else
+		this->terr->updateChunk(pos);
+	return (this->terr->world[pos]);
 }
 
 bool Player::isGrounded()
@@ -133,7 +133,6 @@ static float intbound(float s, float ds)
 
 void Player::leftMouseClickEvent()
 {
-
 	// block traversal algorithm http://www.cse.yorku.ca/~amana/research/grid.pdf
 	glm::vec3 current = this->getPosition();
 	glm::vec3 currentView = this->camera.GetViewVector();
@@ -220,8 +219,6 @@ void Player::leftMouseClickEvent()
 			c = c->getZPlus();
 			current_voxel.z -= CHUNK_Z;
 		}
-
-
 
 		b = c->getBlock(current_voxel.x,current_voxel.y,current_voxel.z);
 		breakDist++;

@@ -35,12 +35,12 @@ void Terrain::setNoise(void)
 	this->terrainNoise.SetInterp(FastNoise::Hermite);
 
 	this->temperatureNoise.SetSeed(terrainNoise.GetSeed()/2);
-	this->temperatureNoise.SetNoiseType(FastNoise::PerlinFractal);
+	this->temperatureNoise.SetNoiseType(FastNoise::Perlin);
 	this->temperatureNoise.SetFrequency(0.002f);
 	this->temperatureNoise.SetInterp(FastNoise::Hermite);
 
 	this->temperatureNoise.SetSeed(terrainNoise.GetSeed()*2);
-	this->humidityNoise.SetNoiseType(FastNoise::PerlinFractal);
+	this->humidityNoise.SetNoiseType(FastNoise::Perlin);
 	this->humidityNoise.SetFrequency(0.003f);
 	this->humidityNoise.SetInterp(FastNoise::Hermite);
 

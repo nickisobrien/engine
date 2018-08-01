@@ -49,21 +49,19 @@ int main(void)
 	glEnable(GL_DEPTH_TEST); // turn on z buffering
 	// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
 	// glEnable(GL_CULL_FACE); // face culling only renders visible faces of closed shapes ie. cube (needs speed testing to determine if worth)
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 
 	// build and compile our shader program
 	Shader cubeShader("../resources/shaders/cube.vs", "../resources/shaders/cube.fs");
 	unsigned int atlas = loadTexture("../resources/textures/atlas4.png");
 
 	cubeShader.use();
-	cubeShader.setInt("atlas", 0);
-
+	cubeShader.setInt("atlas", 0);	
 	for (int i = -3; i <= 3; i++)
-	{
 		for (int j = -3; j <= 3; j++)
-		{
-			terr.renderChunk(glm::ivec2(player.getPosition().x/CHUNK_X + i, player.getPosition().z/CHUNK_Z + j), cubeShader);
-		}
-	}
+			terr.renderChunk(glm::ivec2(player.getChunk()->getXOff(), player.getChunk()->getZOff()), cubeShader);
 
 	// render loop
 	while (!glfwWindowShouldClose(window))
@@ -98,12 +96,9 @@ int main(void)
 		cx = !c ? 0 : c->getXOff();
 		cz = !c ? 0 : c->getZOff();
 		for (int i = -RENDER_RADIUS; i <= RENDER_RADIUS; i++)
-		{
 			for (int j = -RENDER_RADIUS; j <= RENDER_RADIUS; j++)
-			{
-				terr.renderChunk(glm::ivec2(cx + i, cz + j), cubeShader);
-			}
-		}
+				terr.renderChunk(glm::ivec2(player.getChunk()->getXOff() + i, player.getChunk()->getZOff() + j), cubeShader);
+
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);
 		glfwPollEvents();

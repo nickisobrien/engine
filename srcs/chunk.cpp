@@ -48,7 +48,6 @@ Chunk::~Chunk(void)
 		{
 			delete [] blocks[i][j];
 		}
-
 		delete [] blocks[i];
 	}
 	delete [] blocks;
@@ -59,8 +58,13 @@ Chunk::~Chunk(void)
 void Chunk::render(Shader shader)
 {
 	shader.setMat4("transform", offsetMatrix);
+	shader.setFloat("transparency", 1.0f);
 	glBindVertexArray(VAO);
 	glDrawArrays(GL_TRIANGLES, 0, points.size());
+
+	shader.setFloat("transparency", 0.3f);
+	glBindVertexArray(transparentVAO);
+	glDrawArrays(GL_TRIANGLES, 0, transparentPoints.size());
 }
 
 void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastNoise humidityNoise)
@@ -121,6 +125,9 @@ void Chunk::update(void)
 	this->points.clear();
 	this->uvs.clear();
 
+	this->transparentPoints.clear();
+	this->transparentUvs.clear();
+
 	glm::mat4 transform = this->offsetMatrix;
 
 	this->faceRendering();
@@ -129,6 +136,7 @@ void Chunk::update(void)
 
 void Chunk::faceRendering(void)
 {
+	bool water;
 	int xMinusCheck;
 	int yMinusCheck;
 	int zMinusCheck;
@@ -141,13 +149,17 @@ void Chunk::faceRendering(void)
 		{
 			for (int z = 0; z < CHUNK_Z; z++)
 			{
+				water = false;
 				if (this->blocks[x][y][z].getType() == AIR_BLOCK)
 				{
 					this->blocks[x][y][z].setActive(false);
 					continue ;
 				}
 				else if (this->blocks[x][y][z].getType() == WATER_BLOCK) //water_BLOCK
+				{
 					this->blocks[x][y][z].setActive(false);
+					water = true;
+				}
 				int val = this->getWorld(x, y, z);
 
 				// MINUS checks
@@ -198,31 +210,53 @@ void Chunk::faceRendering(void)
 				}
 
 				// Facing
-				if (yMinusCheck==AIR_BLOCK || (yMinusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
-					this->addFace(0, x , y, z, val); //DOWN
-				if (yPlusCheck==AIR_BLOCK || (yPlusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
-					this->addFace(1, x , y, z, val); //UP
-				if (xPlusCheck==AIR_BLOCK || (xPlusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
-					this->addFace(2, x , y, z, val); //xpos SIDE
-				if (zPlusCheck==AIR_BLOCK || (zPlusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
-					this->addFace(3, x , y, z, val); //zpos SIDE
-				if (xMinusCheck==AIR_BLOCK || (xMinusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
-					this->addFace(4, x , y, z, val); //xneg SIDE
-				if (zMinusCheck==AIR_BLOCK || (zMinusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
-					this->addFace(5, x , y, z, val); //zneg SIDE
+				// if (yMinusCheck==AIR_BLOCK || (yMinusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
+				// 	this->addFace(0, x , y, z, val); //DOWN
+				// if (yPlusCheck==AIR_BLOCK || (yPlusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
+				// 	this->addFace(1, x , y, z, val); //UP
+				// if (xPlusCheck==AIR_BLOCK || (xPlusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
+				// 	this->addFace(2, x , y, z, val); //xpos SIDE
+				// if (zPlusCheck==AIR_BLOCK || (zPlusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
+				// 	this->addFace(3, x , y, z, val); //zpos SIDE
+				// if (xMinusCheck==AIR_BLOCK || (xMinusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
+				// 	this->addFace(4, x , y, z, val); //xneg SIDE
+				// if (zMinusCheck==AIR_BLOCK || (zMinusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
+				// 	this->addFace(5, x , y, z, val); //zneg SIDE
+
+				// Facing
+				if (!water)
+				{
+					if (yMinusCheck==AIR_BLOCK || yMinusCheck==WATER_BLOCK)
+						this->addFace(0, x , y, z, val); //DOWN
+					if (yPlusCheck==AIR_BLOCK || yPlusCheck==WATER_BLOCK)
+						this->addFace(1, x , y, z, val); //UP
+					if (xPlusCheck==AIR_BLOCK || xPlusCheck==WATER_BLOCK)
+						this->addFace(2, x , y, z, val); //xpos SIDE
+					if (zPlusCheck==AIR_BLOCK || zPlusCheck==WATER_BLOCK)
+						this->addFace(3, x , y, z, val); //zpos SIDE
+					if (xMinusCheck==AIR_BLOCK || xMinusCheck==WATER_BLOCK)
+						this->addFace(4, x , y, z, val); //xneg SIDE
+					if (zMinusCheck==AIR_BLOCK || zMinusCheck==WATER_BLOCK)
+						this->addFace(5, x , y, z, val); //zneg SIDE
+				}
+				else
+				{
+					if (yMinusCheck==AIR_BLOCK || (yMinusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
+						this->addTransparentFace(0, x , y, z, val); //DOWN
+					if (yPlusCheck==AIR_BLOCK || (yPlusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
+						this->addTransparentFace(1, x , y, z, val); //UP
+					if (xPlusCheck==AIR_BLOCK || (xPlusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
+						this->addTransparentFace(2, x , y, z, val); //xpos SIDE
+					if (zPlusCheck==AIR_BLOCK || (zPlusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
+						this->addTransparentFace(3, x , y, z, val); //zpos SIDE
+					if (xMinusCheck==AIR_BLOCK || (xMinusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
+						this->addTransparentFace(4, x , y, z, val); //xneg SIDE
+					if (zMinusCheck==AIR_BLOCK || (zMinusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
+						this->addTransparentFace(5, x , y, z, val); //zneg SIDE
+				}
 			}
 		}
 	}
-}
-
-float *Chunk::getVertices(void)
-{
-	return (&this->points[0][0]);
-}
-
-float *Chunk::getUVs(void)
-{
-	return (&this->uvs[0][0]);
 }
 
 void Chunk::buildVAO(void)
@@ -233,18 +267,37 @@ void Chunk::buildVAO(void)
 	// vertice VBO
 	glGenBuffers(1, &this->VBO_VERT);
 	glBindBuffer(GL_ARRAY_BUFFER, this->VBO_VERT);
-	glBufferData(GL_ARRAY_BUFFER, this->points.size() * sizeof(glm::vec3), this->getVertices(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, this->points.size() * sizeof(glm::vec3), &this->points[0][0], GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glEnableVertexAttribArray(0);
 
 	// texture coords
 	glGenBuffers(1, &this->VBO_UV);
 	glBindBuffer(GL_ARRAY_BUFFER, this->VBO_UV);
-	glBufferData(GL_ARRAY_BUFFER, this->uvs.size() * sizeof(glm::vec2), this->getUVs(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, this->uvs.size() * sizeof(glm::vec2), &this->uvs[0][0], GL_STATIC_DRAW);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)(0));
 	glEnableVertexAttribArray(1);
 
-	// texture type
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+
+	// TRANSPARENT
+	glGenVertexArrays(1, &this->transparentVAO);
+	glBindVertexArray(this->transparentVAO);
+
+	// vertice VBO
+	glGenBuffers(1, &this->transparentVBO_VERT);
+	glBindBuffer(GL_ARRAY_BUFFER, this->transparentVBO_VERT);
+	glBufferData(GL_ARRAY_BUFFER, this->transparentPoints.size() * sizeof(glm::vec3), &this->transparentPoints[0][0], GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glEnableVertexAttribArray(0);
+
+	// texture coords
+	glGenBuffers(1, &this->transparentVBO_UV);
+	glBindBuffer(GL_ARRAY_BUFFER, this->transparentVBO_UV);
+	glBufferData(GL_ARRAY_BUFFER, this->transparentUvs.size() * sizeof(glm::vec2), &this->transparentUvs[0][0], GL_STATIC_DRAW);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)(0));
+	glEnableVertexAttribArray(1);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
@@ -297,10 +350,61 @@ void Chunk::addFace(int face, int x, int y, int z, int val)
 	}
 }
 
+void Chunk::addTransparentFace(int face, int x, int y, int z, int val)
+{
+	static int oneFace = ((sizeof(VCUBE) / 4)/6/2);
+	static int oneFaceUV = ((sizeof(CUBEUV) / 4)/6/2);
+	int u = face + 1;
+
+	for (int i = oneFace * face; i < oneFace * u; i+=3)
+	{
+		glm::vec3 vec = glm::make_vec3(&VCUBE[i]);
+		vec.x = vec.x * 0.5f + (float)x;
+		vec.y = vec.y * 0.5f + (float)y;
+		vec.z = vec.z * 0.5f + (float)z;
+		transparentPoints.push_back(vec);
+	}
+
+	for (int i = oneFace * face + 54; i < oneFace * u + 54; i+=3)
+	{
+		glm::vec3 vec = glm::make_vec3(&VCUBE[i]);
+		vec.x = vec.x * 0.5f + (float)x;
+		vec.y = vec.y * 0.5f + (float)y;
+		vec.z = vec.z * 0.5f + (float)z;
+		transparentPoints.push_back(vec);
+	}
+
+	int xtype = blocks[x][y][z].getType() - 1 % 16;
+	int ytype = blocks[x][y][z].getType() / 17;
+	for (int i = oneFaceUV * face; i < oneFaceUV * u; i += 2)
+	{
+		glm::vec2 vec = glm::make_vec2(&CUBEUV[i]);
+		vec.x /= 16;
+		vec.x += 0.0625 * (xtype);
+		vec.y /= 16;
+		vec.y += 0.0625 * (ytype);
+		transparentUvs.push_back(vec);
+	}
+
+	for (int i = oneFaceUV * face + 36; i < oneFaceUV * u + 36; i+=2)
+	{
+		glm::vec2 vec = glm::make_vec2(&CUBEUV[i]);
+		vec.x /= 16;
+		vec.x += 0.0625 * (xtype);
+		vec.y /= 16;
+		vec.y += 0.0625 * (ytype);
+		transparentUvs.push_back(vec);
+	}
+}
+
 void Chunk::cleanVAO(void) {
 	glDeleteBuffers(1, &this->VBO_UV);
 	glDeleteBuffers(1, &this->VBO_VERT);
 	glDeleteVertexArrays(1, &this->VAO);
+
+	glDeleteBuffers(1, &this->transparentVBO_UV);
+	glDeleteBuffers(1, &this->transparentVBO_VERT);
+	glDeleteVertexArrays(1, &this->transparentVAO);
 }
 
 void Chunk::setXMinus(Chunk *chunk)

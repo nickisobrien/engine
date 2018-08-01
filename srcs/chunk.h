@@ -25,9 +25,8 @@ public:
 	void render(Shader shader);
 	void faceRendering(void);
 	void buildVAO(void);
-	float *getVertices(void);
-	float *getUVs(void);
 	void addFace(int face, int x, int y, int z, int val);
+	void addTransparentFace(int face, int x, int y, int z, int val);
 	void cleanVAO(void);
 	
 	// neighbors
@@ -55,8 +54,16 @@ private:
 	unsigned int VAO;
 	unsigned int VBO_VERT;
 	unsigned int VBO_UV;
+
+	unsigned int transparentVAO;
+	unsigned int transparentVBO_VERT;
+	unsigned int transparentVBO_UV;
+
+
 	vector<glm::vec3> points;
 	vector<glm::vec2> uvs;
+	vector<glm::vec3> transparentPoints;
+	vector<glm::vec2> transparentUvs;
 	ChunkState state = GENERATE;
 	Chunk *xMinus = NULL;
 	Chunk *xPlus = NULL;

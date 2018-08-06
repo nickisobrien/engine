@@ -10,7 +10,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h" // https://github.com/nothings/stb/blob/master/stb_image.h
 
-#define RENDER_RADIUS 10
+#define RENDER_RADIUS 12
 
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
@@ -61,7 +61,7 @@ int main(void)
 	cubeShader.setInt("atlas", 0);	
 	for (int i = -3; i <= 3; i++)
 		for (int j = -3; j <= 3; j++)
-			terr.renderChunk(glm::ivec2(player.getChunk()->getXOff(), player.getChunk()->getZOff()), cubeShader);
+			terr.renderChunk(glm::ivec2(player.getChunk()->getXOff()+i, player.getChunk()->getZOff()+j), cubeShader);
 
 	// render loop
 	while (!glfwWindowShouldClose(window))
@@ -98,7 +98,6 @@ int main(void)
 		for (int i = -RENDER_RADIUS; i <= RENDER_RADIUS; i++)
 			for (int j = -RENDER_RADIUS; j <= RENDER_RADIUS; j++)
 				terr.renderChunk(glm::ivec2(player.getChunk()->getXOff() + i, player.getChunk()->getZOff() + j), cubeShader);
-
 		for (int i = -RENDER_RADIUS; i <= RENDER_RADIUS; i++)
 			for (int j = -RENDER_RADIUS; j <= RENDER_RADIUS; j++)
 				terr.renderWaterChunk(glm::ivec2(player.getChunk()->getXOff() + i, player.getChunk()->getZOff() + j), cubeShader);

@@ -1,9 +1,6 @@
 #include "engine.h"
 #include "chunk.h"
 
-#define WATER_BLOCK 15
-#define AIR_BLOCK 0
-
 Chunk::Chunk(int xoff, int zoff)
 {
 	this->xoff = xoff;

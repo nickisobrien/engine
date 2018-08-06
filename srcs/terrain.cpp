@@ -47,19 +47,14 @@ void Terrain::setNoise(void)
 {
 	this->terrainNoise.SetNoiseType(FastNoise::PerlinFractal);
 	this->terrainNoise.SetFrequency(0.005f);
-	this->terrainNoise.SetInterp(FastNoise::Hermite);
 
 	this->temperatureNoise.SetSeed(terrainNoise.GetSeed()/2);
-	this->temperatureNoise.SetNoiseType(FastNoise::Perlin);
-	this->temperatureNoise.SetFrequency(0.002f);
-	this->temperatureNoise.SetInterp(FastNoise::Hermite);
+	this->temperatureNoise.SetNoiseType(FastNoise::PerlinFractal);
+	this->temperatureNoise.SetFrequency(0.005f);
 
 	this->temperatureNoise.SetSeed(terrainNoise.GetSeed()*2);
 	this->humidityNoise.SetNoiseType(FastNoise::Perlin);
-	this->humidityNoise.SetFrequency(0.003f);
-	this->humidityNoise.SetInterp(FastNoise::Hermite);
-
-
+	this->humidityNoise.SetFrequency(0.005f);
 }
 
 void Terrain::setNeighbors(glm::ivec2 pos)

@@ -40,7 +40,7 @@ void Player::processInput(GLFWwindow *window, float deltaTime)
 	// collision checks/allows running up 1 block
 	glm::vec3 newPos = this->getPosition();
 	int x = (int)floor(newPos.x) % CHUNK_X;
-	int y = floor(newPos.y);
+	int y = floor(newPos.y) - 2;
 	int z = (int)floor(newPos.z) % CHUNK_Z;
 	if (x < 0)
 		x = CHUNK_X + x;
@@ -50,7 +50,7 @@ void Player::processInput(GLFWwindow *window, float deltaTime)
 	Chunk *c;
 	if ((c = this->getChunk()) != NULL)
 	{
-		Block *b = c->getBlock(x,y-2,z);
+		Block *b = c->getBlock(x,y,z);
 		if (b != NULL && b->isActive())
 		{
 			b = c->getBlock(x, y+1, z);
@@ -67,9 +67,8 @@ Chunk *Player::getChunk()
 	int cx = this->camera.Position.x >= 0.0f ? this->camera.Position.x / CHUNK_X : ceil(this->camera.Position.x) / CHUNK_X - 1.0f;
 	int cz = this->camera.Position.z >= 0.0f ? this->camera.Position.z / CHUNK_Z : ceil(this->camera.Position.z) / CHUNK_X - 1.0f;
 	glm::ivec2 pos(cx, cz);
-	if (this->terr->world.find(pos) != this->terr->world.end())
-		return (this->terr->world[pos]);
-	else
+	// not found generate new chunk at player pos
+	if (this->terr->world.find(pos) == this->terr->world.end())
 		this->terr->updateChunk(pos);
 	return (this->terr->world[pos]);
 }
@@ -86,7 +85,7 @@ bool Player::isGrounded()
 		z = CHUNK_Z + z;
 
 	Block *b = getChunk()->getBlock(x,y-3,z);
-	if (b != NULL && (b->isActive()))
+	if (b != NULL && (b->getType() != AIR_BLOCK && b->getType() != WATER_BLOCK))
 		return (true);
 	return (false);
 }
@@ -95,14 +94,14 @@ void Player::jump()
 {
 	glm::vec3 cur = this->getPosition();
 	if (this->isGrounded())
-		this->setPosition(glm::vec3(cur.x, cur.y+5.0f, cur.z));
+		this->setPosition(glm::vec3(cur.x, cur.y+5.0f, cur.z)); // temp easy code jump
 }
 
 void Player::applyGravity(float time)
 {
 	glm::vec3 current = this->getPosition();
 	if (!this->isGrounded())
-		current.y -= this->gravity * time;
+		current.y -= this->gravity * time; // temp easy code gravity
 	this->setPosition(current);
 }
 

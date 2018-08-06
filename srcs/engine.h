@@ -27,6 +27,9 @@
 #define ATLAS_SIZE 256
 #define TEXTURE_SIZE 16
 
+#define WATER_BLOCK 15
+#define AIR_BLOCK 0
+
 static float VCUBE[108] = {
 	//DOWN
 		1.000000, -1.000000, 1.000000,

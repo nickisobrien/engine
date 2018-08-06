@@ -45,6 +45,7 @@ void Terrain::renderWaterChunk(glm::ivec2 pos, Shader shader)
 
 void Terrain::setNoise(void)
 {
+	this->terrainNoise.SetSeed(123123);
 	this->terrainNoise.SetNoiseType(FastNoise::PerlinFractal);
 	this->terrainNoise.SetFrequency(0.005f);
 

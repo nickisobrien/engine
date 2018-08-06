@@ -75,10 +75,10 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 		for (int z = 0; z < CHUNK_Z; z++)
 		{
 			// Use the noise library to get the height value of x, z
-			int height = MAP(terrainNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
+			int base = MAP(terrainNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
 			float temp = temperatureNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
 			float hum = humidityNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
-			for (int y = 0; y < height; y++)
+			for (int y = 0; y < base; y++)
 			{
 				/*
 					noise layer #1 "Temperature"
@@ -114,7 +114,7 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 						this->blocks[x][y][z].setType(17);
 				}
 			}
-			for (int y = height; y < 52; y++)
+			for (int y = base; y < 52; y++)
 				this->blocks[x][y][z].setType(WATER_BLOCK);
 		}
 	}

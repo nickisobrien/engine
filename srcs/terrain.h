@@ -8,10 +8,7 @@ float noise(float x, float y);
 class Terrain
 {
 public:
-	Terrain(void)
-	{
-		this->setNoise();
-	}
+	inline Terrain(void) { this->setNoise(); }
 	void updateChunk(glm::ivec2 pos);
 	void renderChunk(glm::ivec2 pos, Shader shader);
 	void renderWaterChunk(glm::ivec2 pos, Shader shader);

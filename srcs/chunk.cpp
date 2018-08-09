@@ -68,56 +68,173 @@ void Chunk::renderWater(Shader shader)
 	glDrawArrays(GL_TRIANGLES, 0, transparentPoints.size());
 }
 
+
+static void squareStep(int Array[CHUNK_X][CHUNK_Z], int x, int z, int reach)
+{
+	int count = 0;
+	float avg = 0.0f;
+	if (x - reach >= 0)
+	{
+		avg += Array[x-reach][z];
+		count++;
+	}
+	if (x + reach < CHUNK_X)
+	{
+		avg += Array[x+reach][z];
+		count++;
+	}
+	if (z - reach >= 0)
+	{
+		avg += Array[x][z-reach];
+		count++;
+	}
+	if (z + reach < CHUNK_Z)
+	{
+		avg += Array[x][z+reach];
+		count++;
+	}
+	avg /= count;
+	Array[x][z] = (int)avg;
+}
+
+static void diamondStep(int Array[CHUNK_X][CHUNK_Z], int x, int z, int reach)
+{
+	int count = 0;
+	float avg = 0.0f;
+	if (x - reach >= 0 && z - reach >= 0)
+	{
+		avg += Array[x-reach][z-reach];
+		count++;
+	}
+	if (x - reach >= 0 && z + reach < CHUNK_Z)
+	{
+		avg += Array[x-reach][z+reach];
+		count++;
+	}
+	if (x + reach < CHUNK_X && z - reach >= 0)
+	{
+		avg += Array[x+reach][z-reach];
+		count++;
+	}
+	if (x + reach < CHUNK_X && z + reach < CHUNK_Z)
+	{
+		avg += Array[x+reach][z+reach];
+		count++;
+	}
+	avg /= count;
+	Array[x][z] = round(avg);
+}
+
+static void diamondSquare(int Array[CHUNK_X][CHUNK_Z], int x, int z, int reach)
+{
+	static bool last;
+	// first diamondstep
+	diamondStep(Array, x, z, reach); // reach can divide by 2 repeating
+
+	//first squarestep
+	squareStep(Array, x-reach, z, reach);
+	squareStep(Array, x, z-reach, reach);
+	squareStep(Array, x+reach, z, reach);
+	squareStep(Array, x, z+reach, reach);
+
+	if (reach >= 1)
+	{
+		reach/=2;
+		diamondSquare(Array, x-reach, z-reach, reach);
+		diamondSquare(Array, x+reach, z-reach, reach);
+		diamondSquare(Array, x-reach, z+reach, reach);
+		diamondSquare(Array, x+reach, z+reach, reach);
+	}
+}
+
 void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastNoise humidityNoise)
 {
+	int Array[CHUNK_X][CHUNK_Z];
+	int val = MAP(terrainNoise.GetNoise(CHUNK_X/2+(CHUNK_X*xoff),CHUNK_Z/2+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
+	//just incase
 	for (int x = 0; x < CHUNK_X; x++)
 	{
 		for (int z = 0; z < CHUNK_Z; z++)
 		{
-			// Use the noise library to get the height value of x, z
-			int base = MAP(terrainNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
-			float temp = temperatureNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
-			float hum = humidityNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
-			for (int y = 0; y < base; y++)
-			{
-				/*
-					noise layer #1 "Temperature"
-					noise layer #2 "Humidity"
-					Derived biomes:
-					Temp < 33%	 		Humidity < 50% => Cold rocky biome
-					Temp < 33%	 		Humidity > 50% => Ice and frozen lakes
-					33% < Temp < 66%	Humidity < 50% => Grassland
-					33% < Temp < 66%	Humidity > 50% => Forest or swamp
-					Temp > 66%	 		Humidity < 50% => Dessert
-					Temp > 66%	 		Humidity > 50% => Tropical rainforest
-				*/
-
-				if (temp < -0.33f)
-				{
-					if (hum < 0.0f)
-						this->blocks[x][y][z].setType(67);
-					else
-						this->blocks[x][y][z].setType(68);
-				}
-				else if (temp >= -0.33f && temp >= 0.33f)
-				{
-					if (hum < 0.0f)
-						this->blocks[x][y][z].setType(4);
-					else
-						this->blocks[x][y][z].setType(3);
-				}
-				else
-				{
-					if (hum < 0.0f)
-						this->blocks[x][y][z].setType(19);
-					else
-						this->blocks[x][y][z].setType(17);
-				}
-			}
-			for (int y = base; y < 52; y++)
-				this->blocks[x][y][z].setType(WATER_BLOCK);
+			if (x == 0 && z == 0)
+				continue;
+			else if (x == 0 && z == CHUNK_Z-1)
+				continue;
+			else if (x == CHUNK_X-1 && z == 0)
+				continue;
+			else if (x == CHUNK_X-1 && z == CHUNK_Z-1)
+				continue;
+			Array[x][z] = val;
 		}
 	}
+
+	Array[0][0] = MAP(terrainNoise.GetNoise(0+(CHUNK_X*xoff),0+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
+	Array[0][CHUNK_Z-1] = MAP(terrainNoise.GetNoise(0+(CHUNK_X*xoff),CHUNK_Z-1+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
+	Array[CHUNK_X-1][0] = MAP(terrainNoise.GetNoise(CHUNK_X-1+(CHUNK_X*xoff),0+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
+	Array[CHUNK_X-1][CHUNK_Z-1] = MAP(terrainNoise.GetNoise(CHUNK_X-1+(CHUNK_X*xoff),CHUNK_Z-1+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
+	
+	diamondSquare(Array, CHUNK_X/2, CHUNK_Z/2, CHUNK_X/2);
+	// for (int x = 0; x < CHUNK_X; x++)
+	// {
+	// 	for (int z = 0; z < CHUNK_Z; z++)
+	// 	{
+	// 		// Use the noise library to get the height value of x, z
+	// 		int base = MAP(terrainNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
+	// 		float temp = temperatureNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
+	// 		float hum = humidityNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
+	// 		for (int y = 0; y < base; y++)
+	// 		{
+				
+	// 				// noise layer #1 "Temperature"
+	// 				// noise layer #2 "Humidity"
+	// 				// Derived biomes:
+	// 				// Temp < 33%	 		Humidity < 50% => Cold rocky biome
+	// 				// Temp < 33%	 		Humidity > 50% => Ice and frozen lakes
+	// 				// 33% < Temp < 66%	Humidity < 50% => Grassland
+	// 				// 33% < Temp < 66%	Humidity > 50% => Forest or swamp
+	// 				// Temp > 66%	 		Humidity < 50% => Dessert
+	// 				// Temp > 66%	 		Humidity > 50% => Tropical rainforest
+				
+
+	// 			if (temp < -0.33f)
+	// 			{
+	// 				if (hum < 0.0f)
+	// 					this->blocks[x][y][z].setType(67);
+	// 				else
+	// 					this->blocks[x][y][z].setType(68);
+	// 			}
+	// 			else if (temp >= -0.33f && temp >= 0.33f)
+	// 			{
+	// 				if (hum < 0.0f)
+	// 					this->blocks[x][y][z].setType(4);
+	// 				else
+	// 					this->blocks[x][y][z].setType(3);
+	// 			}
+	// 			else
+	// 			{
+	// 				if (hum < 0.0f)
+	// 					this->blocks[x][y][z].setType(19);
+	// 				else
+	// 					this->blocks[x][y][z].setType(17);
+	// 			}
+	// 		}
+	// 		for (int y = base; y < 52; y++)
+	// 			this->blocks[x][y][z].setType(WATER_BLOCK);
+	// 	}
+	// }
+
+	for (int x = 0; x < CHUNK_X; x++)
+	{
+		for (int z = 0; z < CHUNK_Z; z++)
+		{
+			for (int y = 0; y < Array[x][z]; y++)
+			{
+				this->blocks[x][y][z].setType(4);
+			}
+		}
+	}
+
+	// int base = MAP(terrainNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
 }
 
 void Chunk::update(void)

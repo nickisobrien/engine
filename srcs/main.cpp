@@ -59,9 +59,10 @@ int main(void)
 
 	cubeShader.use();
 	cubeShader.setInt("atlas", 0);	
-	for (int i = -3; i <= 3; i++)
-		for (int j = -3; j <= 3; j++)
+	for (int i = -0; i <= 0; i++)
+		for (int j = -0; j <= 0; j++)
 			terr.renderChunk(glm::ivec2(player.getChunk()->getXOff()+i, player.getChunk()->getZOff()+j), cubeShader);
+
 
 	// render loop
 	while (!glfwWindowShouldClose(window))

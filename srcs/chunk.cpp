@@ -116,22 +116,22 @@ static void diamondStep(int Array[CHUNK_X][CHUNK_Z], int x, int z, int reach)
 {
 	int count = 0;
 	float avg = 0.0f;
-	if (x - reach >= 0 && z - reach >= 0)// && Array[x-reach][z-reach]!=0)
+	if (x - reach >= 0 && z - reach >= 0)
 	{
 		avg += Array[x-reach][z-reach];
 		count++;
 	}
-	if (x - reach >= 0 && z + reach < CHUNK_Z)// && Array[x-reach][z+reach]!=0)
+	if (x - reach >= 0 && z + reach < CHUNK_Z)
 	{
 		avg += Array[x-reach][z+reach];
 		count++;
 	}
-	if (x + reach < CHUNK_X && z - reach >= 0)// && Array[x+reach][z-reach]!=0)
+	if (x + reach < CHUNK_X && z - reach >= 0)
 	{
 		avg += Array[x+reach][z-reach];
 		count++;
 	}
-	if (x + reach < CHUNK_X && z + reach < CHUNK_Z)// && Array[x+reach][z+reach]!=0)
+	if (x + reach < CHUNK_X && z + reach < CHUNK_Z)
 	{
 		avg += Array[x+reach][z+reach];
 		count++;
@@ -179,6 +179,10 @@ static void diamondSquare(int Array[CHUNK_X][CHUNK_Z], int x, int z, int reach)
 
 void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastNoise humidityNoise)
 {
+	// std::clock_t    start;
+	// start = std::clock();
+
+	/* DIAMOND SQUARE */
 	int Array[CHUNK_X][CHUNK_Z];
 	//just incase
 	for (int x = 0; x < CHUNK_X; x++)
@@ -196,21 +200,57 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 			Array[x][z] = 0;
 		}
 	}
-
 	Array[0][0] = MAP(terrainNoise.GetNoise(0+(CHUNK_X*xoff),0+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
 	Array[0][CHUNK_Z-1] = MAP(terrainNoise.GetNoise(0+(CHUNK_X*xoff),CHUNK_Z-1+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
 	Array[CHUNK_X-1][0] = MAP(terrainNoise.GetNoise(CHUNK_X-1+(CHUNK_X*xoff),0+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
 	Array[CHUNK_X-1][CHUNK_Z-1] = MAP(terrainNoise.GetNoise(CHUNK_X-1+(CHUNK_X*xoff),CHUNK_Z-1+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
-	
 	diamondSquare(Array, CHUNK_X/2, CHUNK_Z/2, CHUNK_X/2);
+	// diamond-square algo
+	for (int x = 0; x < CHUNK_X; x++)
+	{
+		for (int z = 0; z < CHUNK_Z; z++)
+		{
+			float temp = temperatureNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
+			float hum = humidityNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
+			for (int y = 0; y < Array[x][z]; y++)
+			{
+				if (temp < -0.33f)
+				{
+					if (hum < 0.0f)
+						this->blocks[x][y][z].setType(67);
+					else
+						this->blocks[x][y][z].setType(68);
+				}
+				else if (temp >= -0.33f && temp >= 0.33f)
+				{
+					if (hum < 0.0f)
+						this->blocks[x][y][z].setType(4);
+					else
+						this->blocks[x][y][z].setType(3);
+				}
+				else
+				{
+					if (hum < 0.0f)
+						this->blocks[x][y][z].setType(19);
+					else
+						this->blocks[x][y][z].setType(17);
+				}
+			}
+			for (int y = Array[x][z]; y < 52; y++)
+				this->blocks[x][y][z].setType(WATER_BLOCK);
+		}
+	}
+
+
+	/* PERLIN NOISE */
 	// for (int x = 0; x < CHUNK_X; x++)
 	// {
 	// 	for (int z = 0; z < CHUNK_Z; z++)
 	// 	{
 	// 		// Use the noise library to get the height value of x, z
 	// 		int base = MAP(terrainNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
-	// 		float temp = temperatureNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
-	// 		float hum = humidityNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
+			// float temp = temperatureNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
+			// float hum = humidityNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
 	// 		for (int y = 0; y < base; y++)
 	// 		{
 				
@@ -252,18 +292,7 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 	// 	}
 	// }
 
-	for (int x = 0; x < CHUNK_X; x++)
-	{
-		for (int z = 0; z < CHUNK_Z; z++)
-		{
-			for (int y = 0; y < Array[x][z]; y++)
-			{
-				this->blocks[x][y][z].setType(4);
-			}
-		}
-	}
-
-	// int base = MAP(terrainNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
+	// std::cout << "Time: " << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << std::endl;
 }
 
 void Chunk::update(void)

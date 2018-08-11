@@ -92,12 +92,12 @@ void diamondSquare(int Array[CHUNK_X][CHUNK_Z], int size)
 	}
 
 	// cout << "Diamond steps:" << endl;
-	int currentColumn = 0;
+	int col = 0;
 	for (int x = 0; x < CHUNK_X; x += half)
 	{
-		currentColumn++;
+		col++;
 		//If this is an odd column.
-		if (currentColumn % 2 == 1)
+		if (col % 2 == 1)
 		{
 			for (int z = half; z < CHUNK_Z; z += size)
 			{

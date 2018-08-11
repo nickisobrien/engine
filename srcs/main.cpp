@@ -85,7 +85,7 @@ int main(void)
 		glBindTexture(GL_TEXTURE_2D, atlas);
 
 		// for physics
-		player.update(deltaTime);
+		// player.update(deltaTime);
 		// setup renderer
 		cubeShader.use();
 		glm::mat4 projection = glm::perspective(glm::radians(player.camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 1000.0f);

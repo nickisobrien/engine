@@ -125,7 +125,7 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 					if (hum < 0.0f)
 						this->blocks[x][y][z].setType(19);
 					else
-						this->blocks[x][y][z].setType(17);
+						this->blocks[x][y][z].setType(4); // switched to grassland for now
 				}
 			}
 			for (int y = Array[x][z]; y < 52; y++)

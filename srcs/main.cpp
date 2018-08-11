@@ -11,7 +11,7 @@
 #include "stb_image.h" // https://github.com/nothings/stb/blob/master/stb_image.h
 
 #define RENDER_RADIUS 12
-#define PRERENDER_RADIUS 4
+#define PRERENDER_RADIUS 6
 
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
@@ -85,7 +85,7 @@ int main(void)
 		glBindTexture(GL_TEXTURE_2D, atlas);
 
 		// for physics
-		// player.update(deltaTime);
+		player.update(deltaTime);
 		// setup renderer
 		cubeShader.use();
 		glm::mat4 projection = glm::perspective(glm::radians(player.camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 1000.0f);

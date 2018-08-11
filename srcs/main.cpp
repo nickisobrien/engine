@@ -11,6 +11,7 @@
 #include "stb_image.h" // https://github.com/nothings/stb/blob/master/stb_image.h
 
 #define RENDER_RADIUS 12
+#define PRERENDER_RADIUS 4
 
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
@@ -59,8 +60,8 @@ int main(void)
 
 	cubeShader.use();
 	cubeShader.setInt("atlas", 0);	
-	for (int i = -0; i <= 0; i++)
-		for (int j = -0; j <= 0; j++)
+	for (int i = -PRERENDER_RADIUS; i <= PRERENDER_RADIUS; i++)
+		for (int j = -PRERENDER_RADIUS; j <= PRERENDER_RADIUS; j++)
 			terr.renderChunk(glm::ivec2(player.getChunk()->getXOff()+i, player.getChunk()->getZOff()+j), cubeShader);
 
 
@@ -87,7 +88,7 @@ int main(void)
 		player.update(deltaTime);
 		// setup renderer
 		cubeShader.use();
-		glm::mat4 projection = glm::perspective(glm::radians(player.camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 500.0f);
+		glm::mat4 projection = glm::perspective(glm::radians(player.camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 1000.0f);
 		glm::mat4 view = player.camera.GetViewMatrix();
 		cubeShader.setMat4("projection", projection);
 		cubeShader.setMat4("view", view);

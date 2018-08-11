@@ -122,6 +122,8 @@ static float CUBEUV[72] = {
 
 using namespace std; // should move to cpp files for locality
 
+#include "chunk.h"
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -132,3 +134,4 @@ unsigned int skybox(void);
 unsigned int loadCubemap(vector<std::string> faces);
 float noise(float x, float y);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
+void diamondSquare(int Array[CHUNK_X][CHUNK_Z], int size);

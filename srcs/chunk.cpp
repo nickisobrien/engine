@@ -68,118 +68,9 @@ void Chunk::renderWater(Shader shader)
 	glDrawArrays(GL_TRIANGLES, 0, transparentPoints.size());
 }
 
-static void printArray(int Array[CHUNK_X][CHUNK_Z])
-{
-	for (int i = 0; i < CHUNK_X; i++)
-	{
-		for (int j = 0; j < CHUNK_Z; j++)
-		{
-			if (Array[i][j] < 10)
-				cout << " ";
-			cout << Array[i][j] << " ";
-		}
-		cout << endl;
-	}
-	cout << endl << endl;
-}
-
-
-static void squareStep(int Array[CHUNK_X][CHUNK_Z], int x, int z, int reach)
-{
-	int count = 0;
-	float avg = 0.0f;
-	if (x - reach >= 0 && Array[x-reach][z]!=0)
-	{
-		avg += Array[x-reach][z];
-		count++;
-	}
-	if (x + reach < CHUNK_X && Array[x+reach][z]!=0)
-	{
-		avg += Array[x+reach][z];
-		count++;
-	}
-	if (z - reach >= 0 && Array[x][z-reach]!=0)
-	{
-		avg += Array[x][z-reach];
-		count++;
-	}
-	if (z + reach < CHUNK_Z && Array[x][z+reach]!=0)
-	{
-		avg += Array[x][z+reach];
-		count++;
-	}
-	avg /= count;
-	Array[x][z] = (int)avg;
-}
-
-static void diamondStep(int Array[CHUNK_X][CHUNK_Z], int x, int z, int reach)
-{
-	int count = 0;
-	float avg = 0.0f;
-	if (x - reach >= 0 && z - reach >= 0)
-	{
-		avg += Array[x-reach][z-reach];
-		count++;
-	}
-	if (x - reach >= 0 && z + reach < CHUNK_Z)
-	{
-		avg += Array[x-reach][z+reach];
-		count++;
-	}
-	if (x + reach < CHUNK_X && z - reach >= 0)
-	{
-		avg += Array[x+reach][z-reach];
-		count++;
-	}
-	if (x + reach < CHUNK_X && z + reach < CHUNK_Z)
-	{
-		avg += Array[x+reach][z+reach];
-		count++;
-	}
-	avg /= count;
-	Array[x][z] = round(avg);
-}
-
-// 1 X X X X X X X X X X X X X X X 6
-// X X X X X X X X X X X X X X X X X
-// X X X X X X X X X X X X X X X X X
-// X X X X X X X X X X X X X X X X X
-// X X X X X X X X X X X X X X X X X
-// X X X X X X X X X X X X X X X X X
-// X X X X X X X X X X X X X X X X X
-// X X X X X X X X X X X X X X X X X
-// X X X X X X X X X X X X X X X X X
-// X X X X X X X X X X X X X X X X X
-// X X X X X X X X X X X X X X X X X
-// X X X X X X X X X X X X X X X X X
-// X X X X X X X X X X X X X X X X X
-// X X X X X X X X X X X X X X X X X
-// X X X X X X X X X X X X X X X X X
-// X X X X X X X X X X X X X X X X X
-// 1 X X X X X X X X X X X X X X X 6
-
-static void diamondSquare(int Array[CHUNK_X][CHUNK_Z], int x, int z, int reach)
-{
-	diamondStep(Array, x, z, reach);
-
-	squareStep(Array, x-reach, z, reach);
-	squareStep(Array, x, z-reach, reach);
-	squareStep(Array, x+reach, z, reach);
-	squareStep(Array, x, z+reach, reach);
-
-	if (reach > 1)
-	{
-		reach/=2;
-		diamondSquare(Array, x-reach, z-reach, reach);
-		diamondSquare(Array, x+reach, z-reach, reach);
-		diamondSquare(Array, x-reach, z+reach, reach);
-		diamondSquare(Array, x+reach, z+reach, reach);
-	}
-}
-
 void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastNoise humidityNoise)
 {
-	// std::clock_t    start;
+	// std::clock_t	start;
 	// start = std::clock();
 
 	/* DIAMOND SQUARE */
@@ -204,8 +95,9 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 	Array[0][CHUNK_Z-1] = MAP(terrainNoise.GetNoise(0+(CHUNK_X*xoff),CHUNK_Z-1+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
 	Array[CHUNK_X-1][0] = MAP(terrainNoise.GetNoise(CHUNK_X-1+(CHUNK_X*xoff),0+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
 	Array[CHUNK_X-1][CHUNK_Z-1] = MAP(terrainNoise.GetNoise(CHUNK_X-1+(CHUNK_X*xoff),CHUNK_Z-1+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
-	diamondSquare(Array, CHUNK_X/2, CHUNK_Z/2, CHUNK_X/2);
-	// diamond-square algo
+	Array[(CHUNK_X-1)/2][CHUNK_Z-1] = Array[CHUNK_X-1][CHUNK_Z-1];
+	diamondSquare(Array, CHUNK_X);
+	/* DIAMOND SQUARE ALGORITHM */
 	for (int x = 0; x < CHUNK_X; x++)
 	{
 		for (int z = 0; z < CHUNK_Z; z++)

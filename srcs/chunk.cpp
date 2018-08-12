@@ -73,67 +73,6 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 	// std::clock_t	start;
 	// start = std::clock();
 
-	/* DIAMOND SQUARE */
-	// int Array[CHUNK_X][CHUNK_Z];
-	// //just incase
-	// for (int x = 0; x < CHUNK_X; x++)
-	// {
-	// 	for (int z = 0; z < CHUNK_Z; z++)
-	// 	{
-	// 		if (x == 0 && z == 0)
-	// 			continue;
-	// 		else if (x == 0 && z == CHUNK_Z-1)
-	// 			continue;
-	// 		else if (x == CHUNK_X-1 && z == 0)
-	// 			continue;
-	// 		else if (x == CHUNK_X-1 && z == CHUNK_Z-1)
-	// 			continue;
-	// 		Array[x][z] = 0;
-	// 	}
-	// }
-	// Array[0][0] = MAP(terrainNoise.GetNoise(0+(CHUNK_X*xoff),0+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
-	// Array[0][CHUNK_Z-1] = MAP(terrainNoise.GetNoise(0+(CHUNK_X*xoff),CHUNK_Z-1+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
-	// Array[CHUNK_X-1][0] = MAP(terrainNoise.GetNoise(CHUNK_X-1+(CHUNK_X*xoff),0+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
-	// Array[CHUNK_X-1][CHUNK_Z-1] = MAP(terrainNoise.GetNoise(CHUNK_X-1+(CHUNK_X*xoff),CHUNK_Z-1+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
-	// Array[(CHUNK_X-1)/2][CHUNK_Z-1] = Array[CHUNK_X-1][CHUNK_Z-1];
-	// diamondSquare(Array, CHUNK_X);
-	// /* DIAMOND SQUARE ALGORITHM */
-	// for (int x = 0; x < CHUNK_X; x++)
-	// {
-	// 	for (int z = 0; z < CHUNK_Z; z++)
-	// 	{
-	// 		float temp = temperatureNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
-	// 		float hum = humidityNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
-	// 		for (int y = 0; y < Array[x][z]; y++)
-	// 		{
-	// 			if (temp < -0.33f)
-	// 			{
-	// 				if (hum < 0.0f)
-	// 					this->blocks[x][y][z].setType(67);
-	// 				else
-	// 					this->blocks[x][y][z].setType(68);
-	// 			}
-	// 			else if (temp >= -0.33f && temp >= 0.33f)
-	// 			{
-	// 				if (hum < 0.0f)
-	// 					this->blocks[x][y][z].setType(4);
-	// 				else
-	// 					this->blocks[x][y][z].setType(3);
-	// 			}
-	// 			else
-	// 			{
-	// 				if (hum < 0.0f)
-	// 					this->blocks[x][y][z].setType(19);
-	// 				else
-	// 					this->blocks[x][y][z].setType(4); // switched to grassland for now
-	// 			}
-	// 		}
-	// 		for (int y = Array[x][z]; y < 52; y++)
-	// 			this->blocks[x][y][z].setType(WATER_BLOCK);
-	// 	}
-	// }
-
-
 	/* PERLIN NOISE */
 	for (int x = 0; x < CHUNK_X; x++)
 	{

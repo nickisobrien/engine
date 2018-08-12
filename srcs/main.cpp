@@ -11,7 +11,7 @@
 #include "stb_image.h" // https://github.com/nothings/stb/blob/master/stb_image.h
 
 #define RENDER_RADIUS 12
-#define PRERENDER_RADIUS 6
+#define PRERENDER_RADIUS 3
 
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
@@ -34,7 +34,7 @@ int main(void)
 #endif
 
 	// glfw window creation
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Engine", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Engine",  glfwGetPrimaryMonitor(), NULL);
 	if (window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;

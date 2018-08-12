@@ -1,5 +1,10 @@
 #include "engine.h"
 
+inline static float random(int range)
+{
+	return (rand() % (range * 2)) - range;
+}
+
 static void printArray(int Array[CHUNK_X][CHUNK_Z], int reach = 0)
 {
 	cout << reach << endl;
@@ -41,8 +46,9 @@ static void diamondStep(int Array[CHUNK_X][CHUNK_Z], int x, int z, int reach)
 		avg += Array[x][z+reach];
 		count++;
 	}
+	avg += random(reach);
 	avg /= count;
-	Array[x][z] = (int)avg;
+	Array[x][z] = round(avg);
 }
 
 static void squareStep(int Array[CHUNK_X][CHUNK_Z], int x, int z, int reach)
@@ -69,6 +75,7 @@ static void squareStep(int Array[CHUNK_X][CHUNK_Z], int x, int z, int reach)
 		avg += Array[x+reach][z+reach];
 		count++;
 	}
+	avg+= random(reach);
 	avg /= count;
 	Array[x][z] = round(avg);
 }

@@ -78,48 +78,57 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 	{
 		for (int z = 0; z < CHUNK_Z; z++)
 		{
+			bool water = false;
 			// Use the noise library to get the height value of x, z
 			int base = MAP(terrainNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
 			float temp = temperatureNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
 			float hum = humidityNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
+			short blocktype;
+			if (temp < -0.33f)
+			{
+				if (hum < 0.0f)
+					blocktype = 67;
+				else
+					blocktype = 68;
+			}
+			else if (temp >= -0.33f && temp >= 0.33f)
+			{
+				if (hum < 0.0f)
+					blocktype = 4;
+				else
+					blocktype = 3;
+			}
+			else
+			{
+				if (hum < 0.0f)
+					blocktype = 19;
+				else
+					blocktype = 4;
+			}
+			if (base < 52)
+				water = true;
 			for (int y = 0; y < base; y++)
 			{
-				
-					// noise layer #1 "Temperature"
-					// noise layer #2 "Humidity"
-					// Derived biomes:
-					// Temp < 33%	 		Humidity < 50% => Cold rocky biome
-					// Temp < 33%	 		Humidity > 50% => Ice and frozen lakes
-					// 33% < Temp < 66%	Humidity < 50% => Grassland
-					// 33% < Temp < 66%	Humidity > 50% => Forest or swamp
-					// Temp > 66%	 		Humidity < 50% => Dessert
-					// Temp > 66%	 		Humidity > 50% => Tropical rainforest
-				
-
-				if (temp < -0.33f)
-				{
-					if (hum < 0.0f)
-						this->blocks[x][y][z].setType(67);
-					else
-						this->blocks[x][y][z].setType(68);
-				}
-				else if (temp >= -0.33f && temp >= 0.33f)
-				{
-					if (hum < 0.0f)
-						this->blocks[x][y][z].setType(4);
-					else
-						this->blocks[x][y][z].setType(3);
-				}
-				else
-				{
-					if (hum < 0.0f)
-						this->blocks[x][y][z].setType(19);
-					else
-						this->blocks[x][y][z].setType(4); // switched to grassland for now
-				}
+				// noise layer #1 "Temperature"
+				// noise layer #2 "Humidity"
+				// Derived biomes:
+				// Temp < 33%	 		Humidity < 50% => Cold rocky biome
+				// Temp < 33%	 		Humidity > 50% => Ice and frozen lakes
+				// 33% < Temp < 66%	Humidity < 50% => Grassland
+				// 33% < Temp < 66%	Humidity > 50% => Forest or swamp
+				// Temp > 66%	 		Humidity < 50% => Dessert
+				// Temp > 66%	 		Humidity > 50% => Tropical rainforest
+				this->blocks[x][y][z].setType(blocktype); // switched to grassland for now
 			}
 			for (int y = base; y < 52; y++)
 				this->blocks[x][y][z].setType(WATER_BLOCK);
+			// trees
+			if (!water && blocktype == 4 && rand() % 1000 > 996)
+			{
+				this->blocks[x][base][z].setType(21);
+				this->blocks[x][base+1][z].setType(21);
+				this->blocks[x][base+2][z].setType(21);
+			}
 		}
 	}
 

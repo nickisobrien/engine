@@ -123,11 +123,30 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 			for (int y = base; y < 52; y++)
 				this->blocks[x][y][z].setType(WATER_BLOCK);
 			// trees
-			if (!water && blocktype == 4 && rand() % 1000 > 996)
+			if (!water && blocktype == 4 && x<CHUNK_X-1 && z<CHUNK_Z-1 && rand() % 1000 > 996)
 			{
-				this->blocks[x][base][z].setType(21);
-				this->blocks[x][base+1][z].setType(21);
-				this->blocks[x][base+2][z].setType(21);
+				for (int i = 0; i < 2; i++)
+				{
+					for (int j = 0; j < 2; j++)
+					{
+						for (int k = -1; k < 12; k++)
+						{
+							if (base+k < CHUNK_Y && base+k > 0)
+							{
+								if (this->blocks[x+i][base+k][z+j].getType() == AIR_BLOCK)
+								{
+									this->blocks[x+i][base+k][z+j].setType(21);
+								}
+							}
+						}
+					}
+				}
+			} // cactus
+			else if (!water && blocktype == 19 && rand() % 1000 > 996)
+			{
+				this->blocks[x][base][z].setType(71);
+				this->blocks[x][base+1][z].setType(71);
+				this->blocks[x][base+2][z].setType(71);
 			}
 		}
 	}

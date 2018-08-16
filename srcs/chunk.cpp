@@ -80,10 +80,19 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 		{
 			bool water = false;
 			// Use the noise library to get the height value of x, z
-			int base = MAP(terrainNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
+			short base = MAP(terrainNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
 			float temp = temperatureNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
 			float hum = humidityNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
 			short blocktype;
+			// noise layer #1 "Temperature"
+			// noise layer #2 "Humidity"
+			// Derived biomes:
+			// Temp < 33%	 		Humidity < 50% => Cold rocky biome
+			// Temp < 33%	 		Humidity > 50% => Ice and frozen lakes
+			// 33% < Temp < 66%	Humidity < 50% => Grassland
+			// 33% < Temp < 66%	Humidity > 50% => Forest or swamp
+			// Temp > 66%	 		Humidity < 50% => Dessert
+			// Temp > 66%	 		Humidity > 50% => Tropical rainforest
 			if (temp < -0.33f)
 			{
 				if (hum < 0.0f)
@@ -109,15 +118,6 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 				water = true;
 			for (int y = 0; y < base; y++)
 			{
-				// noise layer #1 "Temperature"
-				// noise layer #2 "Humidity"
-				// Derived biomes:
-				// Temp < 33%	 		Humidity < 50% => Cold rocky biome
-				// Temp < 33%	 		Humidity > 50% => Ice and frozen lakes
-				// 33% < Temp < 66%	Humidity < 50% => Grassland
-				// 33% < Temp < 66%	Humidity > 50% => Forest or swamp
-				// Temp > 66%	 		Humidity < 50% => Dessert
-				// Temp > 66%	 		Humidity > 50% => Tropical rainforest
 				this->blocks[x][y][z].setType(blocktype); // switched to grassland for now
 			}
 			for (int y = base; y < 52; y++)
@@ -161,7 +161,7 @@ void Chunk::faceRendering(void)
 	int zPlusCheck;
 	for(int x = 0; x < CHUNK_X; x++)
 	{
-		for(int y = 0; y < CHUNK_Y; y++) // NOTE: not rendering floor atm, can change back to y = 1 after TODO vvv
+		for(int y = 0; y < CHUNK_Y; y++)
 		{
 			for (int z = 0; z < CHUNK_Z; z++)
 			{
@@ -217,27 +217,6 @@ void Chunk::faceRendering(void)
 					yPlusCheck = 1;
 				else
 					yPlusCheck = this->blocks[x][y+1][z].getType();
-
-				// Deactivating hidden blocks
-				if (xMinusCheck==0 && yMinusCheck==0 && zMinusCheck==0 && xPlusCheck==0 && yPlusCheck==0 && zPlusCheck==0)
-				{
-					this->blocks[x][y][z].setActive(false);
-					continue ;
-				}
-
-				// Facing
-				// if (yMinusCheck==AIR_BLOCK || (yMinusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
-				// 	this->addFace(0, x , y, z, val); //DOWN
-				// if (yPlusCheck==AIR_BLOCK || (yPlusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
-				// 	this->addFace(1, x , y, z, val); //UP
-				// if (xPlusCheck==AIR_BLOCK || (xPlusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
-				// 	this->addFace(2, x , y, z, val); //xpos SIDE
-				// if (zPlusCheck==AIR_BLOCK || (zPlusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
-				// 	this->addFace(3, x , y, z, val); //zpos SIDE
-				// if (xMinusCheck==AIR_BLOCK || (xMinusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
-				// 	this->addFace(4, x , y, z, val); //xneg SIDE
-				// if (zMinusCheck==AIR_BLOCK || (zMinusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
-				// 	this->addFace(5, x , y, z, val); //zneg SIDE
 
 				// Facing
 				if (!transparent)

@@ -224,7 +224,7 @@ void Player::leftMouseClickEvent()
 	}
 	if (b && b->isActive())
 	{
-		b->setType(0);
+		b->setType(AIR_BLOCK);
 		c->update();
 		// edge blocks broken require neighbor chunk updates too
 		if (current_voxel.x == 0)

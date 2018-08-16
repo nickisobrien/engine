@@ -63,7 +63,7 @@ void Chunk::render(Shader shader)
 void Chunk::renderWater(Shader shader)
 {
 	shader.setMat4("transform", offsetMatrix);
-	shader.setFloat("transparency", 0.6f);
+	shader.setFloat("transparency", 0.85f);
 	glBindVertexArray(transparentVAO);
 	glDrawArrays(GL_TRIANGLES, 0, transparentPoints.size());
 }
@@ -143,7 +143,7 @@ void Chunk::update(void)
 
 void Chunk::faceRendering(void)
 {
-	bool water;
+	bool transparent;
 	int xMinusCheck;
 	int yMinusCheck;
 	int zMinusCheck;
@@ -156,7 +156,7 @@ void Chunk::faceRendering(void)
 		{
 			for (int z = 0; z < CHUNK_Z; z++)
 			{
-				water = false;
+				transparent = false;
 				if (this->blocks[x][y][z].getType() == AIR_BLOCK)
 				{
 					this->blocks[x][y][z].setActive(false);
@@ -165,7 +165,7 @@ void Chunk::faceRendering(void)
 				else if (this->blocks[x][y][z].getType() == WATER_BLOCK) //water_BLOCK
 				{
 					this->blocks[x][y][z].setActive(false);
-					water = true;
+					transparent = true;
 				}
 				int val = this->getWorld(x, y, z);
 
@@ -231,7 +231,7 @@ void Chunk::faceRendering(void)
 				// 	this->addFace(5, x , y, z, val); //zneg SIDE
 
 				// Facing
-				if (!water)
+				if (!transparent)
 				{
 					if (yMinusCheck==AIR_BLOCK || yMinusCheck==WATER_BLOCK)
 						this->addFace(0, x , y, z, val); //DOWN

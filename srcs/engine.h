@@ -17,6 +17,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/hash.hpp>
 #include <unordered_map>
+#include <cmath>
 
 // #define WIDTH 720
 // #define HEIGHT 480
@@ -28,6 +29,7 @@
 #define TEXTURE_SIZE 16
 
 #define WATER_BLOCK 15
+#define WATER_LEVEL 22
 #define AIR_BLOCK 0
 
 static float VCUBE[108] = {

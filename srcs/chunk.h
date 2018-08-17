@@ -6,7 +6,7 @@
 
 #define CHUNK_Z 17
 #define CHUNK_X 17
-#define CHUNK_Y 128
+#define CHUNK_Y 256
 
 enum ChunkState
 {

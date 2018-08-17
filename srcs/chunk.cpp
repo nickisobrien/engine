@@ -80,7 +80,8 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 		{
 			bool water = false;
 			// Use the noise library to get the height value of x, z
-			short base = MAP(terrainNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 1.0f, CHUNK_Y-1);
+			float b = MAP(terrainNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 0.1f, 6.0f);
+			int base = pow(b, 3);
 			float temp = temperatureNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
 			float hum = humidityNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
 			short blocktype;
@@ -114,16 +115,17 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 				else
 					blocktype = 4;
 			}
-			if (base < 52)
+			if (base < WATER_LEVEL)
 				water = true;
 			for (int y = 0; y < base; y++)
 			{
 				this->blocks[x][y][z].setType(blocktype); // switched to grassland for now
 			}
-			for (int y = base; y < 52; y++)
+			for (int y = base; y < WATER_LEVEL; y++)
 				this->blocks[x][y][z].setType(WATER_BLOCK);
 			// trees
-			if (!water && blocktype == 4 && x<CHUNK_X-1 && z<CHUNK_Z-1 && rand() % 1000 > 996)
+			Chunk *c = this;
+			if (!water && blocktype == 4 && rand() % 1000 > 996)
 			{
 				for (int i = 0; i < 2; i++)
 				{
@@ -133,9 +135,17 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 						{
 							if (base+k < CHUNK_Y && base+k > 0)
 							{
-								if (this->blocks[x+i][base+k][z+j].getType() == AIR_BLOCK)
+								if (x+i == CHUNK_X-1)
+									if (c->getXPlus())
+										c = c->getXPlus();
+								if (z+j == CHUNK_Z-1)
 								{
-									this->blocks[x+i][base+k][z+j].setType(21);
+									if (c->getZPlus())
+										c = c->getZPlus();
+								}
+								if (c->blocks[(x+i)%CHUNK_X][(base+k)%CHUNK_Y][(z+j)%CHUNK_Z].getType() == AIR_BLOCK)
+								{
+									c->blocks[(x+i)%CHUNK_X][(base+k)%CHUNK_Y][(z+j)%CHUNK_Z].setType(21);
 								}
 							}
 						}

@@ -57,13 +57,20 @@ int main(void)
 	// build and compile our shader program
 	Shader cubeShader("../resources/shaders/cube.vs", "../resources/shaders/cube.fs");
 	unsigned int atlas = loadTexture("../resources/textures/atlas4.png");
-
 	cubeShader.use();
 	cubeShader.setInt("atlas", 0);	
+
 	for (int i = -PRERENDER_RADIUS; i <= PRERENDER_RADIUS; i++)
 		for (int j = -PRERENDER_RADIUS; j <= PRERENDER_RADIUS; j++)
 			terr.renderChunk(glm::ivec2(player.getChunk()->getXOff()+i, player.getChunk()->getZOff()+j), cubeShader);
 
+	while (!terr.updateList.empty())
+	{
+		glm::ivec2 pos = terr.updateList[terr.updateList.size()-1];
+		terr.updateList.pop_back();
+		terr.updateChunk(pos); // TODO: add to generate list
+		terr.world[pos]->render(cubeShader);
+	}
 
 	// render loop
 	while (!glfwWindowShouldClose(window))
@@ -103,6 +110,14 @@ int main(void)
 		for (int i = -RENDER_RADIUS; i <= RENDER_RADIUS; i++)
 			for (int j = -RENDER_RADIUS; j <= RENDER_RADIUS; j++)
 				terr.renderWaterChunk(glm::ivec2(player.getChunk()->getXOff() + i, player.getChunk()->getZOff() + j), cubeShader);
+
+		if (!terr.updateList.empty())
+		{
+			glm::ivec2 pos = terr.updateList[terr.updateList.size()-1];
+			terr.updateList.pop_back();
+			terr.updateChunk(pos); // TODO: add to generate list
+			terr.world[pos]->render(cubeShader);
+		}
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);

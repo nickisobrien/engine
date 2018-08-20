@@ -80,8 +80,8 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 		{
 			bool water = false;
 			// Use the noise library to get the height value of x, z
-			float b = MAP(terrainNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 0.1f, 6.0f);
-			int base = pow(b, 3);
+			float b = MAP(terrainNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 0.1f, 14.0f);
+			int base = pow(b, 2);
 			float temp = temperatureNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
 			float hum = humidityNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
 			short blocktype;
@@ -123,8 +123,49 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 			}
 			for (int y = base; y < WATER_LEVEL; y++)
 				this->blocks[x][y][z].setType(WATER_BLOCK);
-			// trees
-			Chunk *c = this;
+		}
+	}
+	// std::cout << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << std::endl;
+}
+
+void Chunk::addExtras(FastNoise terrainNoise, FastNoise temperatureNoise, FastNoise humidityNoise)
+{
+	// trees
+	Chunk *c = this;
+	for (int x = 0; x < CHUNK_X; x++)
+	{
+		for (int z = 0; z < CHUNK_Z; z++)
+		{
+			bool water = false;
+			float b = MAP(terrainNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 0.1f, 14.0f);
+			int base = pow(b, 2);
+			float temp = temperatureNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
+			float hum = humidityNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
+			short blocktype;
+			int y = base;
+			if (temp < -0.33f)
+			{
+				if (hum < 0.0f)
+					blocktype = 67;
+				else
+					blocktype = 68;
+			}
+			else if (temp >= -0.33f && temp >= 0.33f)
+			{
+				if (hum < 0.0f)
+					blocktype = 4;
+				else
+					blocktype = 3;
+			}
+			else
+			{
+				if (hum < 0.0f)
+					blocktype = 19;
+				else
+					blocktype = 4;
+			}
+			if (base < WATER_LEVEL)
+				water = true;
 			if (!water && blocktype == 4 && rand() % 1000 > 996)
 			{
 				for (int i = 0; i < 2; i++)
@@ -143,6 +184,8 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 									if (c->getZPlus())
 										c = c->getZPlus();
 								}
+								if (x+i >= CHUNK_X || z+j >= CHUNK_Z)
+									continue;
 								if (c->blocks[(x+i)%CHUNK_X][(base+k)%CHUNK_Y][(z+j)%CHUNK_Z].getType() == AIR_BLOCK)
 								{
 									c->blocks[(x+i)%CHUNK_X][(base+k)%CHUNK_Y][(z+j)%CHUNK_Z].setType(21);
@@ -160,8 +203,6 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 			}
 		}
 	}
-
-	// std::cout << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << std::endl;
 }
 
 void Chunk::update(void)

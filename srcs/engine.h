@@ -29,7 +29,7 @@
 #define TEXTURE_SIZE 16
 
 #define WATER_BLOCK 15
-#define WATER_LEVEL 22
+#define WATER_LEVEL 26
 #define AIR_BLOCK 0
 
 static float VCUBE[108] = {

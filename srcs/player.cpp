@@ -87,6 +87,8 @@ bool Player::isGrounded()
 	Block *b = getChunk()->getBlock(x,y-3,z);
 	if (b != NULL && (b->getType() != AIR_BLOCK && b->getType() != WATER_BLOCK))
 		return (true);
+	if (b == NULL)
+		return (true);
 	return (false);
 }
 

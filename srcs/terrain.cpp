@@ -3,22 +3,24 @@
 
 void Terrain::updateChunk(glm::ivec2 pos)
 {
-	if (this->world.find(pos) != this->world.end())
-		this->world[pos]->update();
+	string p = to_string(pos.x) + "," + to_string(pos.y);
+	if (this->world.find(p) != this->world.end())
+		this->world[p]->update();
 	else
 	{
-		this->world[pos] = new Chunk(pos.x, pos.y);
-		this->world[pos]->setTerrain(this->terrainNoise, this->temperatureNoise, this->humidityNoise);
-		this->world[pos]->update();
+		this->world[p] = new Chunk(pos.x, pos.y);
+		this->world[p]->setTerrain(this->terrainNoise, this->temperatureNoise, this->humidityNoise);
+		this->world[p]->update();
 	}
 }
 
 void Terrain::renderChunk(glm::ivec2 pos, Shader shader)
 {
-	if (this->world.find(pos) != this->world.end())
+	string p = to_string(pos.x) + "," + to_string(pos.y);
+	if (this->world.find(p) != this->world.end())
 	{
-		this->world[pos]->render(shader);
-		if (!this->world[pos]->neighborsSet)
+		this->world[p]->render(shader);
+		if (!this->world[p]->neighborsSet)
 			this->setNeighbors(pos);
 	}
 	else
@@ -33,10 +35,11 @@ void Terrain::renderChunk(glm::ivec2 pos, Shader shader)
 
 void Terrain::renderWaterChunk(glm::ivec2 pos, Shader shader)
 {
-	if (this->world.find(pos) != this->world.end())
+	string p = to_string(pos.x) + "," + to_string(pos.y);
+	if (this->world.find(p) != this->world.end())
 	{
-		this->world[pos]->renderWater(shader);
-		if (!this->world[pos]->neighborsSet)
+		this->world[p]->renderWater(shader);
+		if (!this->world[p]->neighborsSet)
 			this->setNeighbors(pos);
 	}
 	// else
@@ -63,19 +66,24 @@ void Terrain::setNoise(void)
 
 void Terrain::setNeighbors(glm::ivec2 pos)
 {
-	if (!this->world[pos]->getXMinus() && this->world.find(glm::ivec2(pos.x-1, pos.y)) != this->world.end())
-		this->world[pos]->setXMinus(this->world[glm::ivec2(pos.x-1, pos.y)]);
-	if (!this->world[pos]->getXPlus() && this->world.find(glm::ivec2(pos.x+1, pos.y)) != this->world.end())
-		this->world[pos]->setXPlus(this->world[glm::ivec2(pos.x+1, pos.y)]);
-	if (!this->world[pos]->getZMinus() && this->world.find(glm::ivec2(pos.x, pos.y-1)) != this->world.end())
-		this->world[pos]->setZMinus(this->world[glm::ivec2(pos.x, pos.y-1)]);
-	if (!this->world[pos]->getZPlus() && this->world.find(glm::ivec2(pos.x, pos.y+1)) != this->world.end())
-		this->world[pos]->setZPlus(this->world[glm::ivec2(pos.x, pos.y+1)]);
+	string p = to_string(pos.x) + "," + to_string(pos.y);
+	string px = to_string(pos.x-1) + "," + to_string(pos.y);
+	string pxx = to_string(pos.x+1) + "," + to_string(pos.y);
+	string py = to_string(pos.x) + "," + to_string(pos.y-1);
+	string pyy = to_string(pos.x) + "," + to_string(pos.y+1);
+	if (!this->world[p]->getXMinus() && this->world.find(px) != this->world.end())
+		this->world[p]->setXMinus(this->world[px]);
+	if (!this->world[p]->getXPlus() && this->world.find(pxx) != this->world.end())
+		this->world[p]->setXPlus(this->world[pxx]);
+	if (!this->world[p]->getZMinus() && this->world.find(py) != this->world.end())
+		this->world[p]->setZMinus(this->world[py]);
+	if (!this->world[p]->getZPlus() && this->world.find(pyy) != this->world.end())
+		this->world[p]->setZPlus(this->world[pyy]);
 
-	if (this->world[pos]->getXPlus() && this->world[pos]->getXMinus() &&
-		this->world[pos]->getZPlus() && this->world[pos]->getZMinus())
+	if (this->world[p]->getXPlus() && this->world[p]->getXMinus() &&
+		this->world[p]->getZPlus() && this->world[p]->getZMinus())
 	{
-		this->world[pos]->neighborsSet = true;
-		this->world[pos]->update();
+		this->world[p]->neighborsSet = true;
+		this->world[p]->update();
 	}
 }

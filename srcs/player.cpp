@@ -67,10 +67,11 @@ Chunk *Player::getChunk()
 	int cx = this->camera.Position.x >= 0.0f ? this->camera.Position.x / CHUNK_X : ceil(this->camera.Position.x) / CHUNK_X - 1.0f;
 	int cz = this->camera.Position.z >= 0.0f ? this->camera.Position.z / CHUNK_Z : ceil(this->camera.Position.z) / CHUNK_X - 1.0f;
 	glm::ivec2 pos(cx, cz);
+	string p = to_string(pos.x) + "," + to_string(pos.y);
 	// not found generate new chunk at player pos
-	if (this->terr->world.find(pos) == this->terr->world.end())
+	if (this->terr->world.find(p) == this->terr->world.end())
 		this->terr->updateChunk(pos);
-	return (this->terr->world[pos]);
+	return (this->terr->world[p]);
 }
 
 bool Player::isGrounded()

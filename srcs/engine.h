@@ -19,6 +19,7 @@
 #include <unordered_map>
 #include <cmath>
 #include <thread>
+#include <string>
 
 // #define WIDTH 720
 // #define HEIGHT 480

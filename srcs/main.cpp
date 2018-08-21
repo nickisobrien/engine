@@ -65,12 +65,11 @@ int main(void)
 			terr.renderChunk(glm::ivec2(player.getChunk()->getXOff()+i, player.getChunk()->getZOff()+j), cubeShader);
 	while (!terr.updateList.empty()) // TEMP FIX FOR MOST SEGFAULTS USING WHILE INSTEAD OF IF
 	{
-		terr.updateChunk(terr.updateList[terr.updateList.size()-1]);
-		terr.world[terr.updateList[terr.updateList.size()-1]]->render(cubeShader);
+		glm::ivec2 pos = terr.updateList[terr.updateList.size()-1];
+		terr.updateChunk(pos);
+		terr.renderChunk(pos, cubeShader);
 		terr.updateList.pop_back();
 	}
-
-
 
 	// render loop
 	while (!glfwWindowShouldClose(window))
@@ -131,10 +130,10 @@ int main(void)
 			}
 		}
 
-		while (!terr.updateList.empty()) // TEMP FIX FOR MOST SEGFAULTS USING WHILE INSTEAD OF IF
+		if (!terr.updateList.empty()) // TEMP FIX FOR MOST SEGFAULTS USING WHILE INSTEAD OF IF
 		{
 			terr.updateChunk(terr.updateList[terr.updateList.size()-1]);
-			terr.world[terr.updateList[terr.updateList.size()-1]]->render(cubeShader);
+			terr.renderChunk(terr.updateList[terr.updateList.size()-1], cubeShader);
 			terr.updateList.pop_back();
 			// terr.updateList.clear();
 		}

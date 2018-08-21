@@ -1,3 +1,4 @@
+
 #include "engine.h"
 #include "shader.h"
 #include "camera.h"
@@ -11,7 +12,7 @@
 #include "stb_image.h" // https://github.com/nothings/stb/blob/master/stb_image.h
 
 #define RENDER_RADIUS 12
-#define PRERENDER_RADIUS 4
+#define PRERENDER_RADIUS 16
 
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
@@ -65,11 +66,12 @@ int main(void)
 			terr.renderChunk(glm::ivec2(player.getChunk()->getXOff()+i, player.getChunk()->getZOff()+j), cubeShader);
 	while (!terr.updateList.empty()) // TEMP FIX FOR MOST SEGFAULTS USING WHILE INSTEAD OF IF
 	{
-		glm::ivec2 pos = terr.updateList[terr.updateList.size()-1];
-		terr.updateChunk(pos);
-		terr.renderChunk(pos, cubeShader);
+		terr.updateChunk(terr.updateList[terr.updateList.size()-1]);
+		terr.renderChunk(terr.updateList[terr.updateList.size()-1], cubeShader);
 		terr.updateList.pop_back();
 	}
+
+
 
 	// render loop
 	while (!glfwWindowShouldClose(window))

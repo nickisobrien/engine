@@ -60,9 +60,9 @@ void Chunk::render(Shader shader)
 	int err = glGetError();
 	if (err)
 		cout << "ERROR " << err << endl;
-	cout << "size " << this->points.size() << endl;
+	// cout << "size " << this->points.size() << endl;
 	glDrawArrays(GL_TRIANGLES, 0, this->points.size()); //RIGHT HERE CAUSES THE SEGFAULTS
-	cout << "TEST2" << endl;
+	// cout << "TEST2" << endl;
 }
 
 void Chunk::renderWater(Shader shader)

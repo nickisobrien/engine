@@ -23,6 +23,7 @@ void Terrain::renderChunk(glm::ivec2 pos, Shader shader)
 	}
 	else
 	{
+		// check if not already in the update list
 		if (find(updateList.begin(), updateList.end(), pos) == updateList.end())
 			this->updateList.push_back(pos);
 	}

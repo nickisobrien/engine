@@ -11,7 +11,7 @@
 #include "stb_image.h" // https://github.com/nothings/stb/blob/master/stb_image.h
 
 #define RENDER_RADIUS 12
-#define PRERENDER_RADIUS 12
+#define PRERENDER_RADIUS 2
 
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
@@ -19,7 +19,17 @@ float lastX = WIDTH / 2.0f;
 float lastY = HEIGHT / 2.0f;
 bool firstMouse = true;
 Terrain terr;
-Player player(glm::vec3(0.0f, (float)CHUNK_Y, 0.0f), &terr);
+Player player(glm::vec3(CHUNK_X/2, (float)CHUNK_Y, CHUNK_Z/2), &terr);
+
+static void testfunc(Shader cubeShader)
+{
+	if (!terr.updateList.empty())
+	{
+		glm::ivec2 pos = terr.updateList[terr.updateList.size()-1];
+		terr.updateList.pop_back();
+		terr.updateChunk(pos);
+	}
+}
 
 int main(void)
 {
@@ -68,8 +78,7 @@ int main(void)
 	{
 		glm::ivec2 pos = terr.updateList[terr.updateList.size()-1];
 		terr.updateList.pop_back();
-		terr.updateChunk(pos); // TODO: add to generate list
-		terr.world[pos]->render(cubeShader);
+		terr.updateChunk(pos);
 	}
 
 	// render loop
@@ -81,7 +90,12 @@ int main(void)
 		lastFrame = currentFrame;
 
 		// input
-		player.processInput(window, deltaTime);
+		player.processInput(window, deltaTime); // could be source of SEGFAULT?
+
+		// for physics
+		// getting current chunk ensures current chunk is rendered
+		Chunk *c = player.getChunk();
+		player.update(deltaTime);
 
 		// render
 		glClearColor(0.5f, 0.8f, 0.9f, 1.0f);
@@ -91,8 +105,6 @@ int main(void)
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, atlas);
 
-		// for physics
-		player.update(deltaTime);
 		// setup renderer
 		cubeShader.use();
 		glm::mat4 projection = glm::perspective(glm::radians(player.camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 1000.0f);
@@ -104,30 +116,31 @@ int main(void)
 		{
 			for (int j = RENDER_RADIUS; j >= 0; j--)
 			{
-				terr.renderChunk(glm::ivec2(player.getChunk()->getXOff() + i, player.getChunk()->getZOff() + j), cubeShader);
-				terr.renderChunk(glm::ivec2(player.getChunk()->getXOff() - i, player.getChunk()->getZOff() - j), cubeShader);
-				terr.renderChunk(glm::ivec2(player.getChunk()->getXOff() - i, player.getChunk()->getZOff() + j), cubeShader);
-				terr.renderChunk(glm::ivec2(player.getChunk()->getXOff() + i, player.getChunk()->getZOff() - j), cubeShader);
+				terr.renderChunk(glm::ivec2(c->getXOff() + i, c->getZOff() + j), cubeShader);
+				terr.renderChunk(glm::ivec2(c->getXOff() - i, c->getZOff() - j), cubeShader);
+				terr.renderChunk(glm::ivec2(c->getXOff() - i, c->getZOff() + j), cubeShader);
+				terr.renderChunk(glm::ivec2(c->getXOff() + i, c->getZOff() - j), cubeShader);
 			}
 		}
 		for (int i = RENDER_RADIUS; i >= 0; i--)
 		{
 			for (int j = RENDER_RADIUS; j >= 0; j--)
 			{
-				terr.renderWaterChunk(glm::ivec2(player.getChunk()->getXOff() + i, player.getChunk()->getZOff() + j), cubeShader);
-				terr.renderWaterChunk(glm::ivec2(player.getChunk()->getXOff() - i, player.getChunk()->getZOff() - j), cubeShader);
-				terr.renderWaterChunk(glm::ivec2(player.getChunk()->getXOff() - i, player.getChunk()->getZOff() + j), cubeShader);
-				terr.renderWaterChunk(glm::ivec2(player.getChunk()->getXOff() + i, player.getChunk()->getZOff() - j), cubeShader);
+				terr.renderWaterChunk(glm::ivec2(c->getXOff() + i, c->getZOff() + j), cubeShader);
+				terr.renderWaterChunk(glm::ivec2(c->getXOff() - i, c->getZOff() - j), cubeShader);
+				terr.renderWaterChunk(glm::ivec2(c->getXOff() - i, c->getZOff() + j), cubeShader);
+				terr.renderWaterChunk(glm::ivec2(c->getXOff() + i, c->getZOff() - j), cubeShader);
 			}
 		}
 
-
 		if (!terr.updateList.empty())
 		{
+			// thread th1(testfunc, cubeShader);
 			glm::ivec2 pos = terr.updateList[terr.updateList.size()-1];
-			terr.updateList.pop_back();
-			terr.updateChunk(pos); // TODO: add to generate list
-			terr.world[pos]->render(cubeShader);
+			// terr.updateList.pop_back();
+			terr.updateChunk(pos);
+			// th1.join();
+			terr.updateList.clear();
 		}
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

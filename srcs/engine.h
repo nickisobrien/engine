@@ -18,6 +18,7 @@
 #include <glm/gtx/hash.hpp>
 #include <unordered_map>
 #include <cmath>
+#include <thread>
 
 // #define WIDTH 720
 // #define HEIGHT 480

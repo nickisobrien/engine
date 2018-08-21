@@ -57,7 +57,9 @@ void Chunk::render(Shader shader)
 	shader.setMat4("transform", offsetMatrix);
 	shader.setFloat("transparency", 1.0f);
 	glBindVertexArray(VAO);
+	cout << "TEST1" << endl;
 	glDrawArrays(GL_TRIANGLES, 0, points.size());
+	cout << "TEST2" << endl;
 }
 
 void Chunk::renderWater(Shader shader)
@@ -125,6 +127,7 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 				this->blocks[x][y][z].setType(WATER_BLOCK);
 		}
 	}
+	// this->addExtras(terrainNoise, temperatureNoise, humidityNoise);
 	// std::cout << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << std::endl;
 }
 
@@ -213,8 +216,6 @@ void Chunk::update(void)
 
 	this->transparentPoints.clear();
 	this->transparentUvs.clear();
-
-	glm::mat4 transform = this->offsetMatrix;
 
 	this->faceRendering();
 	this->buildVAO();

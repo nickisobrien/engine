@@ -48,7 +48,7 @@ void Player::processInput(GLFWwindow *window, float deltaTime)
 		z = CHUNK_Z + z;
 
 	Chunk *c;
-	if ((c = this->getChunk()) != NULL)
+	if ((c = this->getChunk()) != NULL) // prob don't need the if statement now that getChunk will make chunk if needed
 	{
 		Block *b = c->getBlock(x,y,z);
 		if (b != NULL && b->isActive())
@@ -107,16 +107,16 @@ void Player::applyGravity(float time)
 	this->setPosition(current);
 }
 
+
+// helper funcs for blcok breaking
 static int signum(int x)
 {
 		return x == 0 ? 0 : x < 0 ? -1 : 1;
 }
-
 static float mod(float value, float modulus)
 {
 	return fmod(fmod(value, modulus) + modulus,	modulus);
 }
-
 static float intbound(float s, float ds)
 {
 	// Find the smallest positive t such that s+t*ds is an integer.
@@ -202,40 +202,61 @@ void Player::leftMouseClickEvent()
 		if (current_voxel.x < 0)
 		{
 			c = c->getXMinus();
+			if (c!=NULL)
+				break ;
 			current_voxel.x = CHUNK_X + current_voxel.x;
 		}
 		else if (current_voxel.x >= CHUNK_X)
 		{
 			c = c->getXPlus();
+			if (c==NULL)
+				break ;
 			current_voxel.x -= CHUNK_X;
 		}
 
 		if (current_voxel.z < 0)
 		{
 			c = c->getZMinus();
+			if (c==NULL)
+				break ;
 			current_voxel.z = CHUNK_Z + current_voxel.z;
 		}
 		else if (current_voxel.z >= CHUNK_Z)
 		{
 			c = c->getZPlus();
+			if (c==NULL)
+				break ;
 			current_voxel.z -= CHUNK_Z;
 		}
-
 		b = c->getBlock(current_voxel.x,current_voxel.y,current_voxel.z);
 		breakDist++;
 	}
+
+	// update the chunks if block is found
 	if (b && b->isActive())
 	{
 		b->setType(AIR_BLOCK);
 		c->update();
 		// edge blocks broken require neighbor chunk updates too
 		if (current_voxel.x == 0)
-			c->getXMinus()->update();
+		{
+			if (c->getXMinus()!=NULL)
+				c->getXMinus()->update();
+		}
 		if (current_voxel.x == CHUNK_X-1)
-			c->getXPlus()->update();
+		{
+			if (c->getXPlus()!=NULL)
+				c->getXPlus()->update();
+		}
 		if (current_voxel.z == 0)
-			c->getZMinus()->update();
+		{
+			if (c->getZMinus()!=NULL)
+				c->getZMinus()->update();
+		}
 		if (current_voxel.z == CHUNK_Z-1)
-			c->getZPlus()->update();
+		{
+			if (c->getZPlus()!=NULL)
+				c->getZPlus()->update();
+		}
 	}
 }

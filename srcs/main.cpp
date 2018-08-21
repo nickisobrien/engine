@@ -1,172 +1,3 @@
-// #include "engine.h"
-// #include "shader.h"
-// #include "camera.h"
-// #include "mesh.h"
-// #include "model.h"
-// #include "terrain.h"
-// #include "chunk.h"
-// #include "player.h"
-
-// #define STB_IMAGE_IMPLEMENTATION
-// #include "stb_image.h" // https://github.com/nothings/stb/blob/master/stb_image.h
-
-// #define RENDER_RADIUS 12
-// #define PRERENDER_RADIUS 2
-
-// float deltaTime = 0.0f;	// Time between current frame and last frame
-// float lastFrame = 0.0f; // Time of last frame
-// float lastX = WIDTH / 2.0f;
-// float lastY = HEIGHT / 2.0f;
-// bool firstMouse = true;
-// Terrain terr;
-// Player player(glm::vec3(CHUNK_X/2, (float)CHUNK_Y, CHUNK_Z/2), &terr);
-
-// static void testfunc(Shader cubeShader)
-// {
-// 	if (!terr.updateList.empty())
-// 	{
-// 		glm::ivec2 pos = terr.updateList[terr.updateList.size()-1];
-// 		terr.updateList.pop_back();
-// 		terr.updateChunk(pos);
-// 	}
-// }
-
-// int main(void)
-// {
-// 	// glfw: initialize and configure
-// 	glfwInit();
-// 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-// 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-// 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-// #ifdef __APPLE__
-// 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-// #endif
-
-// 	// glfw window creation
-// 	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Engine",  glfwGetPrimaryMonitor(), NULL);
-// 	if (window == NULL)
-// 	{
-// 		std::cout << "Failed to create GLFW window" << std::endl;
-// 		glfwTerminate();
-// 		return -1;
-// 	}
-// 	glfwMakeContextCurrent(window);
-// 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-// 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // turn on mouse capturing
-// 	glfwSetCursorPosCallback(window, mouse_callback); // calls mouse_callback every time mouse moves
-// 	glfwSetScrollCallback(window, scroll_callback); // calls scroll_callback every time scrolling happens
-// 	glfwSetMouseButtonCallback(window, mouse_button_callback);
-// 	glEnable(GL_DEPTH_TEST); // turn on z buffering
-// 	// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-// 	// glEnable(GL_CULL_FACE); // face culling only renders visible faces of closed shapes ie. cube (needs speed testing to determine if worth)
-// 	glEnable(GL_BLEND);
-// 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-
-// 	// build and compile our shader program
-// 	Shader cubeShader("../resources/shaders/cube.vs", "../resources/shaders/cube.fs");
-// 	unsigned int atlas = loadTexture("../resources/textures/atlas4.png");
-// 	cubeShader.use();
-// 	cubeShader.setInt("atlas", 0);	
-
-// 	for (int i = -PRERENDER_RADIUS; i <= PRERENDER_RADIUS; i++)
-// 		for (int j = -PRERENDER_RADIUS; j <= PRERENDER_RADIUS; j++)
-// 			terr.renderChunk(glm::ivec2(player.getChunk()->getXOff()+i, player.getChunk()->getZOff()+j), cubeShader);
-
-// 	for (glm::ivec2 i : terr.updateList)
-// 		terr.updateChunk(i);
-
-// 	// render loop
-// 	while (!glfwWindowShouldClose(window))
-// 	{
-// 		// per-frame time logic
-// 		float currentFrame = glfwGetTime();
-// 		deltaTime = currentFrame - lastFrame;
-// 		lastFrame = currentFrame;
-
-// 		// input
-// 		player.processInput(window, deltaTime); // could be source of SEGFAULT?
-
-// 		// for physics
-// 		// getting current chunk ensures current chunk is rendered
-// 		Chunk *c = player.getChunk();
-// 		player.update(deltaTime);
-
-// 		// render
-// 		glClearColor(0.5f, 0.8f, 0.9f, 1.0f);
-// 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-// 		// texture atlas binding
-// 		glActiveTexture(GL_TEXTURE0);
-// 		glBindTexture(GL_TEXTURE_2D, atlas);
-
-// 		// setup renderer
-// 		cubeShader.use();
-// 		glm::mat4 projection = glm::perspective(glm::radians(player.camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 1000.0f);
-// 		glm::mat4 view = player.camera.GetViewMatrix();
-// 		cubeShader.setMat4("projection", projection);
-// 		cubeShader.setMat4("view", view);
-
-// 		// for (int i = RENDER_RADIUS; i >= 0; i--)
-// 		// {
-// 		// 	for (int j = RENDER_RADIUS; j >= 0; j--)
-// 		// 	{
-// 		// 		terr.renderChunk(glm::ivec2(c->getXOff() + i, c->getZOff() + j), cubeShader);
-// 		// 		terr.renderChunk(glm::ivec2(c->getXOff() - i, c->getZOff() - j), cubeShader);
-// 		// 		terr.renderChunk(glm::ivec2(c->getXOff() - i, c->getZOff() + j), cubeShader);
-// 		// 		terr.renderChunk(glm::ivec2(c->getXOff() + i, c->getZOff() - j), cubeShader);
-// 		// 	}
-// 		// }
-// 		// for (int i = RENDER_RADIUS; i >= 0; i--)
-// 		// {
-// 		// 	for (int j = RENDER_RADIUS; j >= 0; j--)
-// 		// 	{
-// 		// 		terr.renderWaterChunk(glm::ivec2(c->getXOff() + i, c->getZOff() + j), cubeShader);
-// 		// 		terr.renderWaterChunk(glm::ivec2(c->getXOff() - i, c->getZOff() - j), cubeShader);
-// 		// 		terr.renderWaterChunk(glm::ivec2(c->getXOff() - i, c->getZOff() + j), cubeShader);
-// 		// 		terr.renderWaterChunk(glm::ivec2(c->getXOff() + i, c->getZOff() - j), cubeShader);
-// 		// 	}
-// 		// }
-
-// 		c = player.getChunk();
-// 		int cx, cz;
-// 		cx = !c ? 0 : c->getXOff();
-// 		cz = !c ? 0 : c->getZOff();
-// 		for (int i = -RENDER_RADIUS; i <= RENDER_RADIUS; i++)
-// 			for (int j = -RENDER_RADIUS; j <= RENDER_RADIUS; j++)
-// 				terr.renderChunk(glm::ivec2(player.getChunk()->getXOff() + i, player.getChunk()->getZOff() + j), cubeShader);
-// 		for (int i = -RENDER_RADIUS; i <= RENDER_RADIUS; i++)
-// 			for (int j = -RENDER_RADIUS; j <= RENDER_RADIUS; j++)
-// 				terr.renderWaterChunk(glm::ivec2(player.getChunk()->getXOff() + i, player.getChunk()->getZOff() + j), cubeShader);
-
-// 		if (!terr.updateList.empty())
-// 		{
-// 			terr.updateChunk(terr.updateList[terr.updateList.size()-1]);
-// 			// terr.updateList.pop_back();
-// 			terr.updateList.clear();
-// 		}
-
-// 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-// 		glfwSwapBuffers(window);
-// 		glfwPollEvents();
-// 	}
-// 	// glfw: terminate, clearing all previously allocated GLFW resources
-// 	glfwTerminate();
-// 	return 0;
-// }
-
-
-
-
-
-
-
-
-
-
-// OLD VERSION DOESN'T SEGFAULT
-
 #include "engine.h"
 #include "shader.h"
 #include "camera.h"
@@ -180,7 +11,7 @@
 #include "stb_image.h" // https://github.com/nothings/stb/blob/master/stb_image.h
 
 #define RENDER_RADIUS 12
-#define PRERENDER_RADIUS 2
+#define PRERENDER_RADIUS 4
 
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
@@ -229,9 +60,16 @@ int main(void)
 
 	cubeShader.use();
 	cubeShader.setInt("atlas", 0);	
-	// for (int i = -PRERENDER_RADIUS; i <= PRERENDER_RADIUS; i++)
-	// 	for (int j = -PRERENDER_RADIUS; j <= PRERENDER_RADIUS; j++)
-	// 		terr.renderChunk(glm::ivec2(player.getChunk()->getXOff()+i, player.getChunk()->getZOff()+j), cubeShader);
+	for (int i = -PRERENDER_RADIUS; i <= PRERENDER_RADIUS; i++)
+		for (int j = -PRERENDER_RADIUS; j <= PRERENDER_RADIUS; j++)
+			terr.renderChunk(glm::ivec2(player.getChunk()->getXOff()+i, player.getChunk()->getZOff()+j), cubeShader);
+	while (!terr.updateList.empty()) // TEMP FIX FOR MOST SEGFAULTS USING WHILE INSTEAD OF IF
+	{
+		terr.updateChunk(terr.updateList[terr.updateList.size()-1]);
+		terr.world[terr.updateList[terr.updateList.size()-1]]->render(cubeShader);
+		terr.updateList.pop_back();
+	}
+
 
 
 	// render loop
@@ -263,9 +101,9 @@ int main(void)
 		cubeShader.setMat4("view", view);
 
 		Chunk *c = player.getChunk();
-		int cx, cz;
-		cx = !c ? 0 : c->getXOff();
-		cz = !c ? 0 : c->getZOff();
+		// int cx, cz;
+		// cx = !c ? 0 : c->getXOff();
+		// cz = !c ? 0 : c->getZOff();
 		// for (int i = -RENDER_RADIUS; i <= RENDER_RADIUS; i++)
 		// 	for (int j = -RENDER_RADIUS; j <= RENDER_RADIUS; j++)
 		// 		terr.renderChunk(glm::ivec2(player.getChunk()->getXOff() + i, player.getChunk()->getZOff() + j), cubeShader);
@@ -298,6 +136,7 @@ int main(void)
 			terr.updateChunk(terr.updateList[terr.updateList.size()-1]);
 			terr.world[terr.updateList[terr.updateList.size()-1]]->render(cubeShader);
 			terr.updateList.pop_back();
+			// terr.updateList.clear();
 		}
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

@@ -54,12 +54,15 @@ Chunk::~Chunk(void)
 
 void Chunk::render(Shader shader)
 {
-	shader.setMat4("transform", offsetMatrix);
+	shader.setMat4("transform", this->offsetMatrix);
 	shader.setFloat("transparency", 1.0f);
 	glBindVertexArray(VAO);
-	// cout << "TEST1" << endl; //RIGHT HERE CAUSES THE SEGFAULTS
-	glDrawArrays(GL_TRIANGLES, 0, points.size());
-	// cout << "TEST2" << endl;
+	int err = glGetError();
+	if (err)
+		cout << "ERROR " << err << endl;
+	cout << "size " << this->points.size() << endl;
+	glDrawArrays(GL_TRIANGLES, 0, this->points.size()); //RIGHT HERE CAUSES THE SEGFAULTS
+	cout << "TEST2" << endl;
 }
 
 void Chunk::renderWater(Shader shader)

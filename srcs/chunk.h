@@ -4,8 +4,8 @@
 #include "block.h"
 #include "FastNoise.h"
 
-#define CHUNK_Z 17
-#define CHUNK_X 17
+#define CHUNK_Z 16
+#define CHUNK_X 16
 #define CHUNK_Y 256
 
 enum ChunkState

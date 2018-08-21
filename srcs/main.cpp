@@ -74,12 +74,8 @@ int main(void)
 		for (int j = -PRERENDER_RADIUS; j <= PRERENDER_RADIUS; j++)
 			terr.renderChunk(glm::ivec2(player.getChunk()->getXOff()+i, player.getChunk()->getZOff()+j), cubeShader);
 
-	while (!terr.updateList.empty())
-	{
-		glm::ivec2 pos = terr.updateList[terr.updateList.size()-1];
-		terr.updateList.pop_back();
-		terr.updateChunk(pos);
-	}
+	for (glm::ivec2 i : terr.updateList)
+		terr.updateChunk(i);
 
 	// render loop
 	while (!glfwWindowShouldClose(window))
@@ -135,11 +131,7 @@ int main(void)
 
 		if (!terr.updateList.empty())
 		{
-			// thread th1(testfunc, cubeShader);
-			glm::ivec2 pos = terr.updateList[terr.updateList.size()-1];
-			// terr.updateList.pop_back();
-			terr.updateChunk(pos);
-			// th1.join();
+			terr.updateChunk(terr.updateList[terr.updateList.size()-1]);
 			terr.updateList.clear();
 		}
 

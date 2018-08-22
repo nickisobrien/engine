@@ -12,7 +12,7 @@
 #include "stb_image.h" // https://github.com/nothings/stb/blob/master/stb_image.h
 
 #define RENDER_RADIUS 12
-#define PRERENDER_RADIUS 14
+#define PRERENDER_RADIUS RENDER_RADIUS
 
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
@@ -20,7 +20,7 @@ float lastX = WIDTH / 2.0f;
 float lastY = HEIGHT / 2.0f;
 bool firstMouse = true;
 Terrain terr;
-Player player(glm::vec3(0.0f, (float)CHUNK_Y, 0.0f), &terr);
+Player player(glm::vec3(0.0f, (float)CHUNK_Y-30.0f, 0.0f), &terr);
 
 int main(void)
 {
@@ -35,7 +35,8 @@ int main(void)
 #endif
 
 	// glfw window creation
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Engine",  glfwGetPrimaryMonitor(), NULL);
+	// GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Engine", glfwGetPrimaryMonitor(), NULL);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Engine", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -102,35 +103,15 @@ int main(void)
 		cubeShader.setMat4("view", view);
 
 		Chunk *c = player.getChunk();
-		// int cx, cz;
-		// cx = !c ? 0 : c->getXOff();
-		// cz = !c ? 0 : c->getZOff();
-		// for (int i = -RENDER_RADIUS; i <= RENDER_RADIUS; i++)
-		// 	for (int j = -RENDER_RADIUS; j <= RENDER_RADIUS; j++)
-		// 		terr.renderChunk(glm::ivec2(player.getChunk()->getXOff() + i, player.getChunk()->getZOff() + j), cubeShader);
-		// for (int i = -RENDER_RADIUS; i <= RENDER_RADIUS; i++)
-		// 	for (int j = -RENDER_RADIUS; j <= RENDER_RADIUS; j++)
-		// 		terr.renderWaterChunk(glm::ivec2(player.getChunk()->getXOff() + i, player.getChunk()->getZOff() + j), cubeShader);
-		for (int i = RENDER_RADIUS; i >= 0; i--)
-		{
-			for (int j = RENDER_RADIUS; j >= 0; j--)
-			{
-				terr.renderChunk(glm::ivec2(c->getXOff() + i, c->getZOff() + j), cubeShader);
-				terr.renderChunk(glm::ivec2(c->getXOff() - i, c->getZOff() - j), cubeShader);
-				terr.renderChunk(glm::ivec2(c->getXOff() - i, c->getZOff() + j), cubeShader);
-				terr.renderChunk(glm::ivec2(c->getXOff() + i, c->getZOff() - j), cubeShader);
-			}
-		}
-		for (int i = RENDER_RADIUS; i >= 0; i--)
-		{
-			for (int j = RENDER_RADIUS; j >= 0; j--)
-			{
-				terr.renderWaterChunk(glm::ivec2(c->getXOff() + i, c->getZOff() + j), cubeShader);
-				terr.renderWaterChunk(glm::ivec2(c->getXOff() - i, c->getZOff() - j), cubeShader);
-				terr.renderWaterChunk(glm::ivec2(c->getXOff() - i, c->getZOff() + j), cubeShader);
-				terr.renderWaterChunk(glm::ivec2(c->getXOff() + i, c->getZOff() - j), cubeShader);
-			}
-		}
+		int cx, cz;
+		cx = !c ? 0 : c->getXOff();
+		cz = !c ? 0 : c->getZOff();
+		for (int i = -RENDER_RADIUS; i <= RENDER_RADIUS; i++)
+			for (int j = -RENDER_RADIUS; j <= RENDER_RADIUS; j++)
+				terr.renderChunk(glm::ivec2(player.getChunk()->getXOff() + i, player.getChunk()->getZOff() + j), cubeShader);
+		for (int i = -RENDER_RADIUS; i <= RENDER_RADIUS; i++)
+			for (int j = -RENDER_RADIUS; j <= RENDER_RADIUS; j++)
+				terr.renderWaterChunk(glm::ivec2(player.getChunk()->getXOff() + i, player.getChunk()->getZOff() + j), cubeShader);
 
 		if (!terr.updateList.empty()) // TEMP FIX FOR MOST SEGFAULTS USING WHILE INSTEAD OF IF
 		{

@@ -169,7 +169,7 @@ void Player::leftMouseClickEvent()
 	int breakDist = 0;
 	Chunk *c = this->getChunk();
 	Block *b = c->getBlock(current_voxel.x,current_voxel.y,current_voxel.z);
-	while ((!b || !b->isActive()) && breakDist < 10)
+	while ((!b || !b->isActive()) && breakDist < 30)
 	{
 		if (tMaxX < tMaxY)
 		{
@@ -202,14 +202,14 @@ void Player::leftMouseClickEvent()
 		if (current_voxel.x < 0)
 		{
 			c = c->getXMinus();
-			if (c!=NULL)
+			if (!c)
 				break ;
 			current_voxel.x = CHUNK_X + current_voxel.x;
 		}
 		else if (current_voxel.x >= CHUNK_X)
 		{
 			c = c->getXPlus();
-			if (c==NULL)
+			if (!c)
 				break ;
 			current_voxel.x -= CHUNK_X;
 		}
@@ -217,14 +217,14 @@ void Player::leftMouseClickEvent()
 		if (current_voxel.z < 0)
 		{
 			c = c->getZMinus();
-			if (c==NULL)
+			if (!c)
 				break ;
 			current_voxel.z = CHUNK_Z + current_voxel.z;
 		}
 		else if (current_voxel.z >= CHUNK_Z)
 		{
 			c = c->getZPlus();
-			if (c==NULL)
+			if (!c)
 				break ;
 			current_voxel.z -= CHUNK_Z;
 		}

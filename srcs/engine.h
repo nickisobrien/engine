@@ -15,11 +15,12 @@
 #include <glm/gtc/matrix_transform.hpp> // translate, rotate, scale, perspective 
 #include <glm/gtc/type_ptr.hpp> // value_ptr
 #define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/hash.hpp>
+#include <glm/gtx/hash.hpp> // for unordered_map
 #include <unordered_map>
 #include <cmath>
 #include <thread>
 #include <string>
+#include <map>
 
 #define WIDTH 720
 #define HEIGHT 480

@@ -67,8 +67,8 @@ int main(void)
 			terr.renderChunk(glm::ivec2(player.getChunk()->getXOff()+i, player.getChunk()->getZOff()+j), cubeShader);
 	while (!terr.updateList.empty()) // TEMP FIX FOR MOST SEGFAULTS USING WHILE INSTEAD OF IF
 	{
-		terr.updateChunk(terr.updateList[terr.updateList.size()-1]);
-		terr.renderChunk(terr.updateList[terr.updateList.size()-1], cubeShader);
+		terr.updateChunk(terr.updateList.back());
+		terr.renderChunk(terr.updateList.back(), cubeShader);
 		terr.updateList.pop_back();
 	}
 
@@ -86,7 +86,7 @@ int main(void)
 		player.processInput(window, deltaTime);
 
 		// render
-		glClearColor(0.5f, 0.8f, 0.9f, 1.0f);
+		glClearColor(0.5f, 0.5f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// texture atlas binding
@@ -113,12 +113,10 @@ int main(void)
 			for (int j = -RENDER_RADIUS; j <= RENDER_RADIUS; j++)
 				terr.renderWaterChunk(glm::ivec2(player.getChunk()->getXOff() + i, player.getChunk()->getZOff() + j), cubeShader);
 
-		if (!terr.updateList.empty()) // TEMP FIX FOR MOST SEGFAULTS USING WHILE INSTEAD OF IF
+		while (!terr.updateList.empty()) // TEMP FIX FOR MOST SEGFAULTS USING WHILE INSTEAD OF IF
 		{
-			terr.updateChunk(terr.updateList[terr.updateList.size()-1]);
-			terr.renderChunk(terr.updateList[terr.updateList.size()-1], cubeShader);
+			terr.updateChunk(terr.updateList.back());
 			terr.updateList.pop_back();
-			// terr.updateList.clear();
 		}
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

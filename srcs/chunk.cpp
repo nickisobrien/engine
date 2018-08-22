@@ -50,6 +50,8 @@ Chunk::~Chunk(void)
 	delete [] blocks;
 	points.clear();
 	uvs.clear();
+	transparentPoints.clear();
+	transparentUvs.clear();
 }
 
 void Chunk::render(Shader shader)
@@ -61,7 +63,7 @@ void Chunk::render(Shader shader)
 	if (err)
 		cout << "ERROR " << err << endl;
 	// cout << "size " << this->points.size() << endl;
-	glDrawArrays(GL_TRIANGLES, 0, this->points.size()); //RIGHT HERE CAUSES THE SEGFAULTS
+	glDrawArrays(GL_TRIANGLES, 0, this->pointSize); //RIGHT HERE CAUSES THE SEGFAULTS
 	// cout << "TEST2" << endl;
 }
 
@@ -70,7 +72,7 @@ void Chunk::renderWater(Shader shader)
 	shader.setMat4("transform", offsetMatrix);
 	shader.setFloat("transparency", 0.85f);
 	glBindVertexArray(transparentVAO);
-	glDrawArrays(GL_TRIANGLES, 0, transparentPoints.size());
+	glDrawArrays(GL_TRIANGLES, 0, transparentPointSize);
 }
 
 void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastNoise humidityNoise)
@@ -214,11 +216,10 @@ void Chunk::addExtras(FastNoise terrainNoise, FastNoise temperatureNoise, FastNo
 void Chunk::update(void)
 {
 	this->cleanVAO();
-	this->points.clear();
-	this->uvs.clear();
 
-	this->transparentPoints.clear();
-	this->transparentUvs.clear();
+	// for safety
+	transparentPointSize = 0;
+	pointSize = 0;
 
 	this->faceRendering();
 	this->buildVAO();
@@ -340,12 +341,17 @@ void Chunk::buildVAO(void)
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glEnableVertexAttribArray(0);
 
+	this->pointSize = this->points.size();
+	this->points.clear();
+
 	// texture coords
 	glGenBuffers(1, &this->VBO_UV);
 	glBindBuffer(GL_ARRAY_BUFFER, this->VBO_UV);
 	glBufferData(GL_ARRAY_BUFFER, this->uvs.size() * sizeof(glm::vec2), &this->uvs[0][0], GL_STATIC_DRAW);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)(0));
 	glEnableVertexAttribArray(1);
+
+	this->uvs.clear();
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
@@ -361,12 +367,17 @@ void Chunk::buildVAO(void)
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glEnableVertexAttribArray(0);
 
+	this->transparentPointSize = this->transparentPoints.size();
+	this->transparentPoints.clear();
+
 	// texture coords
 	glGenBuffers(1, &this->transparentVBO_UV);
 	glBindBuffer(GL_ARRAY_BUFFER, this->transparentVBO_UV);
 	glBufferData(GL_ARRAY_BUFFER, this->transparentUvs.size() * sizeof(glm::vec2), &this->transparentUvs[0][0], GL_STATIC_DRAW);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)(0));
 	glEnableVertexAttribArray(1);
+
+	this->transparentUvs.clear();
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);

@@ -57,6 +57,9 @@ private:
 	unsigned int VBO_VERT;
 	unsigned int VBO_UV;
 
+	int pointSize;
+	int transparentPointSize;
+
 	unsigned int transparentVAO;
 	unsigned int transparentVBO_VERT;
 	unsigned int transparentVBO_UV;

@@ -11,8 +11,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h" // https://github.com/nothings/stb/blob/master/stb_image.h
 
-#define RENDER_RADIUS 12
-#define PRERENDER_RADIUS RENDER_RADIUS
+#define RENDER_RADIUS 20
 
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
@@ -62,14 +61,6 @@ int main(void)
 
 	cubeShader.use();
 	cubeShader.setInt("atlas", 0);
-	// for (int i = -PRERENDER_RADIUS; i <= PRERENDER_RADIUS; i++)
-	// 	for (int j = -PRERENDER_RADIUS; j <= PRERENDER_RADIUS; j++)
-	// 		terr.renderChunk(glm::ivec2(player.getChunk()->getXOff()+i, player.getChunk()->getZOff()+j), cubeShader);
-	// while (!terr.updateList.empty())
-	// {
-	// 	terr.updateChunk(terr.updateList.back());
-	// 	terr.updateList.pop_back();
-	// }
 
 	// render loop
 	while (!glfwWindowShouldClose(window))
@@ -120,12 +111,10 @@ int main(void)
 				terr.renderWaterChunk(glm::ivec2(c->getXOff() + i, c->getZOff() - j), cubeShader);
 			}
 		}
-
-		if (!terr.updateList.empty()) // TEMP FIX FOR MOST SEGFAULTS USING WHILE INSTEAD OF IF
+		if (terr.updateList != glm::ivec2(-100000,-100000))
 		{
-			terr.updateChunk(terr.updateList.back()); //can switch to just one vec2 not a list
-			// terr.updateList.pop_back();
-			terr.updateList.clear();
+			terr.updateChunk(terr.updateList);
+			terr.updateList = glm::ivec2(-100000,-100000);
 		}
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

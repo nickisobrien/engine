@@ -1,6 +1,8 @@
 #include "engine.h"
 #include "chunk.h"
 
+#define YSQRT sqrt(CHUNK_Y-1)
+
 Chunk::Chunk(int xoff, int zoff)
 {
 	this->xoff = xoff;
@@ -117,7 +119,7 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 		{
 			bool water = false;
 			// Use the noise library to get the height value of x, z
-			float b = MAP(terrainNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 0.1f, 14.0f);
+			float b = MAP(terrainNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 0.1f, YSQRT);
 			int base = pow(b, 2);
 			float temp = temperatureNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
 			float hum = humidityNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
@@ -162,25 +164,25 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 				this->blocks[x][y][z].setType(WATER_BLOCK);
 		}
 	}
-	this->addExtras(terrainNoise, temperatureNoise, humidityNoise);
+	// this->addExtras(terrainNoise, temperatureNoise, humidityNoise);
 	// std::cout << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << std::endl;
 }
 
 void Chunk::addExtras(FastNoise terrainNoise, FastNoise temperatureNoise, FastNoise humidityNoise)
 {
 	// trees
-	Chunk *c = this;
 	for (int x = 0; x < CHUNK_X; x++)
 	{
 		for (int z = 0; z < CHUNK_Z; z++)
 		{
-			bool water = false;
-			float b = MAP(terrainNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 0.1f, 14.0f);
+			// bool water = false;
+			float b = MAP(terrainNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 0.1f, YSQRT);
 			int base = pow(b, 2);
 			float temp = temperatureNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
 			float hum = humidityNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
 			short blocktype;
 			int y = base;
+			Chunk *c = this;
 			if (temp < -0.33f)
 			{
 				if (hum < 0.0f)
@@ -203,37 +205,42 @@ void Chunk::addExtras(FastNoise terrainNoise, FastNoise temperatureNoise, FastNo
 					blocktype = 4;
 			}
 			if (base < WATER_LEVEL)
-				water = true;
-			if (!water && blocktype == 4 && rand() % 1000 > 996)
+				continue ;
+			if (blocktype == 4 && rand() % 1000 > 996)
 			{
-				for (int i = 0; i < 2; i++)
-				{
-					for (int j = 0; j < 2; j++)
-					{
-						for (int k = -1; k < 12; k++)
-						{
-							if (base+k < CHUNK_Y && base+k > 0)
-							{
-								if (x+i == CHUNK_X-1)
-									if (c->getXPlus())
-										c = c->getXPlus();
-								if (z+j == CHUNK_Z-1)
-								{
-									if (c->getZPlus())
-										c = c->getZPlus();
-								}
-								if (x+i >= CHUNK_X || z+j >= CHUNK_Z)
-									continue;
-								if (c->blocks[(x+i)%CHUNK_X][(base+k)%CHUNK_Y][(z+j)%CHUNK_Z].getType() == AIR_BLOCK)
-								{
-									c->blocks[(x+i)%CHUNK_X][(base+k)%CHUNK_Y][(z+j)%CHUNK_Z].setType(21);
-								}
-							}
-						}
-					}
-				}
+				this->blocks[x][base][z].setType(21);
+				this->blocks[x][base+1][z].setType(21);
+				this->blocks[x][base+2][z].setType(21);
+				this->blocks[x][base+3][z].setType(21);
+				this->blocks[x][base+4][z].setType(21);
+				this->blocks[x][base+5][z].setType(21);
+				this->blocks[x][base+6][z].setType(21);
+				// for (int i = 0; i < 2; i++)
+				// {
+				// 	for (int j = 0; j < 2; j++)
+				// 	{
+				// 		for (int k = -1; k < 12; k++)
+				// 		{
+				// 			if (base+k < CHUNK_Y && base+k > 0)
+				// 			{
+				// 				if (x+i == CHUNK_X)
+				// 					if (c->getXPlus())
+				// 						c = c->getXPlus();
+				// 				if (z+j == CHUNK_Z)
+				// 				{
+				// 					if (c->getZPlus())
+				// 						c = c->getZPlus();
+				// 				}
+				// 				if (c->blocks[(x+i)%CHUNK_X][(base+k)%CHUNK_Y][(z+j)%CHUNK_Z].getType() == AIR_BLOCK)
+				// 				{
+				// 					c->blocks[(x+i)%CHUNK_X][(base+k)%CHUNK_Y][(z+j)%CHUNK_Z].setType(21);
+				// 				}
+				// 			}
+				// 		}
+				// 	}
+				// }
 			} // cactus
-			else if (!water && blocktype == 19 && rand() % 1000 > 996)
+			else if (blocktype == 19 && rand() % 1000 > 996)
 			{
 				this->blocks[x][base][z].setType(71);
 				this->blocks[x][base+1][z].setType(71);
@@ -248,8 +255,8 @@ void Chunk::update(void)
 	this->cleanVAO();
 
 	// for safety
-	transparentPointSize = 0;
-	pointSize = 0;
+	// transparentPointSize = 0;
+	// pointSize = 0;
 
 	this->faceRendering();
 	this->buildVAO();
@@ -257,6 +264,7 @@ void Chunk::update(void)
 
 void Chunk::faceRendering(void)
 {
+	// update is called when all neighbors are set, is an okay idea because of the addextras call happens too
 	bool transparent;
 	int xMinusCheck;
 	int yMinusCheck;
@@ -286,7 +294,7 @@ void Chunk::faceRendering(void)
 				// MINUS checks
 				if (!x && this->xMinus)
 					xMinusCheck = this->xMinus->blocks[CHUNK_X-1][y][z].getType();
-				else if (!x)
+				else if (!x) // if x == 0 and there isn't an xminus neighbor, infer that we don't need to draw it
 					xMinusCheck = 1;
 				else
 					xMinusCheck = this->blocks[x-1][y][z].getType();
@@ -425,6 +433,8 @@ void Chunk::buildVAO(void)
 	// glBindBuffer(GL_ARRAY_BUFFER, 0);
 	// glBindVertexArray(0);
 }
+
+//can cut these down to one function by oassing in the changes as variables
 
 void Chunk::addFace(int face, int x, int y, int z, int val)
 {

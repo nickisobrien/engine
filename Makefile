@@ -10,7 +10,7 @@ LIB_DIR := ./lib/
 HEADERS = ./srcs/*.h
 
 # engine
-FILES = main chunk camera mesh model terrain block FastNoise player diamondSquare
+FILES = main chunk camera terrain block FastNoise player
 CFILES = $(patsubst %, $(SRC_DIR)%.cpp, $(FILES))
 OFILES = $(patsubst %, $(OBJ_DIR)%.o, $(FILES))
 

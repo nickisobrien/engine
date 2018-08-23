@@ -66,6 +66,7 @@ void Terrain::setNeighbors(glm::ivec2 pos)
 	if (this->world[pos]->getXPlus() && this->world[pos]->getXMinus() &&
 		this->world[pos]->getZPlus() && this->world[pos]->getZMinus())
 	{
+		this->world[pos]->addExtras(this->terrainNoise, this->temperatureNoise, this->humidityNoise);
 		this->world[pos]->neighborsSet = true;
 		this->world[pos]->update();
 	}

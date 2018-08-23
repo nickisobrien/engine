@@ -3,6 +3,8 @@
 #include "chunk.h"
 #include "FastNoise.h"
 
+class Player;
+
 float noise(float x, float y);
 
 class Terrain

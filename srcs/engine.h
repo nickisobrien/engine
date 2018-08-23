@@ -30,9 +30,10 @@
 #define MAP(VAL,A,B,AA,BB) ((VAL - A) / (B - A)) * (BB - AA) + AA;
 #define ATLAS_SIZE 256
 #define TEXTURE_SIZE 16
+#define DIST(X,Y,XX,YY) ((YY-Y)/(XX-X));
 
 #define WATER_BLOCK 15
-#define WATER_LEVEL 26
+#define WATER_LEVEL 32
 #define AIR_BLOCK 0
 
 static float VCUBE[108] = {

@@ -18,20 +18,38 @@ Chunk::Chunk(int xoff, int zoff)
 	offsetMatrix = glm::translate(glm::mat4(1.0f), glm::vec3((float)(xoff * CHUNK_X), 1.0f, (float)(zoff * CHUNK_Z)));
 	offsetMatrix = glm::translate(offsetMatrix, glm::vec3(0.5f, -0.5f, 0.5f));
 
+	// non transparent
 	glGenVertexArrays(1, &this->VAO);
 		glGenBuffers(1, &this->VBO_VERT);
+		glGenBuffers(1, &this->VBO_UV);
 		glBindVertexArray(this->VAO);
 		
 		glBindBuffer(GL_ARRAY_BUFFER, this->VBO_VERT);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 		glEnableVertexAttribArray(0);
 
-		glGenBuffers(1, &this->VBO_UV);
 		glBindBuffer(GL_ARRAY_BUFFER, this->VBO_UV);
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)(0));
 		glEnableVertexAttribArray(1);
 
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+
+	// transparent
+	glGenVertexArrays(1, &this->transparentVAO);
+		glGenBuffers(1, &this->transparentVBO_VERT);
+		glBindVertexArray(this->transparentVAO);
+
+		glBindBuffer(GL_ARRAY_BUFFER, this->transparentVBO_VERT);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+		glEnableVertexAttribArray(0);
+
+		glGenBuffers(1, &this->transparentVBO_UV);
+		glBindBuffer(GL_ARRAY_BUFFER, this->transparentVBO_UV);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)(0));
+		glEnableVertexAttribArray(1);
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 }
 
@@ -84,7 +102,7 @@ void Chunk::render(Shader shader)
 void Chunk::renderWater(Shader shader)
 {
 	shader.setMat4("transform", offsetMatrix);
-	shader.setFloat("transparency", 0.85f);
+	shader.setFloat("transparency", 0.65f);
 	glBindVertexArray(transparentVAO);
 	glDrawArrays(GL_TRIANGLES, 0, transparentPointSize);
 }
@@ -345,26 +363,6 @@ void Chunk::faceRendering(void)
 
 void Chunk::buildVAO(void)
 {
-	// glGenVertexArrays(1, &this->VAO);
-	// glGenBuffers(1, &this->VBO_VERT);
-	// glBindVertexArray(this->VAO);
-
-
-
-	
-	// glBindBuffer(GL_ARRAY_BUFFER, this->VBO_VERT);
-	// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-	// glEnableVertexAttribArray(0);
-
-	// glGenBuffers(1, &this->VBO_UV);
-	// glBindBuffer(GL_ARRAY_BUFFER, this->VBO_UV);
-	// glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)(0));
-
-	// glBindBuffer(GL_ARRAY_BUFFER, 0);
-	// glBindVertexArray(0);
-
-
-
 	// vertice VBO
 	glBindVertexArray(this->VAO);
 
@@ -381,23 +379,45 @@ void Chunk::buildVAO(void)
 	this->points.clear();
 	this->uvs.clear();
 
-	// // TRANSPARENT
-	// glGenVertexArrays(1, &this->transparentVAO);
-	// glBindVertexArray(this->transparentVAO);
+
+	// TRANSPARENT
+	glBindVertexArray(this->transparentVAO);
+
+		glBindBuffer(GL_ARRAY_BUFFER, this->transparentVBO_VERT);
+		glBufferData(GL_ARRAY_BUFFER, this->transparentPoints.size() * sizeof(glm::vec3), &this->transparentPoints[0][0], GL_STATIC_DRAW);
+	
+		// texture coords
+		glBindBuffer(GL_ARRAY_BUFFER, this->transparentVBO_UV);
+		glBufferData(GL_ARRAY_BUFFER, this->transparentUvs.size() * sizeof(glm::vec2), &this->transparentUvs[0][0], GL_STATIC_DRAW);
+
+	glBindVertexArray(0);
+
+	this->transparentPointSize = this->transparentPoints.size();
+	this->transparentPoints.clear();
+	this->transparentUvs.clear();
+
+
+
+
+
+
+
+
+
 
 	// // vertice VBO
-	// glGenBuffers(1, &this->transparentVBO_VERT);
-	// glBindBuffer(GL_ARRAY_BUFFER, this->transparentVBO_VERT);
+	// 
+	// 
 	// glBufferData(GL_ARRAY_BUFFER, this->transparentPoints.size() * sizeof(glm::vec3), &this->transparentPoints[0][0], GL_STATIC_DRAW);
-	// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-	// glEnableVertexAttribArray(0);
+	// 
+	// 
 
 	// this->transparentPointSize = this->transparentPoints.size();
 	// this->transparentPoints.clear();
 
 	// // texture coords
-	// glGenBuffers(1, &this->transparentVBO_UV);
-	// glBindBuffer(GL_ARRAY_BUFFER, this->transparentVBO_UV);
+	// 
+	// 
 	// glBufferData(GL_ARRAY_BUFFER, this->transparentUvs.size() * sizeof(glm::vec2), &this->transparentUvs[0][0], GL_STATIC_DRAW);
 	// glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)(0));
 	// glEnableVertexAttribArray(1);

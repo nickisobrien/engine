@@ -110,6 +110,16 @@ int main(void)
 				terr.renderChunk(glm::ivec2(c->getXOff() + i, c->getZOff() - j), cubeShader);
 			}
 		}
+		for (int i = RENDER_RADIUS; i >= 0; i--)
+		{
+			for (int j = RENDER_RADIUS; j >= 0; j--)
+			{
+				terr.renderWaterChunk(glm::ivec2(c->getXOff() + i, c->getZOff() + j), cubeShader);
+				terr.renderWaterChunk(glm::ivec2(c->getXOff() - i, c->getZOff() - j), cubeShader);
+				terr.renderWaterChunk(glm::ivec2(c->getXOff() - i, c->getZOff() + j), cubeShader);
+				terr.renderWaterChunk(glm::ivec2(c->getXOff() + i, c->getZOff() - j), cubeShader);
+			}
+		}
 
 		if (!terr.updateList.empty()) // TEMP FIX FOR MOST SEGFAULTS USING WHILE INSTEAD OF IF
 		{

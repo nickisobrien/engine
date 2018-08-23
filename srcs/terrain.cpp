@@ -32,15 +32,8 @@ void Terrain::renderChunk(glm::ivec2 pos, Shader shader)
 
 void Terrain::renderWaterChunk(glm::ivec2 pos, Shader shader)
 {
-	// if (this->world.find(pos) != this->world.end())
-	// {
-	// 	this->world[pos]->renderWater(shader);
-	// }
-	// else
-	// {
-	// 	this->updateChunk(pos); // TODO: add to generate list
-	// 	this->world[pos]->renderWater(shader);
-	// }
+	if (this->world.find(pos) != this->world.end())
+		this->world[pos]->renderWater(shader);
 }
 
 void Terrain::setNoise(void)

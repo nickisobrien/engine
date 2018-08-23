@@ -61,18 +61,15 @@ int main(void)
 	unsigned int atlas = loadTexture("../resources/textures/atlas4.png");
 
 	cubeShader.use();
-	cubeShader.setInt("atlas", 0);	
-	for (int i = -PRERENDER_RADIUS; i <= PRERENDER_RADIUS; i++)
-		for (int j = -PRERENDER_RADIUS; j <= PRERENDER_RADIUS; j++)
-			terr.renderChunk(glm::ivec2(player.getChunk()->getXOff()+i, player.getChunk()->getZOff()+j), cubeShader);
-	while (!terr.updateList.empty()) // TEMP FIX FOR MOST SEGFAULTS USING WHILE INSTEAD OF IF
-	{
-		terr.updateChunk(terr.updateList.back());
-		terr.renderChunk(terr.updateList.back(), cubeShader);
-		terr.updateList.pop_back();
-	}
-
-
+	cubeShader.setInt("atlas", 0);
+	// for (int i = -PRERENDER_RADIUS; i <= PRERENDER_RADIUS; i++)
+	// 	for (int j = -PRERENDER_RADIUS; j <= PRERENDER_RADIUS; j++)
+	// 		terr.renderChunk(glm::ivec2(player.getChunk()->getXOff()+i, player.getChunk()->getZOff()+j), cubeShader);
+	// while (!terr.updateList.empty())
+	// {
+	// 	terr.updateChunk(terr.updateList.back());
+	// 	terr.updateList.pop_back();
+	// }
 
 	// render loop
 	while (!glfwWindowShouldClose(window))
@@ -86,7 +83,7 @@ int main(void)
 		player.processInput(window, deltaTime);
 
 		// render
-		glClearColor(0.5f, 0.5f, 0.9f, 1.0f);
+		glClearColor(0.5f, 0.7f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// texture atlas binding
@@ -103,20 +100,22 @@ int main(void)
 		cubeShader.setMat4("view", view);
 
 		Chunk *c = player.getChunk();
-		int cx, cz;
-		cx = !c ? 0 : c->getXOff();
-		cz = !c ? 0 : c->getZOff();
-		for (int i = -RENDER_RADIUS; i <= RENDER_RADIUS; i++)
-			for (int j = -RENDER_RADIUS; j <= RENDER_RADIUS; j++)
-				terr.renderChunk(glm::ivec2(player.getChunk()->getXOff() + i, player.getChunk()->getZOff() + j), cubeShader);
-		for (int i = -RENDER_RADIUS; i <= RENDER_RADIUS; i++)
-			for (int j = -RENDER_RADIUS; j <= RENDER_RADIUS; j++)
-				terr.renderWaterChunk(glm::ivec2(player.getChunk()->getXOff() + i, player.getChunk()->getZOff() + j), cubeShader);
-
-		while (!terr.updateList.empty()) // TEMP FIX FOR MOST SEGFAULTS USING WHILE INSTEAD OF IF
+		for (int i = RENDER_RADIUS; i >= 0; i--)
 		{
-			terr.updateChunk(terr.updateList.back());
-			terr.updateList.pop_back();
+			for (int j = RENDER_RADIUS; j >= 0; j--)
+			{
+				terr.renderChunk(glm::ivec2(c->getXOff() + i, c->getZOff() + j), cubeShader);
+				terr.renderChunk(glm::ivec2(c->getXOff() - i, c->getZOff() - j), cubeShader);
+				terr.renderChunk(glm::ivec2(c->getXOff() - i, c->getZOff() + j), cubeShader);
+				terr.renderChunk(glm::ivec2(c->getXOff() + i, c->getZOff() - j), cubeShader);
+			}
+		}
+
+		if (!terr.updateList.empty()) // TEMP FIX FOR MOST SEGFAULTS USING WHILE INSTEAD OF IF
+		{
+			terr.updateChunk(terr.updateList.back()); //can switch to just one vec2 not a list
+			// terr.updateList.pop_back();
+			terr.updateList.clear();
 		}
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

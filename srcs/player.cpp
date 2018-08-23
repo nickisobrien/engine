@@ -8,13 +8,13 @@ void Player::processInput(GLFWwindow *window, float deltaTime)
 	glm::vec3 savePos = this->getPosition();
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		this->camera.ProcessKeyboard(FORWARD, deltaTime, this->getChunk());
+		this->camera.ProcessKeyboard(FORWARD, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		this->camera.ProcessKeyboard(BACKWARD, deltaTime, this->getChunk());
+		this->camera.ProcessKeyboard(BACKWARD, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		this->camera.ProcessKeyboard(LEFT, deltaTime, this->getChunk());
+		this->camera.ProcessKeyboard(LEFT, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		this->camera.ProcessKeyboard(RIGHT, deltaTime, this->getChunk());
+		this->camera.ProcessKeyboard(RIGHT, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 		this->jump();
 

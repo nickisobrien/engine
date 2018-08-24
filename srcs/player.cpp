@@ -103,7 +103,16 @@ void Player::applyGravity(float time)
 {
 	glm::vec3 current = this->getPosition();
 	if (!this->isGrounded())
-		current.y -= this->gravity * time; // temp easy code gravity
+	{
+		this->velocity += this->gravity * time;
+		current.y -= this->velocity * time;
+		 // need to add adjustment for not going into block
+	}
+	else if (this->velocity)
+	{
+		// can use this current velocity for damage from fall damage
+		this->velocity = 0.0f;
+	}
 	this->setPosition(current);
 }
 

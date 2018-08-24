@@ -7,18 +7,11 @@ Chunk::Chunk(int xoff, int zoff)
 {
 	this->xoff = xoff;
 	this->zoff = zoff;
-	blocks = new Block**[CHUNK_X];
-	for(int i = 0; i < CHUNK_X; i++)
-	{
-		blocks[i] = new Block*[CHUNK_Y];
-
-		for(int j = 0; j < CHUNK_Y; j++)
-		{
-			blocks[i][j] = new Block[CHUNK_Z];
-		}
-	}
 	offsetMatrix = glm::translate(glm::mat4(1.0f), glm::vec3((float)(xoff * CHUNK_X), 1.0f, (float)(zoff * CHUNK_Z)));
 	offsetMatrix = glm::translate(offsetMatrix, glm::vec3(0.5f, -0.5f, 0.5f));
+
+	// zero lightmap
+	memset(lightMap, 0, sizeof(lightMap));
 
 	// non transparent
 	glGenVertexArrays(1, &this->VAO);
@@ -75,15 +68,6 @@ Block *Chunk::getBlock(int x, int y, int z)
 
 Chunk::~Chunk(void)
 {
-	for (int i = 0; i < CHUNK_X; ++i)
-	{
-		for (int j = 0; j < CHUNK_Y; ++j)
-		{
-			delete [] blocks[i][j];
-		}
-		delete [] blocks[i];
-	}
-	delete [] blocks;
 	points.clear();
 	uvs.clear();
 	transparentPoints.clear();
@@ -215,6 +199,14 @@ void Chunk::addExtras(FastNoise terrainNoise, FastNoise temperatureNoise, FastNo
 				this->blocks[x][base+4][z].setType(21);
 				this->blocks[x][base+5][z].setType(21);
 				this->blocks[x][base+6][z].setType(21);
+
+				this->blocks[x][base][z].setActive(true);// why not happening on update?
+				this->blocks[x][base+1][z].setActive(true);// why not happening on update?
+				this->blocks[x][base+2][z].setActive(true);// why not happening on update?
+				this->blocks[x][base+3][z].setActive(true);// why not happening on update?
+				this->blocks[x][base+4][z].setActive(true);// why not happening on update?
+				this->blocks[x][base+5][z].setActive(true);// why not happening on update?
+				this->blocks[x][base+6][z].setActive(true);// why not happening on update?
 				// for (int i = 0; i < 2; i++)
 				// {
 				// 	for (int j = 0; j < 2; j++)
@@ -245,6 +237,10 @@ void Chunk::addExtras(FastNoise terrainNoise, FastNoise temperatureNoise, FastNo
 				this->blocks[x][base][z].setType(71);
 				this->blocks[x][base+1][z].setType(71);
 				this->blocks[x][base+2][z].setType(71);
+
+				this->blocks[x][base][z].setActive(true);// why not happening on update?
+				this->blocks[x][base+1][z].setActive(true);// why not happening on update?
+				this->blocks[x][base+2][z].setActive(true);// why not happening on update?
 			}
 		}
 	}
@@ -539,6 +535,35 @@ void Chunk::cleanVAO(void) {
 	// glDeleteBuffers(1, &this->transparentVBO_VERT);
 	// glDeleteVertexArrays(1, &this->transparentVAO);
 }
+
+
+// Get the bits XXXX0000
+inline int Chunk::getSunlight(int x, int y, int z)
+{
+	return (lightMap[x][y][z] >> 4) & 0xF;
+}
+
+// Set the bits XXXX0000
+inline void Chunk::setSunlight(int x, int y, int z, int val)
+{
+	lightMap[x][y][z] = (lightMap[x][y][z] & 0xF) | (val << 4);
+}
+
+// Get the bits 0000XXXX
+inline int Chunk::getTorchlight(int x, int y, int z)
+{
+	return lightMap[x][y][z] & 0xF;
+}
+// Set the bits 0000XXXX
+
+inline void Chunk::setTorchlight(int x, int y, int z, int val)
+{
+	lightMap[x][y][z] = (lightMap[x][y][z] & 0xF0) | val;
+}
+
+
+
+
 
 void Chunk::setXMinus(Chunk *chunk)
 {

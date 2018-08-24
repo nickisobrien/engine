@@ -23,6 +23,7 @@ private:
 	Terrain *terr;
 	// float speed = 6.0f;
 	// float jumpSpeed = 8.0f;
-	float gravity = 9.81f;
+	float velocity = 0.0f;
+	float gravity = 10.0f;
 	// glm::vec3 moveDirection = glm::vec3(0.0f);
 };

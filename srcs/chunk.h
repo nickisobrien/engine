@@ -40,6 +40,12 @@ public:
 	Chunk *getZMinus();
 	Chunk *getZPlus();
 
+	// lighting
+	inline int getSunlight(int x, int y, int z);
+	inline void setSunlight(int x, int y, int z, int val);
+	inline int getTorchlight(int x, int y, int z);
+	inline void setTorchlight(int x, int y, int z, int val);
+
 	void setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastNoise humidityNoise);
 	void addExtras(FastNoise terrainNoise, FastNoise temperatureNoise, FastNoise humidityNoise);
 	int	getWorld(int x, int y, int z);
@@ -51,7 +57,8 @@ private:
 	friend class Player;
 	int xoff;
 	int zoff;
-	Block ***blocks;
+	Block blocks[CHUNK_X][CHUNK_Y][CHUNK_Z];
+	char lightMap[CHUNK_X][CHUNK_Y][CHUNK_Z];
 	glm::mat4 offsetMatrix;
 	unsigned int VAO;
 	unsigned int VBO_VERT;

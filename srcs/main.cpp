@@ -81,7 +81,7 @@ int main(void)
 		glBindTexture(GL_TEXTURE_2D, atlas);
 
 		// for physics
-		// player.update(deltaTime);
+		player.update(deltaTime);
 		// setup renderer
 		cubeShader.use();
 		glm::mat4 projection = glm::perspective(glm::radians(player.camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 1000.0f);
@@ -110,7 +110,7 @@ int main(void)
 				terr.renderWaterChunk(glm::ivec2(c->getXOff() + i, c->getZOff() - j), cubeShader);
 			}
 		}
-		if (terr.updateList != glm::ivec2(-100000,-100000))
+		if (terr.updateList != glm::ivec2(-100000,-100000)) // could switch to running this as a while loop on a list on a seperate thread
 		{
 			terr.updateChunk(terr.updateList);
 			terr.updateList = glm::ivec2(-100000,-100000);

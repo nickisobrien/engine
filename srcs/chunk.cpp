@@ -165,7 +165,7 @@ void Chunk::addExtras(FastNoise terrainNoise, FastNoise temperatureNoise, FastNo
 				if (hum < 0.0f)
 					blocktype = 67;
 				else
-					blocktype = 68;
+					blocktype = SNOW_BLOCK;
 			}
 			else if (temp >= -0.33f && temp >= 0.33f)
 			{
@@ -183,7 +183,7 @@ void Chunk::addExtras(FastNoise terrainNoise, FastNoise temperatureNoise, FastNo
 			}
 			if (base < WATER_LEVEL)
 				continue ;
-			if (blocktype == 4 && rand() % 1000 > 996)
+			if (blocktype == GRASS_BLOCK && rand() % 1000 > 996)
 			{
 				this->blocks[x][base][z].setType(21);
 				this->blocks[x][base+1][z].setType(21);
@@ -225,7 +225,7 @@ void Chunk::addExtras(FastNoise terrainNoise, FastNoise temperatureNoise, FastNo
 				// 	}
 				// }
 			} // cactus
-			else if (blocktype == 19 && rand() % 1000 > 996)
+			else if (blocktype == SAND_BLOCK && rand() % 1000 > 996)
 			{
 				this->blocks[x][base][z].setType(71);
 				this->blocks[x][base+1][z].setType(71);

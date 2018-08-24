@@ -56,7 +56,7 @@ int main(void)
 
 	// build and compile our shader program
 	Shader cubeShader("../resources/shaders/cube.vs", "../resources/shaders/cube.fs");
-	unsigned int atlas = loadTexture("../resources/textures/atlas4.png");
+	unsigned int atlas = loadTexture("../resources/textures/myatlas.jpg");
 
 	cubeShader.use();
 	cubeShader.setInt("atlas", 0);

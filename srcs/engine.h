@@ -32,9 +32,9 @@
 #define TEXTURE_SIZE 16
 #define DIST(X,Y,XX,YY) ((YY-Y)/(XX-X));
 
-#define WATER_BLOCK 15
 #define WATER_LEVEL 32
-#define AIR_BLOCK 0
+
+#include "blockIndex.h" // block types
 
 static float VCUBE[108] = {
 	//DOWN

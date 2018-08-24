@@ -110,13 +110,6 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 			short blocktype;
 			// noise layer #1 "Temperature"
 			// noise layer #2 "Humidity"
-			// Derived biomes:
-			// Temp < 33%	 		Humidity < 50% => Cold rocky biome
-			// Temp < 33%	 		Humidity > 50% => Ice and frozen lakes
-			// 33% < Temp < 66%	Humidity < 50% => Grassland
-			// 33% < Temp < 66%	Humidity > 50% => Forest or swamp
-			// Temp > 66%	 		Humidity < 50% => Dessert
-			// Temp > 66%	 		Humidity > 50% => Tropical rainforest
 			if (temp < -0.33f)
 			{
 				if (hum < 0.0f)
@@ -127,16 +120,16 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 			else if (temp >= -0.33f && temp >= 0.33f)
 			{
 				if (hum < 0.0f)
-					blocktype = 4;
+					blocktype = GRASS_BLOCK;
 				else
-					blocktype = 3;
+					blocktype = DIRT_BLOCK;
 			}
 			else
 			{
 				if (hum < 0.0f)
-					blocktype = 19;
+					blocktype = SAND_BLOCK;
 				else
-					blocktype = 4;
+					blocktype = GRASS_BLOCK;
 			}
 			if (base < WATER_LEVEL)
 				water = true;
@@ -177,16 +170,16 @@ void Chunk::addExtras(FastNoise terrainNoise, FastNoise temperatureNoise, FastNo
 			else if (temp >= -0.33f && temp >= 0.33f)
 			{
 				if (hum < 0.0f)
-					blocktype = 4;
+					blocktype = GRASS_BLOCK;
 				else
-					blocktype = 3;
+					blocktype = DIRT_BLOCK;
 			}
 			else
 			{
 				if (hum < 0.0f)
-					blocktype = 19;
+					blocktype = SAND_BLOCK;
 				else
-					blocktype = 4;
+					blocktype = GRASS_BLOCK;
 			}
 			if (base < WATER_LEVEL)
 				continue ;
@@ -200,13 +193,13 @@ void Chunk::addExtras(FastNoise terrainNoise, FastNoise temperatureNoise, FastNo
 				this->blocks[x][base+5][z].setType(21);
 				this->blocks[x][base+6][z].setType(21);
 
-				this->blocks[x][base][z].setActive(true);// why not happening on update?
-				this->blocks[x][base+1][z].setActive(true);// why not happening on update?
-				this->blocks[x][base+2][z].setActive(true);// why not happening on update?
-				this->blocks[x][base+3][z].setActive(true);// why not happening on update?
-				this->blocks[x][base+4][z].setActive(true);// why not happening on update?
-				this->blocks[x][base+5][z].setActive(true);// why not happening on update?
-				this->blocks[x][base+6][z].setActive(true);// why not happening on update?
+				this->blocks[x][base][z].setActive(true); // why not happening on update?
+				this->blocks[x][base+1][z].setActive(true); // why not happening on update?
+				this->blocks[x][base+2][z].setActive(true); // why not happening on update?
+				this->blocks[x][base+3][z].setActive(true); // why not happening on update?
+				this->blocks[x][base+4][z].setActive(true); // why not happening on update?
+				this->blocks[x][base+5][z].setActive(true); // why not happening on update?
+				this->blocks[x][base+6][z].setActive(true); // why not happening on update?
 				// for (int i = 0; i < 2; i++)
 				// {
 				// 	for (int j = 0; j < 2; j++)
@@ -238,9 +231,9 @@ void Chunk::addExtras(FastNoise terrainNoise, FastNoise temperatureNoise, FastNo
 				this->blocks[x][base+1][z].setType(71);
 				this->blocks[x][base+2][z].setType(71);
 
-				this->blocks[x][base][z].setActive(true);// why not happening on update?
-				this->blocks[x][base+1][z].setActive(true);// why not happening on update?
-				this->blocks[x][base+2][z].setActive(true);// why not happening on update?
+				this->blocks[x][base][z].setActive(true); // why not happening on update?
+				this->blocks[x][base+1][z].setActive(true); // why not happening on update?
+				this->blocks[x][base+2][z].setActive(true); // why not happening on update?
 			}
 		}
 	}

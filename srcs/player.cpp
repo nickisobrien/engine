@@ -96,13 +96,16 @@ void Player::jump()
 {
 	glm::vec3 cur = this->getPosition();
 	if (this->isGrounded())
-		this->setPosition(glm::vec3(cur.x, cur.y+5.0f, cur.z)); // temp easy code jump
+	{
+		// this->setPosition(glm::vec3(cur.x, cur.y+0.01f, cur.z)); // temp easy code jump
+		this->velocity = -10.0f;
+	}
 }
 
 void Player::applyGravity(float time)
 {
 	glm::vec3 current = this->getPosition();
-	if (!this->isGrounded())
+	if (!this->isGrounded() || this->velocity < 0)
 	{
 		this->velocity += this->gravity * time;
 		current.y -= this->velocity * time;

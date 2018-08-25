@@ -185,13 +185,13 @@ void Chunk::addExtras(FastNoise terrainNoise, FastNoise temperatureNoise, FastNo
 				continue ;
 			if (blocktype == GRASS_BLOCK && rand() % 1000 > 996)
 			{
-				this->blocks[x][base][z].setType(21);
-				this->blocks[x][base+1][z].setType(21);
-				this->blocks[x][base+2][z].setType(21);
-				this->blocks[x][base+3][z].setType(21);
-				this->blocks[x][base+4][z].setType(21);
-				this->blocks[x][base+5][z].setType(21);
-				this->blocks[x][base+6][z].setType(21);
+				this->blocks[x][base][z].setType(DIRT_BLOCK);
+				this->blocks[x][base+1][z].setType(DIRT_BLOCK);
+				this->blocks[x][base+2][z].setType(DIRT_BLOCK);
+				this->blocks[x][base+3][z].setType(DIRT_BLOCK);
+				this->blocks[x][base+4][z].setType(DIRT_BLOCK);
+				this->blocks[x][base+5][z].setType(DIRT_BLOCK);
+				this->blocks[x][base+6][z].setType(DIRT_BLOCK);
 
 				this->blocks[x][base][z].setActive(true); // why not happening on update?
 				this->blocks[x][base+1][z].setActive(true); // why not happening on update?
@@ -227,9 +227,9 @@ void Chunk::addExtras(FastNoise terrainNoise, FastNoise temperatureNoise, FastNo
 			} // cactus
 			else if (blocktype == SAND_BLOCK && rand() % 1000 > 996)
 			{
-				this->blocks[x][base][z].setType(71);
-				this->blocks[x][base+1][z].setType(71);
-				this->blocks[x][base+2][z].setType(71);
+				this->blocks[x][base][z].setType(GRASS_BLOCK);
+				this->blocks[x][base+1][z].setType(GRASS_BLOCK);
+				this->blocks[x][base+2][z].setType(GRASS_BLOCK);
 
 				this->blocks[x][base][z].setActive(true); // why not happening on update?
 				this->blocks[x][base+1][z].setActive(true); // why not happening on update?

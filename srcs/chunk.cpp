@@ -449,6 +449,7 @@ void Chunk::addFace(int face, int x, int y, int z, int val)
 		points.push_back(vec);
 	}
 
+// texture faces
 	int xtype = blocks[x][y][z].getType() - 1 % 16;
 	int ytype = blocks[x][y][z].getType() / 17;
 	for (int i = oneFaceUV * face; i < oneFaceUV * u; i += 2)

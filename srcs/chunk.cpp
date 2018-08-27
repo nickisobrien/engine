@@ -5,6 +5,8 @@
 
 Chunk::Chunk(int xoff, int zoff)
 {
+	this->pointSize = 0;
+	this->transparentPointSize = 0;
 	this->xoff = xoff;
 	this->zoff = zoff;
 	offsetMatrix = glm::translate(glm::mat4(1.0f), glm::vec3((float)(xoff * CHUNK_X), 1.0f, (float)(zoff * CHUNK_Z)));
@@ -17,48 +19,33 @@ Chunk::Chunk(int xoff, int zoff)
 	glGenVertexArrays(1, &this->VAO);
 	glGenBuffers(1, &this->VBO);
 	glBindVertexArray(this->VAO);
-		// glGenBuffers(1, &this->VBO_UV);
-		// glGenBuffers(1, &this->VBO_NORM);
-		
 		glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-		// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-		// glEnableVertexAttribArray(0);
 
-		// // glBindBuffer(GL_ARRAY_BUFFER, this->VBO_UV);
-		// // glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)(0));
-		// // glEnableVertexAttribArray(1);
-
-		// // glBindBuffer(GL_ARRAY_BUFFER, this->VBO_NORM);
-		// // glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)(0));
-		// // glEnableVertexAttribArray(2);
-
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
 		glEnableVertexAttribArray(0);
 		
-		// glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-		// glEnableVertexAttribArray(1);
-		
-		// glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
-		// glEnableVertexAttribArray(2);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+		glEnableVertexAttribArray(1);
 
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+		glEnableVertexAttribArray(2);
 	glBindVertexArray(0);
 
 	// transparent
-	// glGenVertexArrays(1, &this->transparentVAO);
-	// 	glGenBuffers(1, &this->transparentVBO_VERT);
-	// 	glGenBuffers(1, &this->transparentVBO_UV);
-	// 	glBindVertexArray(this->transparentVAO);
+	glGenVertexArrays(1, &this->transparentVAO);
+	glGenBuffers(1, &this->transparentVBO);
+	glBindVertexArray(this->transparentVAO);
+		glBindBuffer(GL_ARRAY_BUFFER, this->transparentVBO);
 
-	// 	glBindBuffer(GL_ARRAY_BUFFER, this->transparentVBO_VERT);
-	// 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-	// 	glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
+		glEnableVertexAttribArray(0);
+		
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+		glEnableVertexAttribArray(1);
 
-	// 	glBindBuffer(GL_ARRAY_BUFFER, this->transparentVBO_UV);
-	// 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)(0));
-	// 	glEnableVertexAttribArray(1);
-
-	// 	glBindBuffer(GL_ARRAY_BUFFER, 0); // don't think i need
-	// glBindVertexArray(0);
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+		glEnableVertexAttribArray(2);
+	glBindVertexArray(0);
 }
 
 int	Chunk::getWorld(int x, int y, int z)
@@ -81,10 +68,7 @@ Block *Chunk::getBlock(int x, int y, int z)
 
 Chunk::~Chunk(void)
 {
-	// points.clear();
-	// uvs.clear();
-	// transparentPoints.clear();
-	// transparentUvs.clear();
+	this->cleanVAO();
 }
 
 void Chunk::render(Shader shader)
@@ -102,6 +86,7 @@ void Chunk::renderWater(Shader shader)
 	shader.setFloat("transparency", 0.65f);
 	glBindVertexArray(transparentVAO);
 	glDrawArrays(GL_TRIANGLES, 0, transparentPointSize);
+	glBindVertexArray(0);
 }
 
 void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastNoise humidityNoise)
@@ -154,7 +139,6 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 				this->blocks[x][y][z].setType(WATER_BLOCK);
 		}
 	}
-	// this->addExtras(terrainNoise, temperatureNoise, humidityNoise);
 	// std::cout << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << std::endl;
 }
 
@@ -213,30 +197,6 @@ void Chunk::addExtras(FastNoise terrainNoise, FastNoise temperatureNoise, FastNo
 				this->blocks[x][base+4][z].setActive(true); // why not happening on update?
 				this->blocks[x][base+5][z].setActive(true); // why not happening on update?
 				this->blocks[x][base+6][z].setActive(true); // why not happening on update?
-				// for (int i = 0; i < 2; i++)
-				// {
-				// 	for (int j = 0; j < 2; j++)
-				// 	{
-				// 		for (int k = -1; k < 12; k++)
-				// 		{
-				// 			if (base+k < CHUNK_Y && base+k > 0)
-				// 			{
-				// 				if (x+i == CHUNK_X)
-				// 					if (c->getXPlus())
-				// 						c = c->getXPlus();
-				// 				if (z+j == CHUNK_Z)
-				// 				{
-				// 					if (c->getZPlus())
-				// 						c = c->getZPlus();
-				// 				}
-				// 				if (c->blocks[(x+i)%CHUNK_X][(base+k)%CHUNK_Y][(z+j)%CHUNK_Z].getType() == AIR_BLOCK)
-				// 				{
-				// 					c->blocks[(x+i)%CHUNK_X][(base+k)%CHUNK_Y][(z+j)%CHUNK_Z].setType(21);
-				// 				}
-				// 			}
-				// 		}
-				// 	}
-				// }
 			} // cactus
 			else if (blocktype == SAND_BLOCK && rand() % 1000 > 996)
 			{
@@ -254,12 +214,8 @@ void Chunk::addExtras(FastNoise terrainNoise, FastNoise temperatureNoise, FastNo
 
 void Chunk::update(void)
 {
-	this->cleanVAO();
-
-	mesh.clear();
-	// for safety
-	transparentPointSize = 0;
-	pointSize = 0;
+	this->transparentPointSize = 0;
+	this->pointSize = 0;
 
 	this->faceRendering();
 	this->buildVAO();
@@ -372,157 +328,98 @@ void Chunk::faceRendering(void)
 
 void Chunk::buildVAO(void)
 {
-	// vertice VBO
 	glBindVertexArray(this->VAO);
 
-		// glBindBuffer(GL_ARRAY_BUFFER, this->VBO_VERT);
-		// glBufferData(GL_ARRAY_BUFFER, this->points.size() * sizeof(glm::vec3), &this->points[0][0], GL_STATIC_DRAW);
-
-		// // texture coords
-		// glBindBuffer(GL_ARRAY_BUFFER, this->VBO_UV);
-		// glBufferData(GL_ARRAY_BUFFER, this->uvs.size() * sizeof(glm::vec2), &this->uvs[0][0], GL_STATIC_DRAW);
-
-		// glBindBuffer(GL_ARRAY_BUFFER, this->VBO_NORM);
-		// glBufferData(GL_ARRAY_BUFFER, this->norms.size() * sizeof(glm::vec2), &this->norms[0][0], GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
 		glBufferData(GL_ARRAY_BUFFER, mesh.size() * sizeof(float), &this->mesh[0], GL_STATIC_DRAW);
 
 	glBindVertexArray(0);
-	// mesh.clear();
+	mesh.clear();
 
-	// this->points.clear();
-	// this->uvs.clear();
-	// this->norms.clear();
+	glBindVertexArray(this->transparentVAO);
 
+		glBindBuffer(GL_ARRAY_BUFFER, transparentVBO);
+		glBufferData(GL_ARRAY_BUFFER, transparentMesh.size() * sizeof(float), &this->transparentMesh[0], GL_STATIC_DRAW);
 
-	// TRANSPARENT
-	// glBindVertexArray(this->transparentVAO);
-
-	// 	glBindBuffer(GL_ARRAY_BUFFER, this->transparentVBO_VERT);
-	// 	glBufferData(GL_ARRAY_BUFFER, this->transparentPoints.size() * sizeof(glm::vec3), &this->transparentPoints[0][0], GL_STATIC_DRAW);
-	
-	// 	// texture coords
-	// 	glBindBuffer(GL_ARRAY_BUFFER, this->transparentVBO_UV);
-	// 	glBufferData(GL_ARRAY_BUFFER, this->transparentUvs.size() * sizeof(glm::vec2), &this->transparentUvs[0][0], GL_STATIC_DRAW);
-
-	// glBindVertexArray(0);
-
-	// this->transparentPointSize = this->transparentPoints.size();
-	// this->transparentPoints.clear();
-	// this->transparentUvs.clear();
-
-
-
-
-
-
-
-
-
-
-	// // vertice VBO
-	// 
-	// 
-	// glBufferData(GL_ARRAY_BUFFER, this->transparentPoints.size() * sizeof(glm::vec3), &this->transparentPoints[0][0], GL_STATIC_DRAW);
-	// 
-	// 
-
-	// this->transparentPointSize = this->transparentPoints.size();
-	// this->transparentPoints.clear();
-
-	// // texture coords
-	// 
-	// 
-	// glBufferData(GL_ARRAY_BUFFER, this->transparentUvs.size() * sizeof(glm::vec2), &this->transparentUvs[0][0], GL_STATIC_DRAW);
-	// glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)(0));
-	// glEnableVertexAttribArray(1);
-
-	// this->transparentUvs.clear();
-
-	// glBindBuffer(GL_ARRAY_BUFFER, 0);
-	// glBindVertexArray(0);
+	glBindVertexArray(0);
+	transparentMesh.clear();
 }
 
-//can cut these down to one function by oassing in the changes as variables
+//can cut these down to one function by passing in the changes as variables
 
 void Chunk::addFace(int face, int x, int y, int z, int val)
 {
-	for (int i = face * 6; i < face * 6 + 6; i++)
+	int xtype = blocks[x][y][z].getType() - 1 % 16;
+	int ytype = blocks[x][y][z].getType() / 17;
+	for (int i = face * 6, j = 0; i < face * 6 + 6; j++, i++)
 	{
-		glm::vec3 vec(	vertices[indices[i]].x * 0.5f + (float)x,
+		// vertices
+		glm::vec3 vec1(	vertices[indices[i]].x * 0.5f + (float)x,
 						vertices[indices[i]].y * 0.5f + (float)y,
 						vertices[indices[i]].z * 0.5f + (float)z);
-		// mesh.push_back(vec);
-		mesh.push_back(vec.x);
-		mesh.push_back(vec.y);
-		mesh.push_back(vec.z);
+		mesh.push_back(vec1.x);
+		mesh.push_back(vec1.y);
+		mesh.push_back(vec1.z);
+
+		// textures
+		glm::vec2 vec2(texCoords[texInds[j % 4]].x, texCoords[texInds[j % 4]].y);
+		vec2.x /= 16;
+		vec2.x += 0.0625 * (xtype);
+		vec2.y /= 16;
+		vec2.y += 0.0625 * (ytype);
+		mesh.push_back(vec2.x);
+		mesh.push_back(vec2.y);
+
+		// normals
+		glm::vec3 vec3(	normals[indices[i / 6]].x,
+						normals[indices[i / 6]].y,
+						normals[indices[i / 6]].z);
+		mesh.push_back(vec3.x);
+		mesh.push_back(vec3.y);
+		mesh.push_back(vec3.z);
 	}
 	this->pointSize+=6;
-
-	// int xtype = blocks[x][y][z].getType() - 1 % 16;
-	// int ytype = blocks[x][y][z].getType() / 17;
-	// for (int i = 0; i < 6; i++)
-	// {
-	// 	glm::vec2 vec(texCoords[texInds[i % 4]].x, texCoords[texInds[i % 4]].y);
-	// 	vec.x /= 16;
-	// 	vec.x += 0.0625 * (xtype);
-	// 	vec.y /= 16;
-	// 	vec.y += 0.0625 * (ytype);
-	// 	mesh.push_back(vec.x);
-	// 	mesh.push_back(vec.y);
-	// }
-
-	// for (int i = face * 6; i < face * 6 + 6; i++)
-	// {
-	// 	glm::vec3 vec(	normals[indices[i / 6]].x,
-	// 					normals[indices[i / 6]].y,
-	// 					normals[indices[i / 6]].z);
-	// 	mesh.push_back(vec.x);
-	// 	mesh.push_back(vec.y);
-	// 	mesh.push_back(vec.z);
-	// 	// norms.push_back(vec);
-	// }
 }
 
 void Chunk::addTransparentFace(int face, int x, int y, int z, int val)
 {
-	for (int i = face * 6; i < face * 6 + 6; i++)
-	{
-		glm::vec3 vec(	vertices[indices[i]].x * 0.5f + (float)x,
-						vertices[indices[i]].y * 0.5f + (float)y,
-						vertices[indices[i]].z * 0.5f + (float)z);
-		transparentPoints.push_back(vec);
-	}
-
 	int xtype = blocks[x][y][z].getType() - 1 % 16;
 	int ytype = blocks[x][y][z].getType() / 17;
-	for (int i = 0; i < 6; i++)
+	for (int i = face * 6, j = 0; i < face * 6 + 6; j++, i++)
 	{
-		glm::vec2 vec(texCoords[texInds[i % 4]].x, texCoords[texInds[i % 4]].y);
-		vec.x /= 16;
-		vec.x += 0.0625 * (xtype);
-		vec.y /= 16;
-		vec.y += 0.0625 * (ytype);
-		transparentUvs.push_back(vec);
-	}
+		// vertices
+		glm::vec3 vec1(	vertices[indices[i]].x * 0.5f + (float)x,
+						vertices[indices[i]].y * 0.5f + (float)y,
+						vertices[indices[i]].z * 0.5f + (float)z);
+		transparentMesh.push_back(vec1.x);
+		transparentMesh.push_back(vec1.y);
+		transparentMesh.push_back(vec1.z);
 
-	for (int i = face * 6; i < face * 6 + 6; i++)
-	{
-		glm::vec3 vec(	normals[indices[i / 6]].x,
+		// textures
+		glm::vec2 vec2(texCoords[texInds[j % 4]].x, texCoords[texInds[j % 4]].y);
+		vec2.x /= 16;
+		vec2.x += 0.0625 * (xtype);
+		vec2.y /= 16;
+		vec2.y += 0.0625 * (ytype);
+		transparentMesh.push_back(vec2.x);
+		transparentMesh.push_back(vec2.y);
+
+		// normals
+		glm::vec3 vec3(	normals[indices[i / 6]].x,
 						normals[indices[i / 6]].y,
 						normals[indices[i / 6]].z);
-		transparentNorms.push_back(vec);
+		transparentMesh.push_back(vec3.x);
+		transparentMesh.push_back(vec3.y);
+		transparentMesh.push_back(vec3.z);
 	}
+	this->transparentPointSize+=6;
 }
 
 void Chunk::cleanVAO(void) {
-	// glDeleteBuffers(1, &this->VBO_UV);
-	// glDeleteBuffers(1, &this->VBO_VERT);
-	// glDeleteVertexArrays(1, &this->VAO);
-
-	// glDeleteBuffers(1, &this->transparentVBO_UV);
-	// glDeleteBuffers(1, &this->transparentVBO_VERT);
-	// glDeleteVertexArrays(1, &this->transparentVAO);
+	glDeleteBuffers(1, &this->VBO);
+	glDeleteBuffers(1, &this->transparentVBO);
+	glDeleteVertexArrays(1, &this->VAO);
+	glDeleteVertexArrays(1, &this->transparentVAO);
 }
 
 
@@ -549,8 +446,6 @@ inline void Chunk::setTorchlight(int x, int y, int z, int val)
 {
 	lightMap[x][y][z] = (lightMap[x][y][z] & 0xF0) | val;
 }
-
-
 
 
 

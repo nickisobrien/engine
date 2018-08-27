@@ -61,27 +61,17 @@ private:
 	char lightMap[CHUNK_X][CHUNK_Y][CHUNK_Z];
 	glm::mat4 offsetMatrix;
 	unsigned int VAO;
-	unsigned int VBO_VERT;
 	unsigned int VBO;
-	unsigned int VBO_UV;
-	unsigned int VBO_NORM;
 
 	int pointSize;
 	int transparentPointSize;
 
 	unsigned int transparentVAO;
-	unsigned int transparentVBO_VERT;
-	unsigned int transparentVBO_UV;
-
+	unsigned int transparentVBO;
 
 	vector<float> mesh;
-	// vector<glm::vec3> points;
-	// vector<glm::vec2> uvs;
-	// vector<glm::vec3> norms;
+	vector<float> transparentMesh;
 
-	vector<glm::vec3> transparentPoints;
-	vector<glm::vec2> transparentUvs;
-	vector<glm::vec3> transparentNorms;
 	ChunkState state = GENERATE;
 	Chunk *xMinus = NULL;
 	Chunk *xPlus = NULL;

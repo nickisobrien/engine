@@ -15,37 +15,50 @@ Chunk::Chunk(int xoff, int zoff)
 
 	// non transparent
 	glGenVertexArrays(1, &this->VAO);
-		glGenBuffers(1, &this->VBO_VERT);
-		glGenBuffers(1, &this->VBO_UV);
-		glBindVertexArray(this->VAO);
+	glGenBuffers(1, &this->VBO);
+	glBindVertexArray(this->VAO);
+		// glGenBuffers(1, &this->VBO_UV);
+		// glGenBuffers(1, &this->VBO_NORM);
 		
-		glBindBuffer(GL_ARRAY_BUFFER, this->VBO_VERT);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+		glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
+		// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+		// glEnableVertexAttribArray(0);
+
+		// // glBindBuffer(GL_ARRAY_BUFFER, this->VBO_UV);
+		// // glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)(0));
+		// // glEnableVertexAttribArray(1);
+
+		// // glBindBuffer(GL_ARRAY_BUFFER, this->VBO_NORM);
+		// // glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)(0));
+		// // glEnableVertexAttribArray(2);
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
 		glEnableVertexAttribArray(0);
+		
+		// glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+		// glEnableVertexAttribArray(1);
+		
+		// glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+		// glEnableVertexAttribArray(2);
 
-		glBindBuffer(GL_ARRAY_BUFFER, this->VBO_UV);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)(0));
-		glEnableVertexAttribArray(1);
-
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
 	// transparent
-	glGenVertexArrays(1, &this->transparentVAO);
-		glGenBuffers(1, &this->transparentVBO_VERT);
-		glBindVertexArray(this->transparentVAO);
+	// glGenVertexArrays(1, &this->transparentVAO);
+	// 	glGenBuffers(1, &this->transparentVBO_VERT);
+	// 	glGenBuffers(1, &this->transparentVBO_UV);
+	// 	glBindVertexArray(this->transparentVAO);
 
-		glBindBuffer(GL_ARRAY_BUFFER, this->transparentVBO_VERT);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-		glEnableVertexAttribArray(0);
+	// 	glBindBuffer(GL_ARRAY_BUFFER, this->transparentVBO_VERT);
+	// 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	// 	glEnableVertexAttribArray(0);
 
-		glGenBuffers(1, &this->transparentVBO_UV);
-		glBindBuffer(GL_ARRAY_BUFFER, this->transparentVBO_UV);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)(0));
-		glEnableVertexAttribArray(1);
+	// 	glBindBuffer(GL_ARRAY_BUFFER, this->transparentVBO_UV);
+	// 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)(0));
+	// 	glEnableVertexAttribArray(1);
 
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	// 	glBindBuffer(GL_ARRAY_BUFFER, 0); // don't think i need
+	// glBindVertexArray(0);
 }
 
 int	Chunk::getWorld(int x, int y, int z)
@@ -68,10 +81,10 @@ Block *Chunk::getBlock(int x, int y, int z)
 
 Chunk::~Chunk(void)
 {
-	points.clear();
-	uvs.clear();
-	transparentPoints.clear();
-	transparentUvs.clear();
+	// points.clear();
+	// uvs.clear();
+	// transparentPoints.clear();
+	// transparentUvs.clear();
 }
 
 void Chunk::render(Shader shader)
@@ -243,9 +256,10 @@ void Chunk::update(void)
 {
 	this->cleanVAO();
 
+	mesh.clear();
 	// for safety
-	// transparentPointSize = 0;
-	// pointSize = 0;
+	transparentPointSize = 0;
+	pointSize = 0;
 
 	this->faceRendering();
 	this->buildVAO();
@@ -361,35 +375,41 @@ void Chunk::buildVAO(void)
 	// vertice VBO
 	glBindVertexArray(this->VAO);
 
-		glBindBuffer(GL_ARRAY_BUFFER, this->VBO_VERT);
-		glBufferData(GL_ARRAY_BUFFER, this->points.size() * sizeof(glm::vec3), &this->points[0][0], GL_STATIC_DRAW);
+		// glBindBuffer(GL_ARRAY_BUFFER, this->VBO_VERT);
+		// glBufferData(GL_ARRAY_BUFFER, this->points.size() * sizeof(glm::vec3), &this->points[0][0], GL_STATIC_DRAW);
 
-		// texture coords
-		glBindBuffer(GL_ARRAY_BUFFER, this->VBO_UV);
-		glBufferData(GL_ARRAY_BUFFER, this->uvs.size() * sizeof(glm::vec2), &this->uvs[0][0], GL_STATIC_DRAW);
+		// // texture coords
+		// glBindBuffer(GL_ARRAY_BUFFER, this->VBO_UV);
+		// glBufferData(GL_ARRAY_BUFFER, this->uvs.size() * sizeof(glm::vec2), &this->uvs[0][0], GL_STATIC_DRAW);
+
+		// glBindBuffer(GL_ARRAY_BUFFER, this->VBO_NORM);
+		// glBufferData(GL_ARRAY_BUFFER, this->norms.size() * sizeof(glm::vec2), &this->norms[0][0], GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBufferData(GL_ARRAY_BUFFER, mesh.size() * sizeof(float), &this->mesh[0], GL_STATIC_DRAW);
 
 	glBindVertexArray(0);
+	// mesh.clear();
 
-	this->pointSize = this->points.size();
-	this->points.clear();
-	this->uvs.clear();
+	// this->points.clear();
+	// this->uvs.clear();
+	// this->norms.clear();
 
 
 	// TRANSPARENT
-	glBindVertexArray(this->transparentVAO);
+	// glBindVertexArray(this->transparentVAO);
 
-		glBindBuffer(GL_ARRAY_BUFFER, this->transparentVBO_VERT);
-		glBufferData(GL_ARRAY_BUFFER, this->transparentPoints.size() * sizeof(glm::vec3), &this->transparentPoints[0][0], GL_STATIC_DRAW);
+	// 	glBindBuffer(GL_ARRAY_BUFFER, this->transparentVBO_VERT);
+	// 	glBufferData(GL_ARRAY_BUFFER, this->transparentPoints.size() * sizeof(glm::vec3), &this->transparentPoints[0][0], GL_STATIC_DRAW);
 	
-		// texture coords
-		glBindBuffer(GL_ARRAY_BUFFER, this->transparentVBO_UV);
-		glBufferData(GL_ARRAY_BUFFER, this->transparentUvs.size() * sizeof(glm::vec2), &this->transparentUvs[0][0], GL_STATIC_DRAW);
+	// 	// texture coords
+	// 	glBindBuffer(GL_ARRAY_BUFFER, this->transparentVBO_UV);
+	// 	glBufferData(GL_ARRAY_BUFFER, this->transparentUvs.size() * sizeof(glm::vec2), &this->transparentUvs[0][0], GL_STATIC_DRAW);
 
-	glBindVertexArray(0);
+	// glBindVertexArray(0);
 
-	this->transparentPointSize = this->transparentPoints.size();
-	this->transparentPoints.clear();
-	this->transparentUvs.clear();
+	// this->transparentPointSize = this->transparentPoints.size();
+	// this->transparentPoints.clear();
+	// this->transparentUvs.clear();
 
 
 
@@ -427,81 +447,58 @@ void Chunk::buildVAO(void)
 
 void Chunk::addFace(int face, int x, int y, int z, int val)
 {
-	static int oneFace = ((sizeof(VCUBE) / 4)/6/2);
-	static int oneFaceUV = ((sizeof(CUBEUV) / 4)/6/2);
-	int u = face + 1;
-
-	for (int i = oneFace * face; i < oneFace * u; i+=3)
+	for (int i = face * 6; i < face * 6 + 6; i++)
 	{
-		glm::vec3 vec = glm::make_vec3(&VCUBE[i]);
-		vec.x = vec.x * 0.5f + (float)x;
-		vec.y = vec.y * 0.5f + (float)y;
-		vec.z = vec.z * 0.5f + (float)z;
-		points.push_back(vec);
+		glm::vec3 vec(	vertices[indices[i]].x * 0.5f + (float)x,
+						vertices[indices[i]].y * 0.5f + (float)y,
+						vertices[indices[i]].z * 0.5f + (float)z);
+		// mesh.push_back(vec);
+		mesh.push_back(vec.x);
+		mesh.push_back(vec.y);
+		mesh.push_back(vec.z);
 	}
+	this->pointSize+=6;
 
-	for (int i = oneFace * face + 54; i < oneFace * u + 54; i+=3)
-	{
-		glm::vec3 vec = glm::make_vec3(&VCUBE[i]);
-		vec.x = vec.x * 0.5f + (float)x;
-		vec.y = vec.y * 0.5f + (float)y;
-		vec.z = vec.z * 0.5f + (float)z;
-		points.push_back(vec);
-	}
+	// int xtype = blocks[x][y][z].getType() - 1 % 16;
+	// int ytype = blocks[x][y][z].getType() / 17;
+	// for (int i = 0; i < 6; i++)
+	// {
+	// 	glm::vec2 vec(texCoords[texInds[i % 4]].x, texCoords[texInds[i % 4]].y);
+	// 	vec.x /= 16;
+	// 	vec.x += 0.0625 * (xtype);
+	// 	vec.y /= 16;
+	// 	vec.y += 0.0625 * (ytype);
+	// 	mesh.push_back(vec.x);
+	// 	mesh.push_back(vec.y);
+	// }
 
-// texture faces
-	int xtype = blocks[x][y][z].getType() - 1 % 16;
-	int ytype = blocks[x][y][z].getType() / 17;
-	for (int i = oneFaceUV * face; i < oneFaceUV * u; i += 2)
-	{
-		glm::vec2 vec = glm::make_vec2(&CUBEUV[i]);
-		vec.x /= 16;
-		vec.x += 0.0625 * (xtype);
-		vec.y /= 16;
-		vec.y += 0.0625 * (ytype);
-		uvs.push_back(vec);
-	}
-
-	for (int i = oneFaceUV * face + 36; i < oneFaceUV * u + 36; i+=2)
-	{
-		glm::vec2 vec = glm::make_vec2(&CUBEUV[i]);
-		vec.x /= 16;
-		vec.x += 0.0625 * (xtype);
-		vec.y /= 16;
-		vec.y += 0.0625 * (ytype);
-		uvs.push_back(vec);
-	}
+	// for (int i = face * 6; i < face * 6 + 6; i++)
+	// {
+	// 	glm::vec3 vec(	normals[indices[i / 6]].x,
+	// 					normals[indices[i / 6]].y,
+	// 					normals[indices[i / 6]].z);
+	// 	mesh.push_back(vec.x);
+	// 	mesh.push_back(vec.y);
+	// 	mesh.push_back(vec.z);
+	// 	// norms.push_back(vec);
+	// }
 }
 
 void Chunk::addTransparentFace(int face, int x, int y, int z, int val)
 {
-	static int oneFace = ((sizeof(VCUBE) / 4)/6/2);
-	static int oneFaceUV = ((sizeof(CUBEUV) / 4)/6/2);
-	int u = face + 1;
-
-	for (int i = oneFace * face; i < oneFace * u; i+=3)
+	for (int i = face * 6; i < face * 6 + 6; i++)
 	{
-		glm::vec3 vec = glm::make_vec3(&VCUBE[i]);
-		vec.x = vec.x * 0.5f + (float)x;
-		vec.y = vec.y * 0.5f + (float)y;
-		vec.z = vec.z * 0.5f + (float)z;
-		transparentPoints.push_back(vec);
-	}
-
-	for (int i = oneFace * face + 54; i < oneFace * u + 54; i+=3)
-	{
-		glm::vec3 vec = glm::make_vec3(&VCUBE[i]);
-		vec.x = vec.x * 0.5f + (float)x;
-		vec.y = vec.y * 0.5f + (float)y;
-		vec.z = vec.z * 0.5f + (float)z;
+		glm::vec3 vec(	vertices[indices[i]].x * 0.5f + (float)x,
+						vertices[indices[i]].y * 0.5f + (float)y,
+						vertices[indices[i]].z * 0.5f + (float)z);
 		transparentPoints.push_back(vec);
 	}
 
 	int xtype = blocks[x][y][z].getType() - 1 % 16;
 	int ytype = blocks[x][y][z].getType() / 17;
-	for (int i = oneFaceUV * face; i < oneFaceUV * u; i += 2)
+	for (int i = 0; i < 6; i++)
 	{
-		glm::vec2 vec = glm::make_vec2(&CUBEUV[i]);
+		glm::vec2 vec(texCoords[texInds[i % 4]].x, texCoords[texInds[i % 4]].y);
 		vec.x /= 16;
 		vec.x += 0.0625 * (xtype);
 		vec.y /= 16;
@@ -509,14 +506,12 @@ void Chunk::addTransparentFace(int face, int x, int y, int z, int val)
 		transparentUvs.push_back(vec);
 	}
 
-	for (int i = oneFaceUV * face + 36; i < oneFaceUV * u + 36; i+=2)
+	for (int i = face * 6; i < face * 6 + 6; i++)
 	{
-		glm::vec2 vec = glm::make_vec2(&CUBEUV[i]);
-		vec.x /= 16;
-		vec.x += 0.0625 * (xtype);
-		vec.y /= 16;
-		vec.y += 0.0625 * (ytype);
-		transparentUvs.push_back(vec);
+		glm::vec3 vec(	normals[indices[i / 6]].x,
+						normals[indices[i / 6]].y,
+						normals[indices[i / 6]].z);
+		transparentNorms.push_back(vec);
 	}
 }
 

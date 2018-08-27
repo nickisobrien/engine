@@ -2,6 +2,7 @@
 out vec4 FragColor;
 
 in vec2 TexCoord;
+in vec3 Norm;
 
 // texture sampler
 uniform sampler2D atlas;

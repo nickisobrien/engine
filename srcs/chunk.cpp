@@ -371,12 +371,9 @@ void Chunk::addFace(int face, int x, int y, int z, int val)
 		mesh.push_back(vec2.y);
 
 		// normals
-		glm::vec3 vec3(	normals[indices[i / 6]].x,
-						normals[indices[i / 6]].y,
-						normals[indices[i / 6]].z);
-		mesh.push_back(vec3.x);
-		mesh.push_back(vec3.y);
-		mesh.push_back(vec3.z);
+		mesh.push_back(normals[indices[i / 6]].x);
+		mesh.push_back(normals[indices[i / 6]].y);
+		mesh.push_back(normals[indices[i / 6]].z);
 	}
 	this->pointSize+=6;
 }

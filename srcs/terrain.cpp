@@ -27,7 +27,8 @@ void Terrain::renderChunk(glm::ivec2 pos, Shader shader)
 		// if (find(updateList.begin(), updateList.end(), pos) != updateList.end())
 			// return ;
 		// this->updateList.push_back(pos);
-		this->updateList = pos;
+		if (this->updateList == glm::ivec2(-100000,-100000))
+			this->updateList = pos;
 	}
 }
 

@@ -26,8 +26,7 @@ public:
 	void renderWater(Shader shader);
 	void faceRendering(void);
 	void buildVAO(void);
-	void addFace(int face, int x, int y, int z, int val);
-	void addTransparentFace(int face, int x, int y, int z, int val);
+	void addFace(int face, int x, int y, int z, int val, vector<float> *m, int *ps);
 	void cleanVAO(void);
 	
 	// neighbors

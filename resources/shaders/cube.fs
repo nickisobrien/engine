@@ -13,7 +13,7 @@ void main()
 	FragColor = texture(atlas, TexCoord);
 	FragColor.w = transparency;
 
-	if (Norm.y < 0.0f)
+	if (Norm.y == -1.0f)
 	{
 		FragColor.x += 0.1f;
 		FragColor.y += 0.1f;

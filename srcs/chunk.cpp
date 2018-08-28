@@ -22,20 +22,20 @@ Chunk::Chunk(int xoff, int zoff)
 		glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
 
 		// vertices
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)0);
 		glEnableVertexAttribArray(0);
 		
 		// textures
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
 		glEnableVertexAttribArray(1);
 
 		// normals
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(5 * sizeof(GLfloat)));
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)(5 * sizeof(GLfloat)));
 		glEnableVertexAttribArray(2);
 
 		// light
-		// glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)(10 * sizeof(GLfloat)));
-		// glEnableVertexAttribArray(3);
+		glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)(8 * sizeof(GLfloat)));
+		glEnableVertexAttribArray(3);
 	glBindVertexArray(0);
 
 	// transparent
@@ -44,14 +44,21 @@ Chunk::Chunk(int xoff, int zoff)
 	glBindVertexArray(this->transparentVAO);
 		glBindBuffer(GL_ARRAY_BUFFER, this->transparentVBO);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
+		// vertices
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)0);
 		glEnableVertexAttribArray(0);
 		
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+		// textures
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
 		glEnableVertexAttribArray(1);
 
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(5 * sizeof(GLfloat)));
+		// normals
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)(5 * sizeof(GLfloat)));
 		glEnableVertexAttribArray(2);
+
+		// light
+		glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)(8 * sizeof(GLfloat)));
+		glEnableVertexAttribArray(3);
 	glBindVertexArray(0);
 }
 
@@ -290,32 +297,32 @@ void Chunk::faceRendering(void)
 				if (!transparent)
 				{
 					if (yMinusCheck==AIR_BLOCK || yMinusCheck==WATER_BLOCK)
-						this->addFace(0, x , y, z, val); //DOWN
+						this->addFace(0, x , y, z, val, &this->mesh, &this->pointSize); //DOWN
 					if (yPlusCheck==AIR_BLOCK || yPlusCheck==WATER_BLOCK)
-						this->addFace(1, x , y, z, val); //UP
+						this->addFace(1, x , y, z, val, &this->mesh, &this->pointSize); //UP
 					if (xPlusCheck==AIR_BLOCK || xPlusCheck==WATER_BLOCK)
-						this->addFace(2, x , y, z, val); //xpos SIDE
+						this->addFace(2, x , y, z, val, &this->mesh, &this->pointSize); //xpos SIDE
 					if (zPlusCheck==AIR_BLOCK || zPlusCheck==WATER_BLOCK)
-						this->addFace(3, x , y, z, val); //zpos SIDE
+						this->addFace(3, x , y, z, val, &this->mesh, &this->pointSize); //zpos SIDE
 					if (xMinusCheck==AIR_BLOCK || xMinusCheck==WATER_BLOCK)
-						this->addFace(4, x , y, z, val); //xneg SIDE
+						this->addFace(4, x , y, z, val, &this->mesh, &this->pointSize); //xneg SIDE
 					if (zMinusCheck==AIR_BLOCK || zMinusCheck==WATER_BLOCK)
-						this->addFace(5, x , y, z, val); //zneg SIDE
+						this->addFace(5, x , y, z, val, &this->mesh, &this->pointSize); //zneg SIDE
 				}
 				else
 				{
 					if (yMinusCheck==AIR_BLOCK || (yMinusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
-						this->addTransparentFace(0, x , y, z, val); //DOWN
+						this->addFace(0, x , y, z, val, &this->transparentMesh, &this->transparentPointSize); //DOWN
 					if (yPlusCheck==AIR_BLOCK || (yPlusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
-						this->addTransparentFace(1, x , y, z, val); //UP
+						this->addFace(1, x , y, z, val, &this->transparentMesh, &this->transparentPointSize); //UP
 					if (xPlusCheck==AIR_BLOCK || (xPlusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
-						this->addTransparentFace(2, x , y, z, val); //xpos SIDE
+						this->addFace(2, x , y, z, val, &this->transparentMesh, &this->transparentPointSize); //xpos SIDE
 					if (zPlusCheck==AIR_BLOCK || (zPlusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
-						this->addTransparentFace(3, x , y, z, val); //zpos SIDE
+						this->addFace(3, x , y, z, val, &this->transparentMesh, &this->transparentPointSize); //zpos SIDE
 					if (xMinusCheck==AIR_BLOCK || (xMinusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
-						this->addTransparentFace(4, x , y, z, val); //xneg SIDE
+						this->addFace(4, x , y, z, val, &this->transparentMesh, &this->transparentPointSize); //xneg SIDE
 					if (zMinusCheck==AIR_BLOCK || (zMinusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
-						this->addTransparentFace(5, x , y, z, val); //zneg SIDE
+						this->addFace(5, x , y, z, val, &this->transparentMesh, &this->transparentPointSize); //zneg SIDE
 				}
 			}
 		}
@@ -343,7 +350,7 @@ void Chunk::buildVAO(void)
 
 //can cut these down to one function by passing in the changes as variables
 
-void Chunk::addFace(int face, int x, int y, int z, int val)
+void Chunk::addFace(int face, int x, int y, int z, int val, vector<float> *m, int *ps)
 {
 	int xtype = blocks[x][y][z].getType() - 1 % 16;
 	int ytype = blocks[x][y][z].getType() / 17;
@@ -353,9 +360,9 @@ void Chunk::addFace(int face, int x, int y, int z, int val)
 		glm::vec3 vec1(	vertices[indices[i]].x * 0.5f + (float)x,
 						vertices[indices[i]].y * 0.5f + (float)y,
 						vertices[indices[i]].z * 0.5f + (float)z);
-		mesh.push_back(vec1.x);
-		mesh.push_back(vec1.y);
-		mesh.push_back(vec1.z);
+		m->push_back(vec1.x);
+		m->push_back(vec1.y);
+		m->push_back(vec1.z);
 
 		// textures
 		glm::vec2 vec2(texCoords[texInds[j % 4]].x, texCoords[texInds[j % 4]].y);
@@ -363,52 +370,18 @@ void Chunk::addFace(int face, int x, int y, int z, int val)
 		vec2.x += 0.0625 * (xtype);
 		vec2.y /= 16;
 		vec2.y += 0.0625 * (ytype);
-		mesh.push_back(vec2.x);
-		mesh.push_back(vec2.y);
+		m->push_back(vec2.x);
+		m->push_back(vec2.y);
 
 		// normals
-		mesh.push_back(normals[indices[i / 6]].x);
-		mesh.push_back(normals[indices[i / 6]].y);
-		mesh.push_back(normals[indices[i / 6]].z);
+		m->push_back(normals[indices[i / 6]].x);
+		m->push_back(normals[indices[i / 6]].y);
+		m->push_back(normals[indices[i / 6]].z);
 
-		// lighting
-		// mesh.push_back(this->lightmap[x][y][z]);
+		// lighting, becomes a float when pushed back because mesh is a float vector
+		m->push_back(this->lightMap[x][y][z]);
 	}
-	this->pointSize+=6;
-}
-
-void Chunk::addTransparentFace(int face, int x, int y, int z, int val)
-{
-	int xtype = blocks[x][y][z].getType() - 1 % 16;
-	int ytype = blocks[x][y][z].getType() / 17;
-	for (int i = face * 6, j = 0; i < face * 6 + 6; j++, i++)
-	{
-		// vertices
-		glm::vec3 vec1(	vertices[indices[i]].x * 0.5f + (float)x,
-						vertices[indices[i]].y * 0.5f + (float)y,
-						vertices[indices[i]].z * 0.5f + (float)z);
-		transparentMesh.push_back(vec1.x);
-		transparentMesh.push_back(vec1.y);
-		transparentMesh.push_back(vec1.z);
-
-		// textures
-		glm::vec2 vec2(texCoords[texInds[j % 4]].x, texCoords[texInds[j % 4]].y);
-		vec2.x /= 16;
-		vec2.x += 0.0625 * (xtype);
-		vec2.y /= 16;
-		vec2.y += 0.0625 * (ytype);
-		transparentMesh.push_back(vec2.x);
-		transparentMesh.push_back(vec2.y);
-
-		// normals
-		glm::vec3 vec3(	normals[indices[i / 6]].x,
-						normals[indices[i / 6]].y,
-						normals[indices[i / 6]].z);
-		transparentMesh.push_back(vec3.x);
-		transparentMesh.push_back(vec3.y);
-		transparentMesh.push_back(vec3.z);
-	}
-	this->transparentPointSize+=6;
+	*ps+=6;
 }
 
 void Chunk::cleanVAO(void) {

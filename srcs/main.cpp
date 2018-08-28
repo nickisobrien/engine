@@ -97,21 +97,28 @@ int main(void)
 		{
 			for (int j = 0; j < RENDER_RADIUS; j++)
 			{
-				terr.renderChunk(glm::ivec2(c->getXOff() + i, c->getZOff() + j), cubeShader);
-				terr.renderChunk(glm::ivec2(c->getXOff() - i, c->getZOff() - j), cubeShader);
-				terr.renderChunk(glm::ivec2(c->getXOff() - i, c->getZOff() + j), cubeShader);
-				terr.renderChunk(glm::ivec2(c->getXOff() + i, c->getZOff() - j), cubeShader);
+				if (!terr.renderChunk(glm::ivec2(c->getXOff() + i, c->getZOff() + j), cubeShader))
+					break ;
+				if (!terr.renderChunk(glm::ivec2(c->getXOff() - i, c->getZOff() - j), cubeShader))
+					break ;
+				if (!terr.renderChunk(glm::ivec2(c->getXOff() - i, c->getZOff() + j), cubeShader))
+					break ;
+				if (!terr.renderChunk(glm::ivec2(c->getXOff() + i, c->getZOff() - j), cubeShader))
+					break ;
 			}
 		}
-
 		for (int i = 0; i < RENDER_RADIUS; i++)
 		{
 			for (int j = 0; j < RENDER_RADIUS; j++)
 			{
-				terr.renderWaterChunk(glm::ivec2(c->getXOff() + i, c->getZOff() + j), cubeShader);
-				terr.renderWaterChunk(glm::ivec2(c->getXOff() - i, c->getZOff() - j), cubeShader);
-				terr.renderWaterChunk(glm::ivec2(c->getXOff() - i, c->getZOff() + j), cubeShader);
-				terr.renderWaterChunk(glm::ivec2(c->getXOff() + i, c->getZOff() - j), cubeShader);
+				if (!terr.renderWaterChunk(glm::ivec2(c->getXOff() + i, c->getZOff() + j), cubeShader))
+					break ;
+				if (!terr.renderWaterChunk(glm::ivec2(c->getXOff() - i, c->getZOff() - j), cubeShader))
+					break ;
+				if (!terr.renderWaterChunk(glm::ivec2(c->getXOff() - i, c->getZOff() + j), cubeShader))
+					break ;
+				if (!terr.renderWaterChunk(glm::ivec2(c->getXOff() + i, c->getZOff() - j), cubeShader))
+					break ;
 			}
 		}
 		if (terr.updateList != glm::ivec2(-100000,-100000)) // could switch to running this as a while loop on a list on a seperate thread
@@ -158,9 +165,12 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
-	int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
-	if (state == GLFW_PRESS)
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
 		player.leftMouseClickEvent();
+
+	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
+		player.rightMouseClickEvent();
+
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)

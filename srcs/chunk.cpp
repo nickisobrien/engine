@@ -182,31 +182,20 @@ void Chunk::addExtras(FastNoise terrainNoise, FastNoise temperatureNoise, FastNo
 				continue ;
 			if (blocktype == GRASS_BLOCK && rand() % 1000 > 996)
 			{
-				this->blocks[x][base][z].setType(DIRT_BLOCK);
-				this->blocks[x][base+1][z].setType(DIRT_BLOCK);
-				this->blocks[x][base+2][z].setType(DIRT_BLOCK);
-				this->blocks[x][base+3][z].setType(DIRT_BLOCK);
-				this->blocks[x][base+4][z].setType(DIRT_BLOCK);
-				this->blocks[x][base+5][z].setType(DIRT_BLOCK);
-				this->blocks[x][base+6][z].setType(DIRT_BLOCK);
-
-				this->blocks[x][base][z].setActive(true); // why not happening on update?
-				this->blocks[x][base+1][z].setActive(true); // why not happening on update?
-				this->blocks[x][base+2][z].setActive(true); // why not happening on update?
-				this->blocks[x][base+3][z].setActive(true); // why not happening on update?
-				this->blocks[x][base+4][z].setActive(true); // why not happening on update?
-				this->blocks[x][base+5][z].setActive(true); // why not happening on update?
-				this->blocks[x][base+6][z].setActive(true); // why not happening on update?
+				// trunk
+				for (int y = 0; y < 6; y++)
+				{
+					this->blocks[x][base+y][z].setType(DIRT_BLOCK);
+					this->blocks[x][base+y][z].setActive(true);
+				}
 			} // cactus
 			else if (blocktype == SAND_BLOCK && rand() % 1000 > 996)
 			{
-				this->blocks[x][base][z].setType(GRASS_BLOCK);
-				this->blocks[x][base+1][z].setType(GRASS_BLOCK);
-				this->blocks[x][base+2][z].setType(GRASS_BLOCK);
-
-				this->blocks[x][base][z].setActive(true); // why not happening on update?
-				this->blocks[x][base+1][z].setActive(true); // why not happening on update?
-				this->blocks[x][base+2][z].setActive(true); // why not happening on update?
+				for (int y = 0; y < 3; y++)
+				{
+					this->blocks[x][base+y][z].setType(GRASS_BLOCK);
+					this->blocks[x][base+y][z].setActive(true);
+				}
 			}
 		}
 	}

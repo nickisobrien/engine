@@ -13,7 +13,7 @@ void Terrain::updateChunk(glm::ivec2 pos)
 	}
 }
 
-void Terrain::renderChunk(glm::ivec2 pos, Shader shader)
+bool Terrain::renderChunk(glm::ivec2 pos, Shader shader)
 {
 	if (this->world.find(pos) != this->world.end())
 	{
@@ -23,19 +23,20 @@ void Terrain::renderChunk(glm::ivec2 pos, Shader shader)
 	}
 	else
 	{
-		// check if not already in the update list
-		// if (find(updateList.begin(), updateList.end(), pos) != updateList.end())
-			// return ;
-		// this->updateList.push_back(pos);
 		if (this->updateList == glm::ivec2(-100000,-100000))
 			this->updateList = pos;
+		return (false);
 	}
+	return (true);
 }
 
-void Terrain::renderWaterChunk(glm::ivec2 pos, Shader shader)
+bool Terrain::renderWaterChunk(glm::ivec2 pos, Shader shader)
 {
 	if (this->world.find(pos) != this->world.end())
 		this->world[pos]->renderWater(shader);
+	else
+		return (false);
+	return (true);
 }
 
 void Terrain::setNoise(void)

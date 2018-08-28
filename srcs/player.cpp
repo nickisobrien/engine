@@ -272,3 +272,135 @@ void Player::leftMouseClickEvent()
 		}
 	}
 }
+
+void Player::rightMouseClickEvent()
+{
+	// block traversal algorithm http://www.cse.yorku.ca/~amana/research/grid.pdf
+	glm::vec3 current = this->getPosition();
+	glm::vec3 currentView = this->camera.GetViewVector();
+	glm::ivec3 current_voxel((int)floor(current.x) % CHUNK_X,
+							floor(current.y),
+							(int)floor(current.z) % CHUNK_Z);
+	if (current_voxel.x < 0)
+		current_voxel.x = CHUNK_X + current_voxel.x;
+	if (current_voxel.z < 0)
+		current_voxel.z = CHUNK_Z + current_voxel.z;
+
+	// normalized ray direction.
+	glm::vec3 ray = this->camera.GetViewVector();
+
+	// in which direction the voxel ids are incremented.
+	int stepX = ray.x > 0.0f ? 1 : ray.x < 0.0f ? -1 : 0;
+	int stepY = ray.y > 0.0f ? 1 : ray.y < 0.0f ? -1 : 0;
+	int stepZ = ray.z > 0.0f ? 1 : ray.z < 0.0f ? -1 : 0;
+
+	// distance until next intersection with voxel-border
+	// the value of t at which the ray crosses the first vertical voxel boundary
+	float tMaxX = intbound(current.x,ray.x);
+	float tMaxY = intbound(current.y,ray.y);
+	float tMaxZ = intbound(current.z,ray.z);
+
+	// tDeltaX, tDeltaY, tDeltaZ
+	// how far along the ray we must move for the horizontal component to equal the width of a voxel
+	// the direction in which we traverse the grid
+	float tDeltaX = ((float)stepX) / ray.x;
+	float tDeltaY = ((float)stepY) / ray.y;
+	float tDeltaZ = ((float)stepZ) / ray.z;
+	
+	int breakDist = 0;
+	Chunk *c = this->getChunk();
+	Block *b = c->getBlock(current_voxel.x,current_voxel.y,current_voxel.z);
+	Block *e;
+	while ((!b || !b->isActive()) && breakDist < 30)
+	{
+		e = c->getBlock(current_voxel.x,current_voxel.y,current_voxel.z);
+		if (tMaxX < tMaxY)
+		{
+			if (tMaxX < tMaxZ)
+			{
+				current_voxel.x += stepX;
+				tMaxX += tDeltaX;
+			}
+			else
+			{
+				current_voxel.z += stepZ;
+				tMaxZ += tDeltaZ;
+			}
+		}
+		else
+		{
+			if (tMaxY < tMaxZ)
+			{
+				current_voxel.y += stepY;
+				tMaxY += tDeltaY;
+			}
+			else
+			{
+				current_voxel.z += stepZ;
+				tMaxZ += tDeltaZ;
+			}
+		}
+
+		// Chunk boundry
+		if (current_voxel.x < 0)
+		{
+			c = c->getXMinus();
+			if (!c)
+				break ;
+			current_voxel.x = CHUNK_X + current_voxel.x;
+		}
+		else if (current_voxel.x >= CHUNK_X)
+		{
+			c = c->getXPlus();
+			if (!c)
+				break ;
+			current_voxel.x -= CHUNK_X;
+		}
+
+		if (current_voxel.z < 0)
+		{
+			c = c->getZMinus();
+			if (!c)
+				break ;
+			current_voxel.z = CHUNK_Z + current_voxel.z;
+		}
+		else if (current_voxel.z >= CHUNK_Z)
+		{
+			c = c->getZPlus();
+			if (!c)
+				break ;
+			current_voxel.z -= CHUNK_Z;
+		}
+		b = c->getBlock(current_voxel.x,current_voxel.y,current_voxel.z);
+		breakDist++;
+	}
+
+	// update the chunks if block is found
+	if (b && b->isActive() && e && !e->isActive())
+	{
+		e->setType(SNOW_BLOCK);
+		e->setActive(true);
+		c->update();
+		// edge blocks broken require neighbor chunk updates too
+		if (current_voxel.x == 0)
+		{
+			if (c->getXMinus()!=NULL)
+				c->getXMinus()->update();
+		}
+		if (current_voxel.x == CHUNK_X-1)
+		{
+			if (c->getXPlus()!=NULL)
+				c->getXPlus()->update();
+		}
+		if (current_voxel.z == 0)
+		{
+			if (c->getZMinus()!=NULL)
+				c->getZMinus()->update();
+		}
+		if (current_voxel.z == CHUNK_Z-1)
+		{
+			if (c->getZPlus()!=NULL)
+				c->getZPlus()->update();
+		}
+	}
+}

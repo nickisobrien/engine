@@ -19,6 +19,7 @@ public:
 	bool isGrounded();
 	void jump();
 	void leftMouseClickEvent();
+	void rightMouseClickEvent();
 private:
 	Terrain *terr;
 	// float speed = 6.0f;

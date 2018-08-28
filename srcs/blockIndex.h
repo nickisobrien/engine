@@ -6,3 +6,4 @@
 #define WATER_BLOCK 3
 #define DIRT_BLOCK 4
 #define SNOW_BLOCK 5
+#define LIGHT_BLOCK 6

@@ -378,7 +378,7 @@ void Player::rightMouseClickEvent()
 	// update the chunks if block is found
 	if (b && b->isActive() && e && !e->isActive())
 	{
-		e->setType(SNOW_BLOCK);
+		e->setType(LIGHT_BLOCK);
 		e->setActive(true);
 		c->update();
 		// edge blocks broken require neighbor chunk updates too

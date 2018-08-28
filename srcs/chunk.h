@@ -31,14 +31,14 @@ public:
 	void cleanVAO(void);
 	
 	// neighbors
-	void setXMinus(Chunk *chunk);
-	void setXPlus(Chunk *chunk);
-	void setZMinus(Chunk *chunk);
-	void setZPlus(Chunk *chunk);
-	Chunk *getXMinus();
-	Chunk *getXPlus();
-	Chunk *getZMinus();
-	Chunk *getZPlus();
+	inline void setXMinus(Chunk *chunk) { this->xMinus = chunk; }
+	inline void setXPlus(Chunk *chunk) { this->xPlus = chunk; }
+	inline void setZMinus(Chunk *chunk) { this->zMinus = chunk; }
+	inline void setZPlus(Chunk *chunk) { this->zPlus = chunk; }
+	inline Chunk *getXMinus() { return (this->xMinus); }
+	inline Chunk *getXPlus() { return (this->xPlus); }
+	inline Chunk *getZMinus() { return (this->zMinus); }
+	inline Chunk *getZPlus() { return (this->zPlus); }
 
 	// lighting
 	inline int getSunlight(int x, int y, int z);

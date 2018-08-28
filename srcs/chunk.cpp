@@ -21,14 +21,21 @@ Chunk::Chunk(int xoff, int zoff)
 	glBindVertexArray(this->VAO);
 		glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
 
+		// vertices
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
 		glEnableVertexAttribArray(0);
 		
+		// textures
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
 		glEnableVertexAttribArray(1);
 
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+		// normals
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(5 * sizeof(GLfloat)));
 		glEnableVertexAttribArray(2);
+
+		// light
+		// glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)(10 * sizeof(GLfloat)));
+		// glEnableVertexAttribArray(3);
 	glBindVertexArray(0);
 
 	// transparent
@@ -43,7 +50,7 @@ Chunk::Chunk(int xoff, int zoff)
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
 		glEnableVertexAttribArray(1);
 
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(5 * sizeof(GLfloat)));
 		glEnableVertexAttribArray(2);
 	glBindVertexArray(0);
 }
@@ -363,6 +370,9 @@ void Chunk::addFace(int face, int x, int y, int z, int val)
 		mesh.push_back(normals[indices[i / 6]].x);
 		mesh.push_back(normals[indices[i / 6]].y);
 		mesh.push_back(normals[indices[i / 6]].z);
+
+		// lighting
+		// mesh.push_back(this->lightmap[x][y][z]);
 	}
 	this->pointSize+=6;
 }
@@ -409,6 +419,9 @@ void Chunk::cleanVAO(void) {
 }
 
 
+
+// LIGHTING
+
 // Get the bits XXXX0000
 inline int Chunk::getSunlight(int x, int y, int z)
 {
@@ -431,40 +444,4 @@ inline int Chunk::getTorchlight(int x, int y, int z)
 inline void Chunk::setTorchlight(int x, int y, int z, int val)
 {
 	lightMap[x][y][z] = (lightMap[x][y][z] & 0xF0) | val;
-}
-
-
-
-void Chunk::setXMinus(Chunk *chunk)
-{
-	this->xMinus = chunk;
-}
-void Chunk::setXPlus(Chunk *chunk)
-{
-	this->xPlus = chunk;
-}
-void Chunk::setZMinus(Chunk *chunk)
-{
-	this->zMinus = chunk;
-}
-void Chunk::setZPlus(Chunk *chunk)
-{
-	this->zPlus = chunk;
-}
-
-Chunk *Chunk::getXMinus()
-{
-	return (this->xMinus);
-}
-Chunk *Chunk::getXPlus()
-{
-	return (this->xPlus);
-}
-Chunk *Chunk::getZMinus()
-{
-	return (this->zMinus);
-}
-Chunk *Chunk::getZPlus()
-{
-	return (this->zPlus);
 }

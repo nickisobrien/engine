@@ -13,7 +13,8 @@ Chunk::Chunk(int xoff, int zoff)
 	offsetMatrix = glm::translate(offsetMatrix, glm::vec3(0.5f, -0.5f, 0.5f));
 
 	// zero lightmap
-	memset(lightMap, 0, sizeof(lightMap));
+	memset(torchLightMap, 0, sizeof(torchLightMap));
+	memset(sunLightMap, 0, sizeof(sunLightMap));
 
 	// non transparent
 	glGenVertexArrays(1, &this->VAO);
@@ -379,7 +380,7 @@ void Chunk::addFace(int face, int x, int y, int z, int val, vector<float> *m, in
 		m->push_back(normals[indices[i / 6]].z);
 
 		// lighting, becomes a float when pushed back because mesh is a float vector
-		m->push_back(this->lightMap[x][y][z]);
+		m->push_back(this->torchLightMap[x][y][z]);
 	}
 	*ps+=6;
 }
@@ -395,26 +396,47 @@ void Chunk::cleanVAO(void) {
 
 // LIGHTING
 
+int Chunk::getSunLight(int x, int y, int z)
+{
+	return (sunLightMap[x][y][z]);
+}
+
+void Chunk::setSunLight(int x, int y, int z, int val)
+{
+	sunLightMap[x][y][z] = val;
+}
+
+int Chunk::getTorchLight(int x, int y, int z)
+{
+	return (torchLightMap[x][y][z]);
+}
+
+void Chunk::setTorchLight(int x, int y, int z, int val)
+{
+	torchLightMap[x][y][z] = val;
+}
+
+
 // Get the bits XXXX0000
-inline int Chunk::getSunlight(int x, int y, int z)
-{
-	return (lightMap[x][y][z] >> 4) & 0xF;
-}
+// inline int Chunk::getSunlight(int x, int y, int z)
+// {
+// 	return (lightMap[x][y][z] >> 4) & 0xF;
+// }
 
-// Set the bits XXXX0000
-inline void Chunk::setSunlight(int x, int y, int z, int val)
-{
-	lightMap[x][y][z] = (lightMap[x][y][z] & 0xF) | (val << 4);
-}
+// // Set the bits XXXX0000
+// inline void Chunk::setSunlight(int x, int y, int z, int val)
+// {
+// 	lightMap[x][y][z] = (lightMap[x][y][z] & 0xF) | (val << 4);
+// }
 
-// Get the bits 0000XXXX
-inline int Chunk::getTorchlight(int x, int y, int z)
-{
-	return lightMap[x][y][z] & 0xF;
-}
-// Set the bits 0000XXXX
+// // Get the bits 0000XXXX
+// inline int Chunk::getTorchlight(int x, int y, int z)
+// {
+// 	return lightMap[x][y][z] & 0xF;
+// }
+// // Set the bits 0000XXXX
 
-inline void Chunk::setTorchlight(int x, int y, int z, int val)
-{
-	lightMap[x][y][z] = (lightMap[x][y][z] & 0xF0) | val;
-}
+// inline void Chunk::setTorchlight(int x, int y, int z, int val)
+// {
+// 	lightMap[x][y][z] = (lightMap[x][y][z] & 0xF0) | val;
+// }

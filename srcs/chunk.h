@@ -4,8 +4,8 @@
 #include "block.h"
 #include "FastNoise.h"
 
-#define CHUNK_Z 16
-#define CHUNK_X 16
+#define CHUNK_Z 40
+#define CHUNK_X 40
 #define CHUNK_Y 256
 
 enum ChunkState
@@ -40,10 +40,10 @@ public:
 	inline Chunk *getZPlus() { return (this->zPlus); }
 
 	// lighting
-	inline int getSunlight(int x, int y, int z);
-	inline void setSunlight(int x, int y, int z, int val);
-	inline int getTorchlight(int x, int y, int z);
-	inline void setTorchlight(int x, int y, int z, int val);
+	int getSunLight(int x, int y, int z);
+	void setSunLight(int x, int y, int z, int val);
+	int getTorchLight(int x, int y, int z);
+	void setTorchLight(int x, int y, int z, int val);
 
 	void setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastNoise humidityNoise);
 	void addExtras(FastNoise terrainNoise, FastNoise temperatureNoise, FastNoise humidityNoise);
@@ -57,7 +57,8 @@ private:
 	int xoff;
 	int zoff;
 	Block blocks[CHUNK_X][CHUNK_Y][CHUNK_Z];
-	char lightMap[CHUNK_X][CHUNK_Y][CHUNK_Z];
+	char torchLightMap[CHUNK_X][CHUNK_Y][CHUNK_Z];
+	char sunLightMap[CHUNK_X][CHUNK_Y][CHUNK_Z];
 	glm::mat4 offsetMatrix;
 	unsigned int VAO;
 	unsigned int VBO;

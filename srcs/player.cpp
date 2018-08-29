@@ -37,6 +37,14 @@ void Player::processInput(GLFWwindow *window, float deltaTime)
 		cout << "Block:	(" << x << ", " << y << ", " << z << ")" << endl;
 	}
 
+	if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
+	{
+		if (this->currentBlockPlace == LIGHT_BLOCK)
+			this->currentBlockPlace = SNOW_BLOCK;
+		else
+			this->currentBlockPlace = LIGHT_BLOCK;
+	}
+
 	// collision checks/allows running up 1 block
 	glm::vec3 newPos = this->getPosition();
 	int x = (int)floor(newPos.x) % CHUNK_X;
@@ -247,6 +255,13 @@ void Player::leftMouseClickEvent()
 	// update the chunks if block is found
 	if (b && b->isActive())
 	{
+		if (b->getType() == LIGHT_BLOCK)
+		{
+			short val = (short)c->getTorchLight(current_voxel.x,current_voxel.y,current_voxel.z);
+			this->terr->lightRemovalBfsQueue.emplace(current_voxel.x,current_voxel.y,current_voxel.z, val, c);
+			c->setTorchLight(current_voxel.x,current_voxel.y,current_voxel.z, 0);
+			this->terr->removedLighting();
+		}
 		b->setType(AIR_BLOCK);
 		c->update();
 		// edge blocks broken require neighbor chunk updates too
@@ -311,8 +326,10 @@ void Player::rightMouseClickEvent()
 	Chunk *c = this->getChunk();
 	Block *b = c->getBlock(current_voxel.x,current_voxel.y,current_voxel.z);
 	Block *e;
+	glm::vec3 vec;
 	while ((!b || !b->isActive()) && breakDist < 30)
 	{
+		vec = glm::vec3(current_voxel.x, current_voxel.y, current_voxel.z);
 		e = c->getBlock(current_voxel.x,current_voxel.y,current_voxel.z);
 		if (tMaxX < tMaxY)
 		{
@@ -378,8 +395,16 @@ void Player::rightMouseClickEvent()
 	// update the chunks if block is found
 	if (b && b->isActive() && e && !e->isActive())
 	{
-		e->setType(LIGHT_BLOCK);
+		e->setType(this->currentBlockPlace);
 		e->setActive(true);
+		// handle lighting blocks
+		if (e->getType() == LIGHT_BLOCK)
+		{
+			c->setTorchLight(vec.x,vec.y,vec.z,14);
+			terr->lightBfsQueue.emplace(vec.x, vec.y, vec.z, c);
+			// clear out light queue
+			terr->addedLighting();
+		}
 		c->update();
 		// edge blocks broken require neighbor chunk updates too
 		if (current_voxel.x == 0)

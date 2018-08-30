@@ -7,7 +7,7 @@ void LightEngine::sunlightInit(Chunk *c)
 	{
 		for (int z = 0; z < CHUNK_Z; z++)
 		{
-			c->setSunLight(x,CHUNK_Y-1,z,8);
+			c->setSunLight(x,CHUNK_Y-1,z,5);
 			sunlightBfsQueue.emplace(x, CHUNK_Y-1, z, c);
 		}
 	}
@@ -46,7 +46,8 @@ void LightEngine::sunlightQueueClear()
 		{
 			if (chunk->getSunLight(node.x, node.y - 1, node.z) + 2 <= lightLevel)
 			{
-				chunk->setSunLight(node.x, node.y - 1, node.z, lightLevel);
+				if (lightLevel)
+					chunk->setSunLight(node.x, node.y - 1, node.z, lightLevel);
 				// cout << "2: "<< node.x << " " << node.y << " " << node.z << " light:" << lightLevel << endl;
 				// cout << "Next block active: " << chunk->getBlock(node.x, node.y - 1, node.z)->isActive() << endl;
 				if (chunk->getBlock(node.x, node.y - 1, node.z)->isActive() == false)
@@ -177,6 +178,8 @@ void LightEngine::addedLighting()
 		chunk->update();
 }
 
+
+// SEGFAULTS WHEN I PLACE A LIGHT BLOCK IN THE AIR (ie. on a tree) THEN BREAK IT
 void LightEngine::removedLighting()
 {
 	while(lightRemovalBfsQueue.empty() == false)
@@ -233,7 +236,7 @@ void LightEngine::removedLighting()
 		}
 
 		// x+1
-		if (node.x - 1 < CHUNK_X)
+		if (node.x + 1 < CHUNK_X)
 		{
 			int neighborLevel = node.chunk->getTorchLight(node.x + 1, node.y, node.z);
 			if (neighborLevel != 0 && neighborLevel < lightLevel)
@@ -269,6 +272,10 @@ void LightEngine::removedLighting()
 				lightBfsQueue.emplace(node.x, node.y, node.z + 1, chunk);
 		}
 	}
+	// while (!this->lightBfsQueue.empty())
+	// {
+	// 	this->lightBfsQueue.pop();
+	// }
 	this->addedLighting();
 }
 

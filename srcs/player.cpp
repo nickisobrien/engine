@@ -20,7 +20,7 @@ void Player::processInput(GLFWwindow *window, float deltaTime)
 
 	// DEBUGGERS
 	if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
-		this->getChunk()->update();
+		this->terr->updateChunk(glm::ivec2(this->getChunk()->getXOff(), this->getChunk()->getZOff()));
 	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
 		cout << "Player position: (" << this->getPosition().x << ", " << this->getPosition().y << ", " << this->getPosition().z << ") " << endl;
 	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
@@ -268,22 +268,22 @@ void Player::leftMouseClickEvent()
 		if (current_voxel.x == 0)
 		{
 			if (c->getXMinus()!=NULL)
-				c->getXMinus()->update();
+				this->terr->updateChunk(glm::ivec2(c->getXOff()-1, c->getZOff()));
 		}
 		if (current_voxel.x == CHUNK_X-1)
 		{
 			if (c->getXPlus()!=NULL)
-				c->getXPlus()->update();
+				this->terr->updateChunk(glm::ivec2(c->getXOff()+1, c->getZOff()));
 		}
 		if (current_voxel.z == 0)
 		{
 			if (c->getZMinus()!=NULL)
-				c->getZMinus()->update();
+				this->terr->updateChunk(glm::ivec2(c->getXOff(), c->getZOff()-1));
 		}
 		if (current_voxel.z == CHUNK_Z-1)
 		{
 			if (c->getZPlus()!=NULL)
-				c->getZPlus()->update();
+				this->terr->updateChunk(glm::ivec2(c->getXOff(), c->getZOff()+1));
 		}
 	}
 }
@@ -403,28 +403,21 @@ void Player::rightMouseClickEvent()
 			terr->lightEngine.lightBfsQueue.emplace(vec.x, vec.y, vec.z, c);
 			// clear out light queue
 			terr->lightEngine.addedLighting();
+			terr->updateChunk(glm::ivec2(c->getXOff(), c->getZOff()));
 		}
 		this->terr->updateChunk(glm::ivec2(c->getXOff(), c->getZOff()));
 		// edge blocks broken require neighbor chunk updates too
 		if (current_voxel.x == 0)
-		{
 			if (c->getXMinus()!=NULL)
-				c->getXMinus()->update();
-		}
+				this->terr->updateChunk(glm::ivec2(c->getXOff()-1, c->getZOff()));
 		if (current_voxel.x == CHUNK_X-1)
-		{
 			if (c->getXPlus()!=NULL)
-				c->getXPlus()->update();
-		}
+				this->terr->updateChunk(glm::ivec2(c->getXOff()+1, c->getZOff()));
 		if (current_voxel.z == 0)
-		{
 			if (c->getZMinus()!=NULL)
-				c->getZMinus()->update();
-		}
+				this->terr->updateChunk(glm::ivec2(c->getXOff(), c->getZOff()-1));
 		if (current_voxel.z == CHUNK_Z-1)
-		{
 			if (c->getZPlus()!=NULL)
-				c->getZPlus()->update();
-		}
+				this->terr->updateChunk(glm::ivec2(c->getXOff(), c->getZOff()+1));
 	}
 }

@@ -108,6 +108,7 @@ int main(void)
 					break ;
 			}
 		}
+		terr.renderWaterChunk(glm::ivec2(c->getXOff(), c->getZOff()), cubeShader);
 		for (int i = 0; i < RENDER_RADIUS; i++)
 		{
 			for (int j = 0; j < RENDER_RADIUS; j++)

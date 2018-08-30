@@ -174,8 +174,7 @@ void LightEngine::addedLighting()
 			}
 		}
 	}
-	if (chunk)
-		chunk->update();
+	// updating chunk in player.cpp
 }
 
 

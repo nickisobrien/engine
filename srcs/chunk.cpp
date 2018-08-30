@@ -1,7 +1,7 @@
 #include "engine.h"
 #include "chunk.h"
 
-#define YSQRT sqrt(CHUNK_Y-1)
+#define YSQRT  sqrt(CHUNK_Y-1)
 
 Chunk::Chunk(int xoff, int zoff)
 {
@@ -160,49 +160,10 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 			}
 			for (int y = base; y < WATER_LEVEL; y++)
 				this->blocks[x][y][z].setType(WATER_BLOCK);
-		}
-	}
-	// std::cout << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << std::endl;
-}
 
-void Chunk::addExtras(FastNoise terrainNoise, FastNoise temperatureNoise, FastNoise humidityNoise)
-{
-	// trees
-	for (int x = 0; x < CHUNK_X; x++)
-	{
-		for (int z = 0; z < CHUNK_Z; z++)
-		{
-			// bool water = false;
-			float b = MAP(terrainNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 0.1f, YSQRT);
-			int base = pow(b, 2);
-			float temp = temperatureNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
-			float hum = humidityNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
-			short blocktype;
-			int y = base;
-			Chunk *c = this;
-			if (temp < -0.33f)
-			{
-				if (hum < 0.0f)
-					blocktype = 67;
-				else
-					blocktype = SNOW_BLOCK;
-			}
-			else if (temp >= -0.33f && temp >= 0.33f)
-			{
-				if (hum < 0.0f)
-					blocktype = GRASS_BLOCK;
-				else
-					blocktype = DIRT_BLOCK;
-			}
-			else
-			{
-				if (hum < 0.0f)
-					blocktype = SAND_BLOCK;
-				else
-					blocktype = GRASS_BLOCK;
-			}
-			if (base < WATER_LEVEL)
-				continue ;
+
+
+			// extras
 			if (blocktype == GRASS_BLOCK && rand() % 1000 > 996)
 			{
 				// trunk
@@ -218,22 +179,25 @@ void Chunk::addExtras(FastNoise terrainNoise, FastNoise temperatureNoise, FastNo
 					this->blocks[x][base+y][z].setType(GRASS_BLOCK);
 				}
 			}
+
 		}
 	}
+	// std::cout << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << std::endl;
 }
 
-void Chunk::update(void)
+void Chunk::update()
 {
+	this->built = false;
 	this->transparentPointSize = 0;
 	this->pointSize = 0;
 
 	this->faceRendering();
 	this->buildVAO();
+	this->built = true;
 }
 
-void Chunk::faceRendering(void)
+void Chunk::faceRendering()
 {
-	// update is called when all neighbors are set, is an okay idea because of the addextras call happens too
 	bool transparent;
 	int xMinusCheck;
 	int yMinusCheck;
@@ -255,17 +219,13 @@ void Chunk::faceRendering(void)
 				int val = this->getWorld(x, y, z);
 
 				// MINUS checks
-				if (!x && this->xMinus)
+				if (!x && this->getXMinus())
 					xMinusCheck = this->xMinus->blocks[CHUNK_X-1][y][z].getType();
-				else if (!x) // if x == 0 and there isn't an xminus neighbor, infer that we don't need to draw it
-					xMinusCheck = 1;
 				else
 					xMinusCheck = this->blocks[x-1][y][z].getType();
 
-				if (!z && this->zMinus)
+				if (!z && this->getZMinus())
 					zMinusCheck = this->zMinus->blocks[x][y][CHUNK_Z-1].getType();
-				else if (!z)
-					zMinusCheck = 1;
 				else
 					zMinusCheck = this->blocks[x][y][z-1].getType();
 
@@ -275,17 +235,13 @@ void Chunk::faceRendering(void)
 				 	yMinusCheck = blocks[x][y-1][z].getType();
 
 				 // PLUS CHECKS
-				if (x == CHUNK_X-1 && this->xPlus)
+				if (x == CHUNK_X-1 && this->getXPlus())
 					xPlusCheck = this->xPlus->blocks[0][y][z].getType();
-				else if (x == CHUNK_X-1)
-					xPlusCheck = 1;
 				else
 					xPlusCheck = this->blocks[x+1][y][z].getType();
 
-				if (z == CHUNK_Z-1 && this->zPlus)
+				if (z == CHUNK_Z-1 && this->getZPlus())
 					zPlusCheck = this->zPlus->blocks[x][y][0].getType();
-				else if (z == CHUNK_Z-1)
-					zPlusCheck = 1;
 				else
 					zPlusCheck = this->blocks[x][y][z+1].getType();
 
@@ -395,29 +351,6 @@ void Chunk::cleanVAO(void) {
 	glDeleteVertexArrays(1, &this->transparentVAO);
 }
 
-
-
-// LIGHTING
-
-int Chunk::getSunLight(int x, int y, int z)
-{
-	return (sunLightMap[x][y][z]);
-}
-
-void Chunk::setSunLight(int x, int y, int z, int val)
-{
-	sunLightMap[x][y][z] = val;
-}
-
-int Chunk::getTorchLight(int x, int y, int z)
-{
-	return (torchLightMap[x][y][z]);
-}
-
-void Chunk::setTorchLight(int x, int y, int z, int val)
-{
-	torchLightMap[x][y][z] = val;
-}
 
 
 // Get the bits XXXX0000

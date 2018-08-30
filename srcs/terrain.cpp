@@ -3,7 +3,7 @@
 
 void Terrain::updateChunk(glm::ivec2 pos)
 {
-	if (this->world.find(pos) != this->world.end() && this->world[pos]->built == true)
+	if (this->world.find(pos) != this->world.end() && this->world[pos]->built == true) // built may be the interchangable with neighborsSet
 	{
 		this->world[pos]->clearSunLightMap();
 		this->lightEngine.sunlightInit(this->world[pos]);

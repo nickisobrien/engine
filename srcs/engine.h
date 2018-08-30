@@ -33,7 +33,7 @@
 #define TEXTURE_SIZE 16
 #define DIST(X,Y,XX,YY) ((YY-Y)/(XX-X));
 
-#define WATER_LEVEL 32
+#define WATER_LEVEL 38
 
 #include "blockIndex.h" // block types
 #include "cubeMap.h"

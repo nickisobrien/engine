@@ -5,6 +5,7 @@ void Terrain::updateChunk(glm::ivec2 pos)
 {
 	if (this->world.find(pos) != this->world.end())
 	{
+		this->world[pos]->clearSunLightMap();
 		this->lightEngine.sunlightInit(this->world[pos]);
 		this->world[pos]->update();
 	}
@@ -72,8 +73,9 @@ void Terrain::setNeighbors(glm::ivec2 pos)
 	if (this->world[pos]->getXPlus() && this->world[pos]->getXMinus() &&
 		this->world[pos]->getZPlus() && this->world[pos]->getZMinus())
 	{
+		// this is actually dangerous how often I'm re rendering, needs to change this
 		this->world[pos]->addExtras(this->terrainNoise, this->temperatureNoise, this->humidityNoise);
 		this->world[pos]->neighborsSet = true;
-		this->world[pos]->update();
+		this->updateChunk(pos);
 	}
 }

@@ -44,6 +44,7 @@ public:
 	void setSunLight(int x, int y, int z, int val);
 	int getTorchLight(int x, int y, int z);
 	void setTorchLight(int x, int y, int z, int val);
+	inline void clearSunLightMap() { memset(this->sunLightMap, 0, sizeof(this->sunLightMap)); }
 
 	void setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastNoise humidityNoise);
 	void addExtras(FastNoise terrainNoise, FastNoise temperatureNoise, FastNoise humidityNoise);

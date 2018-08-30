@@ -15,7 +15,7 @@ void Terrain::updateChunk(glm::ivec2 pos)
 		this->lightEngine.sunlightInit(this->world[pos]);
 		this->world[pos]->update();
 	}
-	else // new chunk!
+	else
 	{
 		this->world[pos] = new Chunk(pos.x, pos.y);
 		this->setNeighbors(pos);

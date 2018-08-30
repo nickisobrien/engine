@@ -154,7 +154,11 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 			}
 			if (base < WATER_LEVEL)
 				water = true;
-			for (int y = 0; y < base; y++)
+			for (int y = 0; y < base - 4; y++)
+			{
+				this->blocks[x][y][z].setType(STONE_BLOCK);
+			}
+			for (int y = base - 4; y < base; y++)
 			{
 				this->blocks[x][y][z].setType(blocktype); // switched to grassland for now
 			}

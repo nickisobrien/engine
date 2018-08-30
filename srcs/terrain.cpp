@@ -4,11 +4,15 @@
 void Terrain::updateChunk(glm::ivec2 pos)
 {
 	if (this->world.find(pos) != this->world.end())
+	{
+		this->lightEngine.sunlightInit(this->world[pos]);
 		this->world[pos]->update();
-	else
+	}
+	else // new chunk!
 	{
 		this->world[pos] = new Chunk(pos.x, pos.y);
 		this->world[pos]->setTerrain(this->terrainNoise, this->temperatureNoise, this->humidityNoise);
+		this->lightEngine.sunlightInit(this->world[pos]);
 		this->world[pos]->update();
 	}
 }

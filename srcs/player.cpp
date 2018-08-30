@@ -263,7 +263,7 @@ void Player::leftMouseClickEvent()
 			this->terr->lightEngine.removedLighting();
 		}
 		b->setType(AIR_BLOCK);
-		c->update();
+		this->terr->updateChunk(glm::ivec2(c->getXOff(), c->getZOff()));
 		// edge blocks broken require neighbor chunk updates too
 		if (current_voxel.x == 0)
 		{
@@ -396,7 +396,6 @@ void Player::rightMouseClickEvent()
 	if (b && b->isActive() && e && !e->isActive())
 	{
 		e->setType(this->currentBlockPlace);
-		e->setActive(true);
 		// handle lighting blocks
 		if (e->getType() == LIGHT_BLOCK)
 		{
@@ -405,7 +404,7 @@ void Player::rightMouseClickEvent()
 			// clear out light queue
 			terr->lightEngine.addedLighting();
 		}
-		c->update();
+		this->terr->updateChunk(glm::ivec2(c->getXOff(), c->getZOff()));
 		// edge blocks broken require neighbor chunk updates too
 		if (current_voxel.x == 0)
 		{

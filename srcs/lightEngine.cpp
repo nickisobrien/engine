@@ -1,6 +1,101 @@
 #include "engine.h"
 #include "lightEngine.h"
 
+void LightEngine::sunlightInit(Chunk *c)
+{
+	for (int x = 0; x < CHUNK_X; x++)
+	{
+		for (int z = 0; z < CHUNK_Z; z++)
+		{
+			c->setSunLight(x,CHUNK_Y-1,z,8);
+			sunlightBfsQueue.emplace(x, CHUNK_Y-1, z, c);
+		}
+	}
+	this->sunlightQueueClear();
+}
+
+void LightEngine::sunlightQueueClear()
+{
+	Chunk *chunk = NULL;
+	// Currently not handling chunk edges
+	while(sunlightBfsQueue.empty() == false)
+	{
+		// Get a reference to the front node. 
+		LightNode &node = sunlightBfsQueue.front();
+		chunk = node.chunk;
+		// Pop the front node off the queue. We no longer need the node reference
+		sunlightBfsQueue.pop();
+		// Grab the light level of the current node
+		short lightLevel = chunk->getSunLight(node.x, node.y, node.z);
+		// cout << "1: "<< node.x << " " << node.y << " " << node.z << " light:" << lightLevel << endl;
+
+		// // x-1
+		// if (node.x - 1 >= 0)
+		// {
+		// 	if (chunk->getSunLight(node.x - 1, node.y, node.z) + 2 <= lightLevel)
+		// 	{
+		// 		// Set its light level
+		// 		chunk->setSunLight(node.x - 1, node.y, node.z, lightLevel - 1);
+		// 		// Emplace new node to queue. (could use push as well)
+		// 		if (!chunk->getBlock(node.x - 1, node.y, node.z)->isActive())
+		// 			sunlightBfsQueue.emplace(node.x - 1, node.y, node.z, chunk);
+		// 	}
+		// }
+		// y-1
+		if (node.y - 1 >= 0)
+		{
+			if (chunk->getSunLight(node.x, node.y - 1, node.z) + 2 <= lightLevel)
+			{
+				chunk->setSunLight(node.x, node.y - 1, node.z, lightLevel);
+				// cout << "2: "<< node.x << " " << node.y << " " << node.z << " light:" << lightLevel << endl;
+				// cout << "Next block active: " << chunk->getBlock(node.x, node.y - 1, node.z)->isActive() << endl;
+				if (chunk->getBlock(node.x, node.y - 1, node.z)->isActive() == false)
+					sunlightBfsQueue.emplace(node.x, node.y - 1, node.z, chunk);
+			}
+		}
+		// // z-1
+		// if (node.z - 1 >= 0)
+		// {
+		// 	if (chunk->getSunLight(node.x, node.y, node.z - 1) + 2 <= lightLevel)
+		// 	{
+		// 		chunk->setSunLight(node.x, node.y, node.z - 1, lightLevel - 1);
+		// 		if (!chunk->getBlock(node.x, node.y, node.z - 1)->isActive())
+		// 			sunlightBfsQueue.emplace(node.x, node.y, node.z - 1, chunk);
+		// 	}
+		// }
+		// // x+1
+		// if (node.x + 1 < CHUNK_X)
+		// {
+		// 	if (chunk->getSunLight(node.x + 1, node.y, node.z) + 2 <= lightLevel)
+		// 	{
+		// 		chunk->setSunLight(node.x + 1, node.y, node.z, lightLevel - 1);
+		// 		if (!chunk->getBlock(node.x + 1, node.y, node.z)->isActive())
+		// 			sunlightBfsQueue.emplace(node.x + 1, node.y, node.z, chunk);
+		// 	}
+		// }
+		// // y+1
+		// if (node.y + 1 < CHUNK_Y)
+		// {
+		// 	if (chunk->getSunLight(node.x, node.y + 1, node.z) + 2 <= lightLevel)
+		// 	{
+		// 		chunk->setSunLight(node.x, node.y + 1, node.z, lightLevel - 1);
+		// 		if (!chunk->getBlock(node.x, node.y + 1, node.z)->isActive())
+		// 			sunlightBfsQueue.emplace(node.x, node.y + 1, node.z, chunk);
+		// 	}
+		// }
+		// // z+1
+		// if (node.z + 1 < CHUNK_Z)
+		// {
+		// 	if (chunk->getSunLight(node.x, node.y, node.z + 1) + 2 <= lightLevel)
+		// 	{
+		// 		chunk->setSunLight(node.x, node.y, node.z + 1, lightLevel - 1);
+		// 		if (!chunk->getBlock(node.x, node.y, node.z + 1)->isActive())
+		// 			sunlightBfsQueue.emplace(node.x, node.y, node.z + 1, chunk);
+		// 	}
+		// }
+	}
+}
+
 void LightEngine::addedLighting()
 {
 	Chunk *chunk = NULL;
@@ -176,3 +271,4 @@ void LightEngine::removedLighting()
 	}
 	this->addedLighting();
 }
+

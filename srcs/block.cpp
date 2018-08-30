@@ -3,22 +3,14 @@
 
 bool Block::isActive(void)
 {
-	return (active);
-}
-
-void Block::setActive(bool act)
-{
-	this->active = act;
+	if (this->type == AIR_BLOCK || this->type == WATER_BLOCK)
+		return false;
+	return true;
 }
 
 void Block::setType(int t)
 {
 	this->type = t;
-}
-
-Block::Block(void)
-{
-	this->active = true;
 }
 
 Block::~Block(void)

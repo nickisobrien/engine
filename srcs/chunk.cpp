@@ -23,20 +23,24 @@ Chunk::Chunk(int xoff, int zoff)
 		glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
 
 		// vertices
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), (GLvoid*)0);
 		glEnableVertexAttribArray(0);
 		
 		// textures
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
 		glEnableVertexAttribArray(1);
 
 		// normals
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)(5 * sizeof(GLfloat)));
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), (GLvoid*)(5 * sizeof(GLfloat)));
 		glEnableVertexAttribArray(2);
 
-		// light
-		glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)(8 * sizeof(GLfloat)));
+		// torch light
+		glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), (GLvoid*)(8 * sizeof(GLfloat)));
 		glEnableVertexAttribArray(3);
+
+		// sun light
+		glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), (GLvoid*)(9 * sizeof(GLfloat)));
+		glEnableVertexAttribArray(4);
 	glBindVertexArray(0);
 
 	// transparent
@@ -46,20 +50,24 @@ Chunk::Chunk(int xoff, int zoff)
 		glBindBuffer(GL_ARRAY_BUFFER, this->transparentVBO);
 
 		// vertices
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), (GLvoid*)0);
 		glEnableVertexAttribArray(0);
 		
 		// textures
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
 		glEnableVertexAttribArray(1);
 
 		// normals
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)(5 * sizeof(GLfloat)));
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), (GLvoid*)(5 * sizeof(GLfloat)));
 		glEnableVertexAttribArray(2);
 
-		// light
-		glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat), (GLvoid*)(8 * sizeof(GLfloat)));
+		// torch light
+		glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), (GLvoid*)(8 * sizeof(GLfloat)));
 		glEnableVertexAttribArray(3);
+
+		// sun light
+		glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), (GLvoid*)(9 * sizeof(GLfloat)));
+		glEnableVertexAttribArray(4);
 	glBindVertexArray(0);
 }
 
@@ -201,7 +209,6 @@ void Chunk::addExtras(FastNoise terrainNoise, FastNoise temperatureNoise, FastNo
 				for (int y = 0; y < 6; y++)
 				{
 					this->blocks[x][base+y][z].setType(DIRT_BLOCK);
-					this->blocks[x][base+y][z].setActive(true);
 				}
 			} // cactus
 			else if (blocktype == SAND_BLOCK && rand() % 1000 > 996)
@@ -209,7 +216,6 @@ void Chunk::addExtras(FastNoise terrainNoise, FastNoise temperatureNoise, FastNo
 				for (int y = 0; y < 3; y++)
 				{
 					this->blocks[x][base+y][z].setType(GRASS_BLOCK);
-					this->blocks[x][base+y][z].setActive(true);
 				}
 			}
 		}
@@ -243,15 +249,9 @@ void Chunk::faceRendering(void)
 			{
 				transparent = false;
 				if (this->blocks[x][y][z].getType() == AIR_BLOCK)
-				{
-					this->blocks[x][y][z].setActive(false);
 					continue ;
-				}
-				else if (this->blocks[x][y][z].getType() == WATER_BLOCK) //water_BLOCK
-				{
-					this->blocks[x][y][z].setActive(false);
+				if (this->blocks[x][y][z].getType() == WATER_BLOCK) //water_BLOCK
 					transparent = true;
-				}
 				int val = this->getWorld(x, y, z);
 
 				// MINUS checks
@@ -379,8 +379,11 @@ void Chunk::addFace(int face, int x, int y, int z, int val, vector<float> *m, in
 		m->push_back(normals[indices[i / 6]].y);
 		m->push_back(normals[indices[i / 6]].z);
 
-		// lighting, becomes a float when pushed back because mesh is a float vector
+		// torch lighting, becomes a float when pushed back because mesh is a float vector
 		m->push_back(this->torchLightMap[x][y][z]);
+
+		// can move these light maps to private and use getTorchLight
+		m->push_back(this->sunLightMap[x][y][z]);
 	}
 	*ps+=6;
 }

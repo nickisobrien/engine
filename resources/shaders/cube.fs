@@ -4,6 +4,7 @@ out vec4 FragColor;
 in vec2 TexCoord;
 in vec3 Norm;
 in float TorchLight;
+in float SunLight;
 
 // texture sampler
 uniform sampler2D atlas;
@@ -22,6 +23,10 @@ void main()
 	FragColor.x += TorchLight/16;
 	FragColor.y += TorchLight/16;
 	FragColor.z += TorchLight/16;
+
+	FragColor.x += SunLight/16;
+	FragColor.y += SunLight/16;
+	FragColor.z += SunLight/16;
 
 	if (Norm.y == -1.0f)
 	{

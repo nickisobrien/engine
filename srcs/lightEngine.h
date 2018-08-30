@@ -11,7 +11,6 @@ struct LightNode
 	Chunk *chunk; //pointer to the chunk that owns it!
 };
 
-
 struct LightRemovalNode
 {
 	LightRemovalNode(int _x, int _y, int _z, short v, Chunk* ch) : x(_x), y(_y), z(_z), val(v), chunk(ch) {}
@@ -20,11 +19,16 @@ struct LightRemovalNode
 	Chunk *chunk; //pointer to the chunk that owns it!
 };
 
+
+
 class LightEngine
 {
 public:
 	void addedLighting();
 	void removedLighting();
+	void sunlightQueueClear();
+	void sunlightInit(Chunk *c);
 	queue<LightNode> lightBfsQueue;
 	queue<LightRemovalNode> lightRemovalBfsQueue;
+	queue <LightNode> sunlightBfsQueue;
 };

@@ -11,7 +11,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h" // https://github.com/nothings/stb/blob/master/stb_image.h
 
-#define RENDER_RADIUS 8
+#define RENDER_RADIUS 20
 
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
@@ -19,7 +19,7 @@ float lastX = WIDTH / 2.0f;
 float lastY = HEIGHT / 2.0f;
 bool firstMouse = true;
 Terrain terr;
-Player player(glm::vec3(0.0f, (float)CHUNK_Y-30.0f, 0.0f), &terr);
+Player player(glm::vec3(CHUNK_X/2.0f, (float)CHUNK_Y-30.0f, CHUNK_Z/2.0f), &terr);
 
 int main(void)
 {
@@ -90,13 +90,14 @@ int main(void)
 		cubeShader.setMat4("view", view);
 
 		Chunk *c = player.getChunk();
-		terr.renderChunk(glm::ivec2(0,0), cubeShader);
-
-		 // need to make sure to only render each chunk once per frame
+		terr.renderChunk(glm::ivec2(c->getXOff(), c->getZOff()), cubeShader);
+		// need to make sure to only render each chunk once per frame
 		for (int i = 0; i < RENDER_RADIUS; i++)
 		{
 			for (int j = 0; j < RENDER_RADIUS; j++)
 			{
+				if (!i && !j)
+					continue;
 				if (!terr.renderChunk(glm::ivec2(c->getXOff() + i, c->getZOff() + j), cubeShader))
 					break ;
 				if (!terr.renderChunk(glm::ivec2(c->getXOff() - i, c->getZOff() - j), cubeShader))
@@ -111,6 +112,8 @@ int main(void)
 		{
 			for (int j = 0; j < RENDER_RADIUS; j++)
 			{
+				if (!i && !j)
+					continue;
 				if (!terr.renderWaterChunk(glm::ivec2(c->getXOff() + i, c->getZOff() + j), cubeShader))
 					break ;
 				if (!terr.renderWaterChunk(glm::ivec2(c->getXOff() - i, c->getZOff() - j), cubeShader))

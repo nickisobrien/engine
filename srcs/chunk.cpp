@@ -3,12 +3,12 @@
 
 #define YSQRT  sqrt(CHUNK_Y-1)
 
-Chunk::Chunk(int xoff, int zoff)
+Chunk::Chunk(int x, int z) : xoff(x), zoff(z)
 {
 	this->pointSize = 0;
 	this->transparentPointSize = 0;
-	this->xoff = xoff;
-	this->zoff = zoff;
+	// this->xoff = xoff;
+	// this->zoff = zoff;
 	offsetMatrix = glm::translate(glm::mat4(1.0f), glm::vec3((float)(xoff * CHUNK_X), 1.0f, (float)(zoff * CHUNK_Z)));
 	offsetMatrix = glm::translate(offsetMatrix, glm::vec3(0.5f, -0.5f, 0.5f));
 

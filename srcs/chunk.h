@@ -19,7 +19,7 @@ enum ChunkState
 class Chunk
 {
 public:
-	Chunk(int xoff = 0, int zoff = 0);
+	Chunk(int x = 0, int z = 0);
 	~Chunk(void);
 	void update();
 	void render(Shader shader);

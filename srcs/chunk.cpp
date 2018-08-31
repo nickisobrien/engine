@@ -172,36 +172,11 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 			// extras
 			if (!water)
 			{
-
 				if (blocktype == GRASS_BLOCK && x > 2 && z > 2 && x + 2 < CHUNK_X && z + 2 < CHUNK_Z && rand() % 1000 > 996)
-				{
-					// trunk
-					for (int y = 0; y < 6; y++)
-					{
-						this->blocks[x][base+y][z].setType(DIRT_BLOCK);
-					}
-					for (int i = -2; i <= 2; i++)
-					{
-						for (int j = -2; j <= 2; j++)
-						{
-							this->blocks[x+i][base+6][z+j].setType(GRASS_BLOCK);
-						}
-					}
-					for (int i = -1; i <= 1; i++)
-					{
-						for (int j = -1; j <= 1; j++)
-						{
-							this->blocks[x+i][base+7][z+j].setType(GRASS_BLOCK);
-						}
-					}
-				} // cactus
-				else if (blocktype == SAND_BLOCK && rand() % 1000 > 996)
-				{
-					for (int y = 0; y < 3; y++)
-					{
-						this->blocks[x][base+y][z].setType(GRASS_BLOCK);
-					}
-				}
+					StructureEngine::generateTree(this,x,base,z);
+				 // cactus
+				if (blocktype == SAND_BLOCK && rand() % 1000 > 996)
+					StructureEngine::generateCactus(this,x,base,z);
 			}
 
 		}

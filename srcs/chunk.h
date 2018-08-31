@@ -3,19 +3,20 @@
 #include "shader.h"
 #include "block.h"
 #include "FastNoise.h"
+#include "structureEngine.h"
 
 #define CHUNK_Z 16
 #define CHUNK_X 16
 #define CHUNK_Y 256
 #define WATER_LEVEL 38
 
-enum ChunkState
-{
-	GENERATE,
-	UPDATE,
-	RENDER,
-	UNLOAD
-};
+// enum ChunkState
+// {
+// 	GENERATE,
+// 	UPDATE,
+// 	RENDER,
+// 	UNLOAD
+// };
 
 class Chunk
 {
@@ -55,9 +56,10 @@ public:
 	inline int getXOff() { return xoff; }
 	inline int getZOff() { return zoff; }
 private:
-	// friend class Player;
+	friend class StructureEngine; // now StructureEngine can access private parts of Chunk
 	int xoff;
 	int zoff;
+	
 	Block blocks[CHUNK_X][CHUNK_Y][CHUNK_Z];
 	char torchLightMap[CHUNK_X][CHUNK_Y][CHUNK_Z];
 	char sunLightMap[CHUNK_X][CHUNK_Y][CHUNK_Z];
@@ -74,9 +76,11 @@ private:
 	vector<float> mesh;
 	vector<float> transparentMesh;
 
-	ChunkState state = GENERATE;
+	// ChunkState state = GENERATE;
 	Chunk *xMinus = NULL;
 	Chunk *xPlus = NULL;
 	Chunk *zMinus = NULL;
 	Chunk *zPlus = NULL;
+
+	// StructureEngine structureEngine;
 };

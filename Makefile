@@ -10,7 +10,7 @@ LIB_DIR := ./lib/
 HEADERS = ./srcs/*.h
 
 # engine
-FILES = engine chunk camera terrain block FastNoise player lightEngine textureEngine
+FILES = engine chunk camera terrain block FastNoise player lightEngine textureEngine structureEngine
 CFILES = $(patsubst %, $(SRC_DIR)%.cpp, $(FILES))
 OFILES = $(patsubst %, $(OBJ_DIR)%.o, $(FILES))
 

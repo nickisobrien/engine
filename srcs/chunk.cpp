@@ -141,22 +141,22 @@ void Chunk::setTerrain(Terrain *terr)
 			else if (temp >= -0.33f && temp >= 0.33f)
 			{
 				if (hum < 0.0f)
-					blocktype = GRASS_BLOCK;
+					blocktype = Blocktype::GRASS_BLOCK;
 				else
-					blocktype = DIRT_BLOCK;
+					blocktype = Blocktype::DIRT_BLOCK;
 			}
 			else
 			{
 				if (hum < 0.0f)
-					blocktype = SAND_BLOCK;
+					blocktype = Blocktype::SAND_BLOCK;
 				else
-					blocktype = GRASS_BLOCK;
+					blocktype = Blocktype::GRASS_BLOCK;
 			}
 			if (base < WATER_LEVEL)
 				water = true;
 			for (int y = 0; y < base - 4; y++)
 			{
-				this->blocks[x][y][z].setType(STONE_BLOCK);
+				this->blocks[x][y][z].setType(Blocktype::STONE_BLOCK);
 			}
 			for (int y = base - 4; y < base; y++)
 			{
@@ -165,17 +165,17 @@ void Chunk::setTerrain(Terrain *terr)
 			for (int y = base; y < WATER_LEVEL; y++)
 			{
 				water = true;
-				this->blocks[x][y][z].setType(WATER_BLOCK);
+				this->blocks[x][y][z].setType(Blocktype::WATER_BLOCK);
 			}
 
 
 			// extras
 			if (!water)
 			{
-				if (blocktype == GRASS_BLOCK && x > 2 && z > 2 && x + 2 < CHUNK_X && z + 2 < CHUNK_Z && rand() % 1000 > 996)
+				if (blocktype == Blocktype::GRASS_BLOCK && x > 2 && z > 2 && x + 2 < CHUNK_X && z + 2 < CHUNK_Z && rand() % 1000 > 996)
 					terr->structureEngine.addStructure(this,glm::ivec3(x,base,z), StructType::Tree);
 				 // cactus
-				if (blocktype == SAND_BLOCK && rand() % 1000 > 996)
+				if (blocktype == Blocktype::SAND_BLOCK && rand() % 1000 > 996)
 					terr->structureEngine.addStructure(this,glm::ivec3(x,base,z), StructType::Cactus);
 					// terr->structureEngine.generateCactus(this,glm::ivec3(x,base,z));
 			}
@@ -212,9 +212,9 @@ void Chunk::faceRendering()
 			for (int z = 0; z < CHUNK_Z; z++)
 			{
 				transparent = false;
-				if (this->blocks[x][y][z].getType() == AIR_BLOCK)
+				if (this->blocks[x][y][z].getType() == Blocktype::AIR_BLOCK)
 					continue ;
-				if (this->blocks[x][y][z].getType() == WATER_BLOCK) //water_BLOCK
+				if (this->blocks[x][y][z].getType() == Blocktype::WATER_BLOCK) //Blocktype::water_BLOCK
 					transparent = true;
 				int val = this->getWorld(x, y, z);
 
@@ -253,32 +253,32 @@ void Chunk::faceRendering()
 				// Facing
 				if (!transparent)
 				{
-					if (yMinusCheck==AIR_BLOCK || yMinusCheck==WATER_BLOCK)
+					if (yMinusCheck==Blocktype::AIR_BLOCK || yMinusCheck==Blocktype::WATER_BLOCK)
 						this->addFace(0, x , y, z, val, &this->mesh, &this->pointSize); //DOWN
-					if (yPlusCheck==AIR_BLOCK || yPlusCheck==WATER_BLOCK)
+					if (yPlusCheck==Blocktype::AIR_BLOCK || yPlusCheck==Blocktype::WATER_BLOCK)
 						this->addFace(1, x , y, z, val, &this->mesh, &this->pointSize); //UP
-					if (xPlusCheck==AIR_BLOCK || xPlusCheck==WATER_BLOCK)
+					if (xPlusCheck==Blocktype::AIR_BLOCK || xPlusCheck==Blocktype::WATER_BLOCK)
 						this->addFace(2, x , y, z, val, &this->mesh, &this->pointSize); //xpos SIDE
-					if (zPlusCheck==AIR_BLOCK || zPlusCheck==WATER_BLOCK)
+					if (zPlusCheck==Blocktype::AIR_BLOCK || zPlusCheck==Blocktype::WATER_BLOCK)
 						this->addFace(3, x , y, z, val, &this->mesh, &this->pointSize); //zpos SIDE
-					if (xMinusCheck==AIR_BLOCK || xMinusCheck==WATER_BLOCK)
+					if (xMinusCheck==Blocktype::AIR_BLOCK || xMinusCheck==Blocktype::WATER_BLOCK)
 						this->addFace(4, x , y, z, val, &this->mesh, &this->pointSize); //xneg SIDE
-					if (zMinusCheck==AIR_BLOCK || zMinusCheck==WATER_BLOCK)
+					if (zMinusCheck==Blocktype::AIR_BLOCK || zMinusCheck==Blocktype::WATER_BLOCK)
 						this->addFace(5, x , y, z, val, &this->mesh, &this->pointSize); //zneg SIDE
 				}
 				else
 				{
-					if (yMinusCheck==AIR_BLOCK || (yMinusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
+					if (yMinusCheck==Blocktype::AIR_BLOCK || (yMinusCheck==Blocktype::WATER_BLOCK && this->blocks[x][y][z].getType() != Blocktype::WATER_BLOCK))
 						this->addFace(0, x , y, z, val, &this->transparentMesh, &this->transparentPointSize); //DOWN
-					if (yPlusCheck==AIR_BLOCK || (yPlusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
+					if (yPlusCheck==Blocktype::AIR_BLOCK || (yPlusCheck==Blocktype::WATER_BLOCK && this->blocks[x][y][z].getType() != Blocktype::WATER_BLOCK))
 						this->addFace(1, x , y, z, val, &this->transparentMesh, &this->transparentPointSize); //UP
-					if (xPlusCheck==AIR_BLOCK || (xPlusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
+					if (xPlusCheck==Blocktype::AIR_BLOCK || (xPlusCheck==Blocktype::WATER_BLOCK && this->blocks[x][y][z].getType() != Blocktype::WATER_BLOCK))
 						this->addFace(2, x , y, z, val, &this->transparentMesh, &this->transparentPointSize); //xpos SIDE
-					if (zPlusCheck==AIR_BLOCK || (zPlusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
+					if (zPlusCheck==Blocktype::AIR_BLOCK || (zPlusCheck==Blocktype::WATER_BLOCK && this->blocks[x][y][z].getType() != Blocktype::WATER_BLOCK))
 						this->addFace(3, x , y, z, val, &this->transparentMesh, &this->transparentPointSize); //zpos SIDE
-					if (xMinusCheck==AIR_BLOCK || (xMinusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
+					if (xMinusCheck==Blocktype::AIR_BLOCK || (xMinusCheck==Blocktype::WATER_BLOCK && this->blocks[x][y][z].getType() != Blocktype::WATER_BLOCK))
 						this->addFace(4, x , y, z, val, &this->transparentMesh, &this->transparentPointSize); //xneg SIDE
-					if (zMinusCheck==AIR_BLOCK || (zMinusCheck==WATER_BLOCK && this->blocks[x][y][z].getType() != WATER_BLOCK))
+					if (zMinusCheck==Blocktype::AIR_BLOCK || (zMinusCheck==Blocktype::WATER_BLOCK && this->blocks[x][y][z].getType() != Blocktype::WATER_BLOCK))
 						this->addFace(5, x , y, z, val, &this->transparentMesh, &this->transparentPointSize); //zneg SIDE
 				}
 			}

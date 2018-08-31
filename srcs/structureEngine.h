@@ -10,6 +10,12 @@ enum StructType
 	Cactus
 };
 
+// struct blockQueue
+// {
+// 	Chunk *c;
+// 	map<i>
+// }
+
 class StructureEngine
 {
 public:
@@ -18,4 +24,5 @@ public:
 private:
 	void generateCactus(Chunk *chunk, glm::ivec3 loc);
 	void generateTree(Chunk *chunk, glm::ivec3 loc);
+	void handleChunkOverflow(Chunk *c);
 };

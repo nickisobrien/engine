@@ -3,7 +3,7 @@
 
 bool Block::isActive(void)
 {
-	if (this->type == AIR_BLOCK || this->type == WATER_BLOCK)
+	if (this->type == Blocktype::AIR_BLOCK || this->type == Blocktype::WATER_BLOCK)
 		return false;
 	return true;
 }

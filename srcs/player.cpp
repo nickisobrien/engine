@@ -39,10 +39,10 @@ void Player::processInput(GLFWwindow *window, float deltaTime)
 
 	if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
 	{
-		if (this->currentBlockPlace == LIGHT_BLOCK)
-			this->currentBlockPlace = SNOW_BLOCK;
+		if (this->currentBlockPlace == Blocktype::LIGHT_BLOCK)
+			this->currentBlockPlace = Blocktype::SNOW_BLOCK;
 		else
-			this->currentBlockPlace = LIGHT_BLOCK;
+			this->currentBlockPlace = Blocktype::LIGHT_BLOCK;
 	}
 
 	// collision checks/allows running up 1 block
@@ -93,7 +93,7 @@ bool Player::isGrounded()
 		z = CHUNK_Z + z;
 
 	Block *b = getChunk()->getBlock(x,y-3,z);
-	if (b != NULL && (b->getType() != AIR_BLOCK && b->getType() != WATER_BLOCK))
+	if (b != NULL && (b->getType() != Blocktype::AIR_BLOCK && b->getType() != Blocktype::WATER_BLOCK))
 		return (true);
 	if (b == NULL)
 		return (true);
@@ -255,14 +255,14 @@ void Player::leftMouseClickEvent()
 	// update the chunks if block is found
 	if (b && b->isActive())
 	{
-		if (b->getType() == LIGHT_BLOCK)
+		if (b->getType() == Blocktype::LIGHT_BLOCK)
 		{
 			short val = (short)c->getTorchLight(current_voxel.x,current_voxel.y,current_voxel.z);
 			this->terr->lightEngine.lightRemovalBfsQueue.emplace(current_voxel.x,current_voxel.y,current_voxel.z, val, c);
 			c->setTorchLight(current_voxel.x,current_voxel.y,current_voxel.z, 0);
 			this->terr->lightEngine.removedLighting();
 		}
-		b->setType(AIR_BLOCK);
+		b->setType(Blocktype::AIR_BLOCK);
 		this->terr->updateChunk(glm::ivec2(c->getXOff(), c->getZOff()));
 		// edge blocks broken require neighbor chunk updates too
 		if (current_voxel.x == 0)
@@ -397,7 +397,7 @@ void Player::rightMouseClickEvent()
 	{
 		e->setType(this->currentBlockPlace);
 		// handle lighting blocks
-		if (e->getType() == LIGHT_BLOCK)
+		if (e->getType() == Blocktype::LIGHT_BLOCK)
 		{
 			c->setTorchLight(vec.x,vec.y,vec.z,14);
 			terr->lightEngine.lightBfsQueue.emplace(vec.x, vec.y, vec.z, c);

@@ -40,6 +40,10 @@ void StructureEngine::addStructure(Chunk *chunk, glm::ivec3 loc, StructType type
 		case StructType::Tree:
 			this->generateTree(chunk, loc);
 			break;
-	}
-		
+	}	
+}
+
+void StructureEngine::handleChunkOverflow(Chunk *c)
+{
+	
 }

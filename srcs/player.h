@@ -20,7 +20,7 @@ public:
 	void jump();
 	void leftMouseClickEvent();
 	void rightMouseClickEvent();
-	int currentBlockPlace = LIGHT_BLOCK;
+	int currentBlockPlace = Blocktype::LIGHT_BLOCK;
 private:
 	Terrain *terr;
 	// float speed = 6.0f;

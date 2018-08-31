@@ -4,13 +4,19 @@
 
 class Chunk;
 
+enum StructType
+{
+	Tree,
+	Cactus
+};
+
 class StructureEngine
 {
 public:
 	StructureEngine() {}
-	void addStructures(Chunk *chunk, int x, int y, int z);
-	void generateCactus(Chunk *chunk,int x,int y, int z);
-	void generateTree(Chunk *chunk,int x,int y, int z);
+	void addStructure(Chunk *chunk, glm::ivec3 loc, StructType type);
+	void generateCactus(Chunk *chunk, glm::ivec3 loc);
+	void generateTree(Chunk *chunk, glm::ivec3 loc);
 private:
 	queue<glm::ivec3> structures;
 };

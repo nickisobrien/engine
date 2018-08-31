@@ -27,12 +27,19 @@ void StructureEngine::generateTree(Chunk *chunk, glm::ivec3 loc)
 void StructureEngine::generateCactus(Chunk *chunk, glm::ivec3 loc)
 {
 	for (int i = 0; i < 3; i++)
-	{
 		chunk->blocks[loc.x][i+loc.y][loc.z].setType(GRASS_BLOCK);
-	}
 }
 
 void StructureEngine::addStructure(Chunk *chunk, glm::ivec3 loc, StructType type)
 {
-
+	switch (type)
+	{
+		case StructType::Cactus:
+			this->generateCactus(chunk, loc);
+			break;
+		case StructType::Tree:
+			this->generateTree(chunk, loc);
+			break;
+	}
+		
 }

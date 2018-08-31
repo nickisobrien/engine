@@ -173,10 +173,11 @@ void Chunk::setTerrain(Terrain *terr)
 			if (!water)
 			{
 				if (blocktype == GRASS_BLOCK && x > 2 && z > 2 && x + 2 < CHUNK_X && z + 2 < CHUNK_Z && rand() % 1000 > 996)
-					terr->structureEngine.generateTree(this,glm::ivec3(x,base,z));
+					terr->structureEngine.addStructure(this,glm::ivec3(x,base,z), StructType::Tree);
 				 // cactus
 				if (blocktype == SAND_BLOCK && rand() % 1000 > 996)
-					terr->structureEngine.generateCactus(this,glm::ivec3(x,base,z));
+					terr->structureEngine.addStructure(this,glm::ivec3(x,base,z), StructType::Cactus);
+					// terr->structureEngine.generateCactus(this,glm::ivec3(x,base,z));
 			}
 
 		}

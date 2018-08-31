@@ -29,18 +29,18 @@ void LightEngine::sunlightQueueClear()
 		short lightLevel = chunk->getSunLight(node.x, node.y, node.z);
 		// cout << "1: "<< node.x << " " << node.y << " " << node.z << " light:" << lightLevel << endl;
 
-		// // x-1
-		// if (node.x - 1 >= 0)
-		// {
-		// 	if (chunk->getSunLight(node.x - 1, node.y, node.z) + 2 <= lightLevel)
-		// 	{
-		// 		// Set its light level
-		// 		chunk->setSunLight(node.x - 1, node.y, node.z, lightLevel - 1);
-		// 		// Emplace new node to queue. (could use push as well)
-		// 		if (!chunk->getBlock(node.x - 1, node.y, node.z)->isActive())
-		// 			sunlightBfsQueue.emplace(node.x - 1, node.y, node.z, chunk);
-		// 	}
-		// }
+		// x-1
+		if (node.x - 1 >= 0)
+		{
+			if (chunk->getSunLight(node.x - 1, node.y, node.z) + 2 <= lightLevel)
+			{
+				// Set its light level
+				chunk->setSunLight(node.x - 1, node.y, node.z, lightLevel - 1);
+				// Emplace new node to queue. (could use push as well)
+				if (!chunk->getBlock(node.x - 1, node.y, node.z)->isActive())
+					sunlightBfsQueue.emplace(node.x - 1, node.y, node.z, chunk);
+			}
+		}
 		// y-1
 		if (node.y - 1 >= 0)
 		{
@@ -54,46 +54,46 @@ void LightEngine::sunlightQueueClear()
 					sunlightBfsQueue.emplace(node.x, node.y - 1, node.z, chunk);
 			}
 		}
-		// // z-1
-		// if (node.z - 1 >= 0)
-		// {
-		// 	if (chunk->getSunLight(node.x, node.y, node.z - 1) + 2 <= lightLevel)
-		// 	{
-		// 		chunk->setSunLight(node.x, node.y, node.z - 1, lightLevel - 1);
-		// 		if (!chunk->getBlock(node.x, node.y, node.z - 1)->isActive())
-		// 			sunlightBfsQueue.emplace(node.x, node.y, node.z - 1, chunk);
-		// 	}
-		// }
-		// // x+1
-		// if (node.x + 1 < CHUNK_X)
-		// {
-		// 	if (chunk->getSunLight(node.x + 1, node.y, node.z) + 2 <= lightLevel)
-		// 	{
-		// 		chunk->setSunLight(node.x + 1, node.y, node.z, lightLevel - 1);
-		// 		if (!chunk->getBlock(node.x + 1, node.y, node.z)->isActive())
-		// 			sunlightBfsQueue.emplace(node.x + 1, node.y, node.z, chunk);
-		// 	}
-		// }
-		// // y+1
-		// if (node.y + 1 < CHUNK_Y)
-		// {
-		// 	if (chunk->getSunLight(node.x, node.y + 1, node.z) + 2 <= lightLevel)
-		// 	{
-		// 		chunk->setSunLight(node.x, node.y + 1, node.z, lightLevel - 1);
-		// 		if (!chunk->getBlock(node.x, node.y + 1, node.z)->isActive())
-		// 			sunlightBfsQueue.emplace(node.x, node.y + 1, node.z, chunk);
-		// 	}
-		// }
-		// // z+1
-		// if (node.z + 1 < CHUNK_Z)
-		// {
-		// 	if (chunk->getSunLight(node.x, node.y, node.z + 1) + 2 <= lightLevel)
-		// 	{
-		// 		chunk->setSunLight(node.x, node.y, node.z + 1, lightLevel - 1);
-		// 		if (!chunk->getBlock(node.x, node.y, node.z + 1)->isActive())
-		// 			sunlightBfsQueue.emplace(node.x, node.y, node.z + 1, chunk);
-		// 	}
-		// }
+		// z-1
+		if (node.z - 1 >= 0)
+		{
+			if (chunk->getSunLight(node.x, node.y, node.z - 1) + 2 <= lightLevel)
+			{
+				chunk->setSunLight(node.x, node.y, node.z - 1, lightLevel - 1);
+				if (!chunk->getBlock(node.x, node.y, node.z - 1)->isActive())
+					sunlightBfsQueue.emplace(node.x, node.y, node.z - 1, chunk);
+			}
+		}
+		// x+1
+		if (node.x + 1 < CHUNK_X)
+		{
+			if (chunk->getSunLight(node.x + 1, node.y, node.z) + 2 <= lightLevel)
+			{
+				chunk->setSunLight(node.x + 1, node.y, node.z, lightLevel - 1);
+				if (!chunk->getBlock(node.x + 1, node.y, node.z)->isActive())
+					sunlightBfsQueue.emplace(node.x + 1, node.y, node.z, chunk);
+			}
+		}
+		// y+1
+		if (node.y + 1 < CHUNK_Y)
+		{
+			if (chunk->getSunLight(node.x, node.y + 1, node.z) + 2 <= lightLevel)
+			{
+				chunk->setSunLight(node.x, node.y + 1, node.z, lightLevel - 1);
+				if (!chunk->getBlock(node.x, node.y + 1, node.z)->isActive())
+					sunlightBfsQueue.emplace(node.x, node.y + 1, node.z, chunk);
+			}
+		}
+		// z+1
+		if (node.z + 1 < CHUNK_Z)
+		{
+			if (chunk->getSunLight(node.x, node.y, node.z + 1) + 2 <= lightLevel)
+			{
+				chunk->setSunLight(node.x, node.y, node.z + 1, lightLevel - 1);
+				if (!chunk->getBlock(node.x, node.y, node.z + 1)->isActive())
+					sunlightBfsQueue.emplace(node.x, node.y, node.z + 1, chunk);
+			}
+		}
 	}
 }
 

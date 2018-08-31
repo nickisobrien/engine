@@ -8,8 +8,9 @@ class StructureEngine
 {
 public:
 	StructureEngine() {}
-	static void generateCactus(Chunk *chunk,int x,int base, int z);
-	static void generateTree(Chunk *chunk,int x,int base, int z);
+	void addStructures(Chunk *chunk, int x, int y, int z);
+	void generateCactus(Chunk *chunk,int x,int y, int z);
+	void generateTree(Chunk *chunk,int x,int y, int z);
 private:
-
+	queue<glm::ivec3> structures;
 };

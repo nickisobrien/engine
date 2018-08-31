@@ -112,7 +112,7 @@ void Chunk::renderWater(Shader shader)
 	glBindVertexArray(0);
 }
 
-void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastNoise humidityNoise)
+void Chunk::setTerrain(Terrain *terr)
 {
 	// std::clock_t	start;
 	// start = std::clock();
@@ -124,10 +124,10 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 		{
 			bool water = false;
 			// Use the noise library to get the height value of x, z
-			float b = MAP(terrainNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 0.1f, YSQRT);
+			float b = MAP(terr->terrainNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 0.1f, YSQRT);
 			int base = pow(b, 2);
-			float temp = temperatureNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
-			float hum = humidityNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
+			float temp = terr->temperatureNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
+			float hum = terr->humidityNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
 			short blocktype;
 			// noise layer #1 "Temperature"
 			// noise layer #2 "Humidity"
@@ -173,10 +173,10 @@ void Chunk::setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastN
 			if (!water)
 			{
 				if (blocktype == GRASS_BLOCK && x > 2 && z > 2 && x + 2 < CHUNK_X && z + 2 < CHUNK_Z && rand() % 1000 > 996)
-					StructureEngine::generateTree(this,x,base,z);
+					terr->structureEngine.generateTree(this,x,base,z);
 				 // cactus
 				if (blocktype == SAND_BLOCK && rand() % 1000 > 996)
-					StructureEngine::generateCactus(this,x,base,z);
+					terr->structureEngine.generateCactus(this,x,base,z);
 			}
 
 		}

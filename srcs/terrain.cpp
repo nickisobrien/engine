@@ -19,7 +19,7 @@ void Terrain::updateChunk(glm::ivec2 pos)
 	{
 		this->world[pos] = new Chunk(pos.x, pos.y);
 		this->setNeighbors(pos);
-		this->world[pos]->setTerrain(this->terrainNoise, this->temperatureNoise, this->humidityNoise);
+		this->world[pos]->setTerrain(this);
 		this->lightEngine.sunlightInit(this->world[pos]);
 		this->world[pos]->update();
 	}
@@ -73,7 +73,7 @@ void Terrain::setNeighbors(glm::ivec2 pos)
 	else if (!this->world[pos]->getXMinus())
 	{
 		this->world[glm::ivec2(pos.x-1, pos.y)] = new Chunk(pos.x-1, pos.y);
-		this->world[glm::ivec2(pos.x-1, pos.y)]->setTerrain(this->terrainNoise, this->temperatureNoise, this->humidityNoise);
+		this->world[glm::ivec2(pos.x-1, pos.y)]->setTerrain(this);
 		this->world[pos]->setXMinus(this->world[glm::ivec2(pos.x-1, pos.y)]);
 	}
 
@@ -82,7 +82,7 @@ void Terrain::setNeighbors(glm::ivec2 pos)
 	else if (!this->world[pos]->getXPlus())
 	{
 		this->world[glm::ivec2(pos.x+1, pos.y)] = new Chunk(pos.x+1, pos.y);
-		this->world[glm::ivec2(pos.x+1, pos.y)]->setTerrain(this->terrainNoise, this->temperatureNoise, this->humidityNoise);
+		this->world[glm::ivec2(pos.x+1, pos.y)]->setTerrain(this);
 		this->world[pos]->setXPlus(this->world[glm::ivec2(pos.x+1, pos.y)]);
 	}
 
@@ -91,7 +91,7 @@ void Terrain::setNeighbors(glm::ivec2 pos)
 	else if (!this->world[pos]->getZMinus())
 	{
 		this->world[glm::ivec2(pos.x, pos.y-1)] = new Chunk(pos.x, pos.y-1);
-		this->world[glm::ivec2(pos.x, pos.y-1)]->setTerrain(this->terrainNoise, this->temperatureNoise, this->humidityNoise);
+		this->world[glm::ivec2(pos.x, pos.y-1)]->setTerrain(this);
 		this->world[pos]->setZMinus(this->world[glm::ivec2(pos.x, pos.y-1)]);
 	}
 
@@ -100,7 +100,7 @@ void Terrain::setNeighbors(glm::ivec2 pos)
 	else if (!this->world[pos]->getZPlus())
 	{
 		this->world[glm::ivec2(pos.x, pos.y+1)] = new Chunk(pos.x, pos.y+1);
-		this->world[glm::ivec2(pos.x, pos.y+1)]->setTerrain(this->terrainNoise, this->temperatureNoise, this->humidityNoise);
+		this->world[glm::ivec2(pos.x, pos.y+1)]->setTerrain(this);
 		this->world[pos]->setZPlus(this->world[glm::ivec2(pos.x, pos.y+1)]);
 	}
 

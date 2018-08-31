@@ -3,6 +3,7 @@
 #include "chunk.h"
 #include "FastNoise.h"
 #include "lightEngine.h"
+#include "structureEngine.h"
 
 class Player;
 
@@ -21,7 +22,9 @@ public:
 	glm::ivec2 updateList = glm::ivec2(-100000,-100000);
 	LightEngine lightEngine;
 private:
+	friend class Chunk;
 	FastNoise temperatureNoise;
 	FastNoise humidityNoise;
 	FastNoise terrainNoise;
+	StructureEngine structureEngine;
 };

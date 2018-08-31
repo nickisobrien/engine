@@ -4,6 +4,7 @@
 #include "block.h"
 #include "FastNoise.h"
 #include "structureEngine.h"
+#include "terrain.h"
 
 #define CHUNK_Z 16
 #define CHUNK_X 16
@@ -48,7 +49,7 @@ public:
 	inline void setTorchLight(int x, int y, int z, int val) { torchLightMap[x][y][z] = val; };
 	inline void clearSunLightMap() { memset(this->sunLightMap, 0, sizeof(this->sunLightMap)); }
 
-	void setTerrain(FastNoise terrainNoise, FastNoise temperatureNoise, FastNoise humidityNoise);
+	void setTerrain(Terrain *terr);
 	int	getWorld(int x, int y, int z);
 	bool neighborsSet = false;
 	bool built = false;
@@ -81,6 +82,4 @@ private:
 	Chunk *xPlus = NULL;
 	Chunk *zMinus = NULL;
 	Chunk *zPlus = NULL;
-
-	// StructureEngine structureEngine;
 };

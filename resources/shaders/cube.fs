@@ -5,10 +5,14 @@ in vec2 TexCoord;
 in vec3 Norm;
 in float TorchLight;
 in float SunLight;
+in float Visibility;
 
 // texture sampler
 uniform sampler2D atlas;
 uniform float transparency;
+// uniform vec3 skyColor;
+// const vec3 skyColor(0.8f,0.8f,0.9f);
+
 
 void main()
 {
@@ -40,5 +44,7 @@ void main()
 		FragColor.y -= 0.1f;
 		FragColor.z -= 0.1f;
 	}
+
+	// FragColor = mix(vec4(skyColor,1.0 ),FragColor,Visibility);
 
 }

@@ -7,6 +7,7 @@
 #define CHUNK_Z 16
 #define CHUNK_X 16
 #define CHUNK_Y 256
+#define WATER_LEVEL 38
 
 enum ChunkState
 {

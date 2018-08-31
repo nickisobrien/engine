@@ -8,7 +8,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include <assimp/Importer.hpp>
+#include <assimp/importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <glm/glm.hpp> // vec3, vec4, ivec4, mat4
@@ -32,8 +32,6 @@
 #define ATLAS_SIZE 256
 #define TEXTURE_SIZE 16
 #define DIST(X,Y,XX,YY) ((YY-Y)/(XX-X));
-
-#define WATER_LEVEL 38
 
 #include "blockIndex.h" // block types
 #include "cubeMap.h"

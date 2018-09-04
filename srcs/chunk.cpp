@@ -307,14 +307,14 @@ void Chunk::faceRendering()
 						this->addFace(0, x , y, z, val, &this->transparentMesh, &this->transparentPointSize); //DOWN
 					if (yPlusCheck==Blocktype::AIR_BLOCK || (yPlusCheck==Blocktype::WATER_BLOCK && this->blocks[x][y][z].getType() != Blocktype::WATER_BLOCK))
 						this->addFace(1, x , y, z, val, &this->transparentMesh, &this->transparentPointSize); //UP
-					if (xPlusCheck==Blocktype::AIR_BLOCK || (xPlusCheck==Blocktype::WATER_BLOCK && this->blocks[x][y][z].getType() != Blocktype::WATER_BLOCK))
-						this->addFace(2, x , y, z, val, &this->transparentMesh, &this->transparentPointSize); //xpos SIDE
-					if (zPlusCheck==Blocktype::AIR_BLOCK || (zPlusCheck==Blocktype::WATER_BLOCK && this->blocks[x][y][z].getType() != Blocktype::WATER_BLOCK))
-						this->addFace(3, x , y, z, val, &this->transparentMesh, &this->transparentPointSize); //zpos SIDE
-					if (xMinusCheck==Blocktype::AIR_BLOCK || (xMinusCheck==Blocktype::WATER_BLOCK && this->blocks[x][y][z].getType() != Blocktype::WATER_BLOCK))
-						this->addFace(4, x , y, z, val, &this->transparentMesh, &this->transparentPointSize); //xneg SIDE
-					if (zMinusCheck==Blocktype::AIR_BLOCK || (zMinusCheck==Blocktype::WATER_BLOCK && this->blocks[x][y][z].getType() != Blocktype::WATER_BLOCK))
-						this->addFace(5, x , y, z, val, &this->transparentMesh, &this->transparentPointSize); //zneg SIDE
+					// if (xPlusCheck==Blocktype::AIR_BLOCK || (xPlusCheck==Blocktype::WATER_BLOCK && this->blocks[x][y][z].getType() != Blocktype::WATER_BLOCK))
+					// 	this->addFace(2, x , y, z, val, &this->transparentMesh, &this->transparentPointSize); //xpos SIDE
+					// if (zPlusCheck==Blocktype::AIR_BLOCK || (zPlusCheck==Blocktype::WATER_BLOCK && this->blocks[x][y][z].getType() != Blocktype::WATER_BLOCK))
+					// 	this->addFace(3, x , y, z, val, &this->transparentMesh, &this->transparentPointSize); //zpos SIDE
+					// if (xMinusCheck==Blocktype::AIR_BLOCK || (xMinusCheck==Blocktype::WATER_BLOCK && this->blocks[x][y][z].getType() != Blocktype::WATER_BLOCK))
+					// 	this->addFace(4, x , y, z, val, &this->transparentMesh, &this->transparentPointSize); //xneg SIDE
+					// if (zMinusCheck==Blocktype::AIR_BLOCK || (zMinusCheck==Blocktype::WATER_BLOCK && this->blocks[x][y][z].getType() != Blocktype::WATER_BLOCK))
+					// 	this->addFace(5, x , y, z, val, &this->transparentMesh, &this->transparentPointSize); //zneg SIDE
 				}
 			}
 		}

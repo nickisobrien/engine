@@ -19,10 +19,18 @@
 // 	UNLOAD
 // };
 
+struct blockQueue
+{
+	blockQueue(Blocktype t, glm::ivec3 p) : type(t), pos(p) {}
+	Chunk *chunk;
+	Blocktype type;
+	glm::ivec3 pos;
+};
+
 class Chunk
 {
 public:
-	Chunk(int x = 0, int z = 0);
+	Chunk(int x = 0, int z = 0, Terrain *t = NULL);
 	~Chunk(void);
 	void update();
 	void render(Shader shader);
@@ -41,6 +49,8 @@ public:
 	inline Chunk *getXPlus() { return (this->xPlus); }
 	inline Chunk *getZMinus() { return (this->zMinus); }
 	inline Chunk *getZPlus() { return (this->zPlus); }
+	queue<blockQueue> neighborQueue;
+
 
 	// lighting
 	inline int getSunLight(int x, int y, int z) { return (sunLightMap[x][y][z]); };
@@ -49,10 +59,9 @@ public:
 	inline void setTorchLight(int x, int y, int z, int val) { torchLightMap[x][y][z] = val; };
 	inline void clearSunLightMap() { memset(this->sunLightMap, 0, sizeof(this->sunLightMap)); }
 
-	void setTerrain(Terrain *terr);
+	void setTerrain();
 	int	getWorld(int x, int y, int z);
 	bool neighborsSet = false;
-	bool built = false;
 	Block *getBlock(int x, int y, int z);
 	inline int getXOff() { return xoff; }
 	inline int getZOff() { return zoff; }
@@ -62,6 +71,7 @@ private:
 	int zoff;
 	
 	Block blocks[CHUNK_X][CHUNK_Y][CHUNK_Z];
+	// TODO: switch these to one map using 4 bits each, sent to buffer as char
 	char torchLightMap[CHUNK_X][CHUNK_Y][CHUNK_Z];
 	char sunLightMap[CHUNK_X][CHUNK_Y][CHUNK_Z];
 	glm::mat4 offsetMatrix;
@@ -82,4 +92,6 @@ private:
 	Chunk *xPlus = NULL;
 	Chunk *zMinus = NULL;
 	Chunk *zPlus = NULL;
+
+	Terrain *terr;
 };

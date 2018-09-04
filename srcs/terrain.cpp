@@ -3,23 +3,17 @@
 
 void Terrain::updateChunk(glm::ivec2 pos)
 {
-	if (this->world.find(pos) != this->world.end() && this->world[pos]->built == true) // built may be the interchangable with neighborsSet
+	if (this->world.find(pos) != this->world.end()) // built may be the interchangable with neighborsSet
 	{
 		this->world[pos]->clearSunLightMap();
 		this->lightEngine.sunlightInit(this->world[pos]);
 		this->world[pos]->update();
 	}
-	else if (this->world.find(pos) != this->world.end())
-	{
-		this->setNeighbors(pos);
-		this->lightEngine.sunlightInit(this->world[pos]);
-		this->world[pos]->update();
-	}
 	else
 	{
-		this->world[pos] = new Chunk(pos.x, pos.y);
+		this->world[pos] = new Chunk(pos.x, pos.y, this);
 		this->setNeighbors(pos);
-		this->world[pos]->setTerrain(this);
+		this->world[pos]->setTerrain();
 		this->lightEngine.sunlightInit(this->world[pos]);
 		this->world[pos]->update();
 	}
@@ -27,7 +21,7 @@ void Terrain::updateChunk(glm::ivec2 pos)
 
 bool Terrain::renderChunk(glm::ivec2 pos, Shader shader)
 {
-	if (this->world.find(pos) != this->world.end() && this->world[pos]->built == true)
+	if (this->world.find(pos) != this->world.end())
 	{
 		this->world[pos]->render(shader);
 		if (!this->world[pos]->neighborsSet)
@@ -44,7 +38,7 @@ bool Terrain::renderChunk(glm::ivec2 pos, Shader shader)
 
 bool Terrain::renderWaterChunk(glm::ivec2 pos, Shader shader)
 {
-	if (this->world.find(pos) != this->world.end() && this->world[pos]->built == true)
+	if (this->world.find(pos) != this->world.end())
 		this->world[pos]->renderWater(shader);
 	else
 		return (false);
@@ -70,41 +64,19 @@ void Terrain::setNeighbors(glm::ivec2 pos)
 {
 	if (!this->world[pos]->getXMinus() && this->world.find(glm::ivec2(pos.x-1, pos.y)) != this->world.end())
 		this->world[pos]->setXMinus(this->world[glm::ivec2(pos.x-1, pos.y)]);
-	else if (!this->world[pos]->getXMinus())
-	{
-		this->world[glm::ivec2(pos.x-1, pos.y)] = new Chunk(pos.x-1, pos.y);
-		this->world[glm::ivec2(pos.x-1, pos.y)]->setTerrain(this);
-		this->world[pos]->setXMinus(this->world[glm::ivec2(pos.x-1, pos.y)]);
-	}
 
 	if (!this->world[pos]->getXPlus() && this->world.find(glm::ivec2(pos.x+1, pos.y)) != this->world.end())
 		this->world[pos]->setXPlus(this->world[glm::ivec2(pos.x+1, pos.y)]);
-	else if (!this->world[pos]->getXPlus())
-	{
-		this->world[glm::ivec2(pos.x+1, pos.y)] = new Chunk(pos.x+1, pos.y);
-		this->world[glm::ivec2(pos.x+1, pos.y)]->setTerrain(this);
-		this->world[pos]->setXPlus(this->world[glm::ivec2(pos.x+1, pos.y)]);
-	}
 
 	if (!this->world[pos]->getZMinus() && this->world.find(glm::ivec2(pos.x, pos.y-1)) != this->world.end())
 		this->world[pos]->setZMinus(this->world[glm::ivec2(pos.x, pos.y-1)]);
-	else if (!this->world[pos]->getZMinus())
-	{
-		this->world[glm::ivec2(pos.x, pos.y-1)] = new Chunk(pos.x, pos.y-1);
-		this->world[glm::ivec2(pos.x, pos.y-1)]->setTerrain(this);
-		this->world[pos]->setZMinus(this->world[glm::ivec2(pos.x, pos.y-1)]);
-	}
 
 	if (!this->world[pos]->getZPlus() && this->world.find(glm::ivec2(pos.x, pos.y+1)) != this->world.end())
 		this->world[pos]->setZPlus(this->world[glm::ivec2(pos.x, pos.y+1)]);
-	else if (!this->world[pos]->getZPlus())
-	{
-		this->world[glm::ivec2(pos.x, pos.y+1)] = new Chunk(pos.x, pos.y+1);
-		this->world[glm::ivec2(pos.x, pos.y+1)]->setTerrain(this);
-		this->world[pos]->setZPlus(this->world[glm::ivec2(pos.x, pos.y+1)]);
-	}
 
 	if (this->world[pos]->getXPlus() && this->world[pos]->getXMinus() &&
 		this->world[pos]->getZPlus() && this->world[pos]->getZMinus())
+	{
 		this->world[pos]->neighborsSet = true;
+	}
 }

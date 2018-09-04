@@ -3,8 +3,9 @@
 
 #define YSQRT  sqrt(CHUNK_Y-1)
 
-Chunk::Chunk(int x, int z) : xoff(x), zoff(z)
+Chunk::Chunk(int x, int z, Terrain *t) : xoff(x), zoff(z)
 {
+	this->terr = t;
 	this->pointSize = 0;
 	this->transparentPointSize = 0;
 	// this->xoff = xoff;
@@ -112,7 +113,7 @@ void Chunk::renderWater(Shader shader)
 	glBindVertexArray(0);
 }
 
-void Chunk::setTerrain(Terrain *terr)
+void Chunk::setTerrain()
 {
 	// std::clock_t	start;
 	// start = std::clock();
@@ -124,10 +125,10 @@ void Chunk::setTerrain(Terrain *terr)
 		{
 			bool water = false;
 			// Use the noise library to get the height value of x, z
-			float b = MAP(terr->terrainNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 0.1f, YSQRT);
+			float b = MAP(this->terr->terrainNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 0.1f, YSQRT);
 			int base = pow(b, 2);
-			float temp = terr->temperatureNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
-			float hum = terr->humidityNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
+			float temp = this->terr->temperatureNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
+			float hum = this->terr->humidityNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
 			short blocktype;
 			// noise layer #1 "Temperature"
 			// noise layer #2 "Humidity"
@@ -173,11 +174,11 @@ void Chunk::setTerrain(Terrain *terr)
 			if (!water)
 			{
 				if (blocktype == Blocktype::GRASS_BLOCK && x > 2 && z > 2 && x + 2 < CHUNK_X && z + 2 < CHUNK_Z && rand() % 1000 > 996)
-					terr->structureEngine.addStructure(this,glm::ivec3(x,base,z), StructType::Tree);
+					this->terr->structureEngine.addStructure(this,glm::ivec3(x,base,z), StructType::Tree);
 				 // cactus
 				if (blocktype == Blocktype::SAND_BLOCK && rand() % 1000 > 996)
-					terr->structureEngine.addStructure(this,glm::ivec3(x,base,z), StructType::Cactus);
-					// terr->structureEngine.generateCactus(this,glm::ivec3(x,base,z));
+					this->terr->structureEngine.addStructure(this,glm::ivec3(x,base,z), StructType::Cactus);
+					// this->terr->structureEngine.generateCactus(this,glm::ivec3(x,base,z));
 			}
 
 		}
@@ -187,13 +188,11 @@ void Chunk::setTerrain(Terrain *terr)
 
 void Chunk::update()
 {
-	this->built = false;
 	this->transparentPointSize = 0;
 	this->pointSize = 0;
 
 	this->faceRendering();
 	this->buildVAO();
-	this->built = true;
 }
 
 void Chunk::faceRendering()
@@ -221,11 +220,29 @@ void Chunk::faceRendering()
 				// MINUS checks
 				if (!x && this->getXMinus())
 					xMinusCheck = this->xMinus->blocks[CHUNK_X-1][y][z].getType();
+				else if (!x)
+				{
+					float b = MAP(this->terr->terrainNoise.GetNoise(x+(CHUNK_X*xoff)-1,z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 0.1f, YSQRT);
+					int base = pow(b, 2);
+					if (base <= y)
+						xMinusCheck = 0;
+					else
+						xMinusCheck = 1;
+				}
 				else
 					xMinusCheck = this->blocks[x-1][y][z].getType();
 
 				if (!z && this->getZMinus())
 					zMinusCheck = this->zMinus->blocks[x][y][CHUNK_Z-1].getType();
+				else if (!z)
+				{
+					float b = MAP(this->terr->terrainNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)-1), -1.0f, 1.0f, 0.1f, YSQRT);
+					int base = pow(b, 2);
+					if (base <= y)
+						zMinusCheck = 0;
+					else
+						zMinusCheck = 1;
+				}
 				else
 					zMinusCheck = this->blocks[x][y][z-1].getType();
 
@@ -237,11 +254,29 @@ void Chunk::faceRendering()
 				 // PLUS CHECKS
 				if (x == CHUNK_X-1 && this->getXPlus())
 					xPlusCheck = this->xPlus->blocks[0][y][z].getType();
+				else if (x == CHUNK_X-1)
+				{
+					float b = MAP(this->terr->terrainNoise.GetNoise(x+(CHUNK_X*xoff)+1,z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 0.1f, YSQRT);
+					int base = pow(b, 2);
+					if (base <= y)
+						xPlusCheck = 0;
+					else
+						xPlusCheck = 1;
+				}
 				else
 					xPlusCheck = this->blocks[x+1][y][z].getType();
 
 				if (z == CHUNK_Z-1 && this->getZPlus())
 					zPlusCheck = this->zPlus->blocks[x][y][0].getType();
+				else if (z == CHUNK_Z-1)
+				{
+					float b = MAP(this->terr->terrainNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)+1), -1.0f, 1.0f, 0.1f, YSQRT);
+					int base = pow(b, 2);
+					if (base <= y)
+						zPlusCheck = 0;
+					else
+						zPlusCheck = 1;
+				}
 				else
 					zPlusCheck = this->blocks[x][y][z+1].getType();
 

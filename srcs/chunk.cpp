@@ -3,9 +3,9 @@
 
 #define YSQRT  sqrt(CHUNK_Y-1)
 
-Chunk::Chunk(int x, int z, Terrain *t) : xoff(x), zoff(z)
+Chunk::Chunk(int x, int z, Terrain *t) : xoff(x), zoff(z), terr(t)
 {
-	this->terr = t;
+	// this->terr = t;
 	this->pointSize = 0;
 	this->transparentPointSize = 0;
 	// this->xoff = xoff;
@@ -111,6 +111,11 @@ void Chunk::renderWater(Shader shader)
 	glBindVertexArray(transparentVAO);
 	glDrawArrays(GL_TRIANGLES, 0, transparentPointSize);
 	glBindVertexArray(0);
+}
+
+void Chunk::neighborUnload()
+{
+	
 }
 
 void Chunk::setTerrain()

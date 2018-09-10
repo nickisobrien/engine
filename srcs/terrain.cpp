@@ -27,10 +27,9 @@ bool Terrain::renderChunk(glm::ivec2 pos, Shader shader)
 		if (!this->world[pos]->neighborsSet)
 			this->setNeighbors(pos);
 	}
-	else
-	{
-		if (this->updateList == glm::ivec2(-100000,-100000))
-			this->updateList = pos;
+	else if (this->updateList == glm::ivec2(-100000,-100000))
+	{	
+		this->updateList = pos;
 		return (false);
 	}
 	return (true);

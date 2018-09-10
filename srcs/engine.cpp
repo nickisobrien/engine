@@ -140,12 +140,6 @@ int main(void)
 
 
 
-
-
-
-
-
-
 // calculate mouse movement
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {

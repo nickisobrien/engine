@@ -49,7 +49,8 @@ public:
 	inline Chunk *getXPlus() { return (this->xPlus); }
 	inline Chunk *getZMinus() { return (this->zMinus); }
 	inline Chunk *getZPlus() { return (this->zPlus); }
-	queue<blockQueue> neighborQueue;
+	vector<blockQueue> neighborQueue;
+	void neighborUnload();
 
 
 	// lighting

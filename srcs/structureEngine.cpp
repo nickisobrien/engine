@@ -14,7 +14,7 @@ void StructureEngine::generateTree(Chunk *chunk, glm::ivec3 loc)
 	for (int i = 0; i < 6; i++)
 	{
 		if (isOverflowing(loc.x, loc.y+i, loc.z))
-			chunk->neighborQueue.emplace(DIRT_BLOCK,glm::ivec3(loc.x, loc.y+i, loc.z));
+			chunk->neighborQueue.push_back(blockQueue(DIRT_BLOCK,glm::ivec3(loc.x, loc.y+i, loc.z)));
 		else
 			chunk->blocks[loc.x][loc.y+i][loc.z].setType(DIRT_BLOCK);
 	}
@@ -23,7 +23,7 @@ void StructureEngine::generateTree(Chunk *chunk, glm::ivec3 loc)
 		for (int j = -2; j <= 2; j++)
 		{
 			if (isOverflowing(loc.x+i, loc.y+6, loc.z+j))
-				chunk->neighborQueue.emplace(GRASS_BLOCK,glm::ivec3(loc.x+i, loc.y+6, loc.z+j));
+				chunk->neighborQueue.push_back(blockQueue(GRASS_BLOCK,glm::ivec3(loc.x+i, loc.y+6, loc.z+j)));
 			else
 				chunk->blocks[loc.x+i][loc.y+6][loc.z+j].setType(GRASS_BLOCK);
 		}
@@ -33,7 +33,7 @@ void StructureEngine::generateTree(Chunk *chunk, glm::ivec3 loc)
 		for (int j = -1; j <= 1; j++)
 		{
 			if (isOverflowing(loc.x+i, loc.y+7, loc.z+j))
-				chunk->neighborQueue.emplace(GRASS_BLOCK,glm::ivec3(loc.x+i, loc.y+7, loc.z+j));
+				chunk->neighborQueue.push_back(blockQueue(GRASS_BLOCK,glm::ivec3(loc.x+i, loc.y+7, loc.z+j)));
 			else
 				chunk->blocks[loc.x+i][loc.y+7][loc.z+j].setType(GRASS_BLOCK);
 		}

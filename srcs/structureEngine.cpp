@@ -1,7 +1,7 @@
 #include "engine.h"
 #include "structureEngine.h"
 
-inline static bool isOverflowing(int x, int y, int z)
+static bool isOverflowing(int x, int y, int z)
 {
 	if (x < 0 || x >= CHUNK_X || y < 0 || y >= CHUNK_Y || z < 0 || z >= CHUNK_Z)
 		return true;

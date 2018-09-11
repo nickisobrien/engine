@@ -96,14 +96,10 @@ int main(void)
 			{
 				if (!i && !j)
 					continue;
-				if (!terr.renderChunk(glm::ivec2(c->getXOff() + i, c->getZOff() + j), cubeShader))
-					break ;
-				if (!terr.renderChunk(glm::ivec2(c->getXOff() - i, c->getZOff() - j), cubeShader))
-					break ;
-				if (!terr.renderChunk(glm::ivec2(c->getXOff() - i, c->getZOff() + j), cubeShader))
-					break ;
-				if (!terr.renderChunk(glm::ivec2(c->getXOff() + i, c->getZOff() - j), cubeShader))
-					break ;
+				terr.renderChunk(glm::ivec2(c->getXOff() + i, c->getZOff() + j), cubeShader);
+				terr.renderChunk(glm::ivec2(c->getXOff() - i, c->getZOff() - j), cubeShader);
+				terr.renderChunk(glm::ivec2(c->getXOff() - i, c->getZOff() + j), cubeShader);
+				terr.renderChunk(glm::ivec2(c->getXOff() + i, c->getZOff() - j), cubeShader);
 			}
 		}
 		terr.renderWaterChunk(glm::ivec2(c->getXOff(), c->getZOff()), cubeShader);
@@ -113,14 +109,10 @@ int main(void)
 			{
 				if (!i && !j)
 					continue;
-				if (!terr.renderWaterChunk(glm::ivec2(c->getXOff() + i, c->getZOff() + j), cubeShader))
-					break ;
-				if (!terr.renderWaterChunk(glm::ivec2(c->getXOff() - i, c->getZOff() - j), cubeShader))
-					break ;
-				if (!terr.renderWaterChunk(glm::ivec2(c->getXOff() - i, c->getZOff() + j), cubeShader))
-					break ;
-				if (!terr.renderWaterChunk(glm::ivec2(c->getXOff() + i, c->getZOff() - j), cubeShader))
-					break ;
+				terr.renderWaterChunk(glm::ivec2(c->getXOff() + i, c->getZOff() + j), cubeShader);
+				terr.renderWaterChunk(glm::ivec2(c->getXOff() - i, c->getZOff() - j), cubeShader);
+				terr.renderWaterChunk(glm::ivec2(c->getXOff() - i, c->getZOff() + j), cubeShader);
+				terr.renderWaterChunk(glm::ivec2(c->getXOff() + i, c->getZOff() - j), cubeShader);
 			}
 		}
 		if (terr.updateList != glm::ivec2(-100000,-100000)) // could switch to running this as a while loop on a list on a seperate thread

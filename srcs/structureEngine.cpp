@@ -18,9 +18,9 @@ void StructureEngine::generateTree(Chunk *chunk, glm::ivec3 loc)
 		else
 			chunk->blocks[loc.x][loc.y+i][loc.z].setType(DIRT_BLOCK);
 	}
-	for (int i = -2; i <= 2; i++)
+	for (int i = -4; i <= 4; i++)
 	{
-		for (int j = -2; j <= 2; j++)
+		for (int j = -4; j <= 4; j++)
 		{
 			if (isOverflowing(loc.x+i, loc.y+6, loc.z+j))
 				chunk->neighborQueue.push_back(blockQueue(GRASS_BLOCK,glm::ivec3(loc.x+i, loc.y+6, loc.z+j)));

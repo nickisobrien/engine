@@ -90,6 +90,14 @@ Block *Chunk::getBlock(int x, int y, int z)
 	return (NULL);
 }
 
+void Chunk::setBlock(glm::ivec3 pos, Blocktype type)
+{
+	if (pos.x < 0 || pos.y < 0 || pos.z < 0 || pos.x >= CHUNK_X || pos.y >= CHUNK_Y || pos.z >= CHUNK_Z)
+		this->neighborQueue.push_back(blockQueue(type, pos));
+	else
+		this->blocks[pos.x][pos.y][pos.z].setType(type);
+}
+
 Chunk::~Chunk(void)
 {
 	this->cleanVAO();
@@ -113,9 +121,36 @@ void Chunk::renderWater(Shader shader)
 	glBindVertexArray(0);
 }
 
-void Chunk::neighborUnload()
+void Chunk::neighborQueueUnload()
 {
-	
+	for (int i = 0; i < neighborQueue.size(); i++)
+	{
+		if (neighborQueue[i].pos.x < 0)
+		{
+			this->getXMinus()->setBlock(glm::ivec3(CHUNK_X+neighborQueue[i].pos.x,
+				neighborQueue[i].pos.y, neighborQueue[i].pos.z), neighborQueue[i].type);
+			this->getXMinus()->update(); // need to rebuild lighting and such too
+		}
+		else if (neighborQueue[i].pos.z < 0)
+		{
+			this->getZMinus()->setBlock(glm::ivec3(neighborQueue[i].pos.x,
+				neighborQueue[i].pos.y, CHUNK_Z+neighborQueue[i].pos.z), neighborQueue[i].type);
+			this->getZMinus()->update(); // need to rebuild lighting and such too
+		}
+		else if (neighborQueue[i].pos.x >= CHUNK_X)
+		{
+			this->getXPlus()->setBlock(glm::ivec3(neighborQueue[i].pos.x-CHUNK_X,
+				neighborQueue[i].pos.y, neighborQueue[i].pos.z), neighborQueue[i].type);
+			this->getXPlus()->update(); // need to rebuild lighting and such too
+		}
+		else if (neighborQueue[i].pos.z >= CHUNK_Z)
+		{
+			this->getZPlus()->setBlock(glm::ivec3(neighborQueue[i].pos.x,
+				neighborQueue[i].pos.y, neighborQueue[i].pos.z-CHUNK_Z), neighborQueue[i].type);
+			this->getZPlus()->update(); // need to rebuild lighting and such too
+		}
+	}
+	neighborQueue.clear();
 }
 
 void Chunk::setTerrain()
@@ -178,7 +213,7 @@ void Chunk::setTerrain()
 			// extras
 			if (!water)
 			{
-				if (blocktype == Blocktype::GRASS_BLOCK && x > 2 && z > 2 && x + 2 < CHUNK_X && z + 2 < CHUNK_Z && rand() % 1000 > 996)
+				if (blocktype == Blocktype::GRASS_BLOCK && /*x > 2 && z > 2 && x + 2 < CHUNK_X && z + 2 < CHUNK_Z &&*/ rand() % 1000 > 996)
 					this->terr->structureEngine.addStructure(this,glm::ivec3(x,base,z), StructType::Tree);
 				 // cactus
 				if (blocktype == Blocktype::SAND_BLOCK && rand() % 1000 > 996)

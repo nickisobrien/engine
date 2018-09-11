@@ -77,5 +77,7 @@ void Terrain::setNeighbors(glm::ivec2 pos)
 		this->world[pos]->getZPlus() && this->world[pos]->getZMinus())
 	{
 		this->world[pos]->neighborsSet = true;
+		if (!this->world[pos]->neighborQueue.empty())
+			this->world[pos]->neighborQueueUnload();
 	}
 }

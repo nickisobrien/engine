@@ -22,7 +22,6 @@
 struct blockQueue
 {
 	blockQueue(Blocktype t, glm::ivec3 p) : type(t), pos(p) {}
-	Chunk *chunk;
 	Blocktype type;
 	glm::ivec3 pos;
 };
@@ -50,7 +49,7 @@ public:
 	inline Chunk *getZMinus() { return (this->zMinus); }
 	inline Chunk *getZPlus() { return (this->zPlus); }
 	vector<blockQueue> neighborQueue;
-	void neighborUnload();
+	void neighborQueueUnload();
 
 
 	// lighting
@@ -64,6 +63,7 @@ public:
 	int	getWorld(int x, int y, int z);
 	bool neighborsSet = false;
 	Block *getBlock(int x, int y, int z);
+	void setBlock(glm::ivec3 pos, Blocktype type);
 	inline int getXOff() { return xoff; }
 	inline int getZOff() { return zoff; }
 private:

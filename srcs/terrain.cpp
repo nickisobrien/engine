@@ -6,6 +6,8 @@ void Terrain::updateChunk(glm::ivec2 pos)
 	if (this->world.find(pos) != this->world.end()) // built may be the interchangable with neighborsSet
 	{
 		this->world[pos]->clearSunLightMap();
+		if (!this->world[pos]->neighborQueue.empty())
+			this->world[pos]->neighborQueueUnload();
 		this->lightEngine.sunlightInit(this->world[pos]);
 		this->world[pos]->update();
 	}
@@ -21,7 +23,7 @@ void Terrain::updateChunk(glm::ivec2 pos)
 
 bool Terrain::renderChunk(glm::ivec2 pos, Shader shader)
 {
-	if (this->world.find(pos) != this->world.end())
+	if (this->world.find(pos) != this->world.end() && this->world[pos]->getState() == RENDER)
 	{
 		this->world[pos]->render(shader);
 		if (!this->world[pos]->neighborsSet)

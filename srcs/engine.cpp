@@ -90,9 +90,9 @@ int main(void)
 		Chunk *c = player.getChunk();
 		terr.renderChunk(glm::ivec2(c->getXOff(), c->getZOff()), cubeShader);
 		// need to make sure to only render each chunk once per frame
-		for (int j = 0; j < RENDER_RADIUS; j++)
+		for (int i = 0; i < RENDER_RADIUS; i++)
 		{
-			for (int i = 0; i < RENDER_RADIUS; i++)
+			for (int j = 0; j < RENDER_RADIUS; j++)
 			{
 				if (!i && !j)
 					continue;
@@ -103,9 +103,9 @@ int main(void)
 			}
 		}
 		terr.renderWaterChunk(glm::ivec2(c->getXOff(), c->getZOff()), cubeShader);
-		for (int j = 0; j < RENDER_RADIUS; j++)
+		for (int i = 0; i < RENDER_RADIUS; i++)
 		{
-			for (int i = 0; i < RENDER_RADIUS; i++)
+			for (int j = 0; j < RENDER_RADIUS; j++)
 			{
 				if (!i && !j)
 					continue;

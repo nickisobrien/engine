@@ -1,15 +1,12 @@
 #include "engine.h"
 #include "chunk.h"
 
-#define YSQRT  sqrt(CHUNK_Y-1)
+#define YSQRT sqrt(CHUNK_Y-1)
 
 Chunk::Chunk(int x, int z, Terrain *t) : xoff(x), zoff(z), terr(t)
 {
-	// this->terr = t;
 	this->pointSize = 0;
 	this->transparentPointSize = 0;
-	// this->xoff = xoff;
-	// this->zoff = zoff;
 	offsetMatrix = glm::translate(glm::mat4(1.0f), glm::vec3((float)(xoff * CHUNK_X), 1.0f, (float)(zoff * CHUNK_Z)));
 	offsetMatrix = glm::translate(offsetMatrix, glm::vec3(0.5f, -0.5f, 0.5f));
 
@@ -125,29 +122,29 @@ void Chunk::neighborQueueUnload()
 {
 	for (int i = 0; i < neighborQueue.size(); i++)
 	{
-		if (neighborQueue[i].pos.x < 0)
+		if (neighborQueue[i].pos.x < 0 && this->getXMinus())
 		{
 			this->getXMinus()->setBlock(glm::ivec3(CHUNK_X+neighborQueue[i].pos.x,
 				neighborQueue[i].pos.y, neighborQueue[i].pos.z), neighborQueue[i].type);
-			this->getXMinus()->update(); // need to rebuild lighting and such too
+			this->getXMinus()->setState(UPDATE);
 		}
-		else if (neighborQueue[i].pos.z < 0)
+		else if (neighborQueue[i].pos.z < 0 && this->getZMinus())
 		{
 			this->getZMinus()->setBlock(glm::ivec3(neighborQueue[i].pos.x,
 				neighborQueue[i].pos.y, CHUNK_Z+neighborQueue[i].pos.z), neighborQueue[i].type);
-			this->getZMinus()->update(); // need to rebuild lighting and such too
+			this->getZMinus()->setState(UPDATE);
 		}
-		else if (neighborQueue[i].pos.x >= CHUNK_X)
+		else if (neighborQueue[i].pos.x >= CHUNK_X && this->getXPlus())
 		{
 			this->getXPlus()->setBlock(glm::ivec3(neighborQueue[i].pos.x-CHUNK_X,
 				neighborQueue[i].pos.y, neighborQueue[i].pos.z), neighborQueue[i].type);
-			this->getXPlus()->update(); // need to rebuild lighting and such too
+			this->getXPlus()->setState(UPDATE);
 		}
-		else if (neighborQueue[i].pos.z >= CHUNK_Z)
+		else if (neighborQueue[i].pos.z >= CHUNK_Z && this->getZPlus())
 		{
 			this->getZPlus()->setBlock(glm::ivec3(neighborQueue[i].pos.x,
 				neighborQueue[i].pos.y, neighborQueue[i].pos.z-CHUNK_Z), neighborQueue[i].type);
-			this->getZPlus()->update(); // need to rebuild lighting and such too
+			this->getZPlus()->setState(UPDATE);
 		}
 	}
 	neighborQueue.clear();
@@ -347,7 +344,7 @@ void Chunk::faceRendering()
 						this->addFace(0, x , y, z, val, &this->transparentMesh, &this->transparentPointSize); //DOWN
 					if (yPlusCheck==Blocktype::AIR_BLOCK || (yPlusCheck==Blocktype::WATER_BLOCK && this->blocks[x][y][z].getType() != Blocktype::WATER_BLOCK))
 						this->addFace(1, x , y, z, val, &this->transparentMesh, &this->transparentPointSize); //UP
-					// if (xPlusCheck==Blocktype::AIR_BLOCK || (xPlusCheck==Blocktype::WATER_BLOCK && this->blocks[x][y][z].getType() != Blocktype::WATER_BLOCK))
+					//FOR WATER BLOCKS SIDES // if (xPlusCheck==Blocktype::AIR_BLOCK || (xPlusCheck==Blocktype::WATER_BLOCK && this->blocks[x][y][z].getType() != Blocktype::WATER_BLOCK))
 					// 	this->addFace(2, x , y, z, val, &this->transparentMesh, &this->transparentPointSize); //xpos SIDE
 					// if (zPlusCheck==Blocktype::AIR_BLOCK || (zPlusCheck==Blocktype::WATER_BLOCK && this->blocks[x][y][z].getType() != Blocktype::WATER_BLOCK))
 					// 	this->addFace(3, x , y, z, val, &this->transparentMesh, &this->transparentPointSize); //zpos SIDE
@@ -378,6 +375,7 @@ void Chunk::buildVAO(void)
 
 	glBindVertexArray(0);
 	transparentMesh.clear();
+	this->setState(RENDER);
 }
 
 //can cut these down to one function by passing in the changes as variables

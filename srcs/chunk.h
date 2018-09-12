@@ -11,13 +11,13 @@
 #define CHUNK_Y 256
 #define WATER_LEVEL 38
 
-// enum ChunkState
-// {
-// 	GENERATE,
-// 	UPDATE,
-// 	RENDER,
-// 	UNLOAD
-// };
+enum ChunkState
+{
+	GENERATE, // needs to be generated completely
+	UPDATE, // needs an update
+	RENDER, // can be rendered
+	UNLOAD // needs to be unloaded
+};
 
 struct blockQueue
 {
@@ -38,6 +38,10 @@ public:
 	void buildVAO(void);
 	void addFace(int face, int x, int y, int z, int val, vector<float> *m, int *ps);
 	void cleanVAO(void);
+
+	// state management
+	inline void setState(ChunkState s) { this->state = s; }
+	inline ChunkState getState() { return this->state; }
 	
 	// neighbors
 	inline void setXMinus(Chunk *chunk) { this->xMinus = chunk; }
@@ -50,7 +54,6 @@ public:
 	inline Chunk *getZPlus() { return (this->zPlus); }
 	vector<blockQueue> neighborQueue;
 	void neighborQueueUnload();
-
 
 	// lighting
 	inline int getSunLight(int x, int y, int z) { return (sunLightMap[x][y][z]); };
@@ -71,6 +74,8 @@ private:
 	int xoff;
 	int zoff;
 	
+	ChunkState state = GENERATE;
+
 	Block blocks[CHUNK_X][CHUNK_Y][CHUNK_Z];
 	// TODO: switch these to one map using 4 bits each, sent to buffer as char
 	char torchLightMap[CHUNK_X][CHUNK_Y][CHUNK_Z];

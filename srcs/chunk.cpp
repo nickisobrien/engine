@@ -118,8 +118,10 @@ void Chunk::renderWater(Shader shader)
 	glBindVertexArray(0);
 }
 
+// could also check neighbors to see if they have any blocks for this chunk, could be faster?
 void Chunk::neighborQueueUnload()
 {
+	vector<blockQueue> temp;
 	for (int i = 0; i < neighborQueue.size(); i++)
 	{
 		if (neighborQueue[i].pos.x < 0 && this->getXMinus())
@@ -128,11 +130,19 @@ void Chunk::neighborQueueUnload()
 				neighborQueue[i].pos.y, neighborQueue[i].pos.z), neighborQueue[i].type);
 			this->getXMinus()->setState(UPDATE);
 		}
+		else if (neighborQueue[i].pos.x < 0)
+		{
+			temp.push_back(neighborQueue[i]);
+		}
 		else if (neighborQueue[i].pos.z < 0 && this->getZMinus())
 		{
 			this->getZMinus()->setBlock(glm::ivec3(neighborQueue[i].pos.x,
 				neighborQueue[i].pos.y, CHUNK_Z+neighborQueue[i].pos.z), neighborQueue[i].type);
 			this->getZMinus()->setState(UPDATE);
+		}
+		else if (neighborQueue[i].pos.z < 0)
+		{
+			temp.push_back(neighborQueue[i]);
 		}
 		else if (neighborQueue[i].pos.x >= CHUNK_X && this->getXPlus())
 		{
@@ -140,14 +150,24 @@ void Chunk::neighborQueueUnload()
 				neighborQueue[i].pos.y, neighborQueue[i].pos.z), neighborQueue[i].type);
 			this->getXPlus()->setState(UPDATE);
 		}
+		else if (neighborQueue[i].pos.x >= CHUNK_X)
+		{
+			temp.push_back(neighborQueue[i]);
+		}
+
 		else if (neighborQueue[i].pos.z >= CHUNK_Z && this->getZPlus())
 		{
 			this->getZPlus()->setBlock(glm::ivec3(neighborQueue[i].pos.x,
 				neighborQueue[i].pos.y, neighborQueue[i].pos.z-CHUNK_Z), neighborQueue[i].type);
 			this->getZPlus()->setState(UPDATE);
 		}
+		else if (neighborQueue[i].pos.z >= CHUNK_Z)
+		{
+			temp.push_back(neighborQueue[i]);
+		}
 	}
 	neighborQueue.clear();
+	neighborQueue = temp;
 }
 
 void Chunk::setTerrain()
@@ -210,7 +230,7 @@ void Chunk::setTerrain()
 			// extras
 			if (!water)
 			{
-				if (blocktype == Blocktype::GRASS_BLOCK && rand() % 1000 > 996)
+				if (blocktype == Blocktype::GRASS_BLOCK && rand() % 1000 > 998)
 					this->terr->structureEngine.addStructure(this,glm::ivec3(x,base,z), StructType::Tree);
 				 // cactus
 				if (blocktype == Blocktype::SAND_BLOCK && rand() % 1000 > 996)
@@ -218,7 +238,6 @@ void Chunk::setTerrain()
 			}
 		}
 	}
-	// can also check neighbors to see if they have any blocks for this chunk, could be faster
 	// std::cout << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << std::endl;
 }
 

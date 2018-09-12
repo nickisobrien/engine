@@ -21,6 +21,8 @@ void Player::processInput(GLFWwindow *window, float deltaTime)
 	// DEBUGGERS
 	if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
 		this->terr->updateChunk(glm::ivec2(this->getChunk()->getXOff(), this->getChunk()->getZOff()));
+	if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS)
+		cout << this->getChunk()->neighborQueue.size() << endl;
 	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
 		cout << "Player position: (" << this->getPosition().x << ", " << this->getPosition().y << ", " << this->getPosition().z << ") " << endl;
 	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
@@ -36,7 +38,6 @@ void Player::processInput(GLFWwindow *window, float deltaTime)
 
 		cout << "Block:	(" << x << ", " << y << ", " << z << ")" << endl;
 	}
-
 	if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
 	{
 		if (this->currentBlockPlace == Blocktype::LIGHT_BLOCK)

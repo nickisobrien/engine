@@ -210,16 +210,15 @@ void Chunk::setTerrain()
 			// extras
 			if (!water)
 			{
-				if (blocktype == Blocktype::GRASS_BLOCK && /*x > 2 && z > 2 && x + 2 < CHUNK_X && z + 2 < CHUNK_Z &&*/ rand() % 1000 > 996)
+				if (blocktype == Blocktype::GRASS_BLOCK && rand() % 1000 > 996)
 					this->terr->structureEngine.addStructure(this,glm::ivec3(x,base,z), StructType::Tree);
 				 // cactus
 				if (blocktype == Blocktype::SAND_BLOCK && rand() % 1000 > 996)
 					this->terr->structureEngine.addStructure(this,glm::ivec3(x,base,z), StructType::Cactus);
-					// this->terr->structureEngine.generateCactus(this,glm::ivec3(x,base,z));
 			}
-
 		}
 	}
+	// can also check neighbors to see if they have any blocks for this chunk, could be faster
 	// std::cout << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << std::endl;
 }
 

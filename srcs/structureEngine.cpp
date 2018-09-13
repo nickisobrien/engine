@@ -58,9 +58,9 @@ void StructureEngine::generateGiantTree(Chunk *chunk, glm::ivec3 loc)
 	// bush
 	for (int k = 0; k < treeLayers; k++)
 	{
-		for (int i = -treeLayerWidth + k; i <= treeLayerWidth-k; i++)
+		for (int i = -treeLayerWidth + k*4; i <= treeLayerWidth - k*4; i++)
 		{
-			for (int j = -treeLayerWidth + k; j <= treeLayerWidth - k; j++)
+			for (int j = -treeLayerWidth + k*4; j <= treeLayerWidth - k*4; j++)
 			{
 				chunk->setBlock(glm::ivec3(loc.x+i,loc.y+treeHeight+k,loc.z+j),TREE_LEAF_BLOCK_2);
 			}

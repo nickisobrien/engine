@@ -2,22 +2,6 @@
 
 void Player::processInput(GLFWwindow *window, float deltaTime)
 {
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, true);
-
-	glm::vec3 savePos = this->getPosition();
-
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		this->camera.ProcessKeyboard(FORWARD, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		this->camera.ProcessKeyboard(BACKWARD, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		this->camera.ProcessKeyboard(LEFT, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		this->camera.ProcessKeyboard(RIGHT, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-		this->jump();
-
 	// DEBUGGERS
 	if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
 		this->terr->updateChunk(glm::ivec2(this->getChunk()->getXOff(), this->getChunk()->getZOff()));
@@ -46,6 +30,21 @@ void Player::processInput(GLFWwindow *window, float deltaTime)
 			this->currentBlockPlace = Blocktype::LIGHT_BLOCK;
 	}
 
+	// NON DEBUGGERS
+	// Escape = exit window
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, true);
+
+	// Movement
+	glm::vec3 savePos = this->getPosition();
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		this->camera.ProcessKeyboard(FORWARD, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		this->camera.ProcessKeyboard(BACKWARD, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		this->camera.ProcessKeyboard(LEFT, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		this->camera.ProcessKeyboard(RIGHT, deltaTime);
 	// collision checks/allows running up 1 block
 	glm::vec3 newPos = this->getPosition();
 	int x = (int)floor(newPos.x) % CHUNK_X;
@@ -55,7 +54,6 @@ void Player::processInput(GLFWwindow *window, float deltaTime)
 		x = CHUNK_X + x;
 	if (z < 0)
 		z = CHUNK_Z + z;
-
 	Chunk *c;
 	if ((c = this->getChunk()) != NULL) // prob don't need the if statement now that getChunk will make chunk if needed
 	{
@@ -69,6 +67,10 @@ void Player::processInput(GLFWwindow *window, float deltaTime)
 				this->setPosition(savePos); // need to change to only reverting x/y/z, not necessarily all of them
 		}
 	}
+
+	//Space for jumping
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+		this->jump();
 }
 
 Chunk *Player::getChunk()

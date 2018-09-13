@@ -51,11 +51,11 @@ void Terrain::setNoise(void)
 	this->terrainNoise.SetSeed(std::time(0));
 	this->terrainNoise.SetNoiseType(FastNoise::PerlinFractal);
 	
-	this->terrainNoise.SetFrequency(0.002f); // planes 
-	this->terrainNoise.SetFractalOctaves(2);
+	// this->terrainNoise.SetFrequency(0.002f); // planes 
+	// this->terrainNoise.SetFractalOctaves(2);
 
-	// this->terrainNoise.SetFrequency(0.004f); // hills
-	// this->terrainNoise.SetFractalOctaves(3);
+	this->terrainNoise.SetFrequency(0.004f); // hills
+	this->terrainNoise.SetFractalOctaves(3);
 
 	// this->terrainNoise.SetFrequency(0.006f); // mountains
 	// this->terrainNoise.SetFractalOctaves(4);

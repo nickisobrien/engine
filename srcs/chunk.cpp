@@ -89,7 +89,9 @@ Block *Chunk::getBlock(int x, int y, int z)
 
 void Chunk::setBlock(glm::ivec3 pos, Blocktype type)
 {
-	if (pos.x < 0 || pos.y < 0 || pos.z < 0 || pos.x >= CHUNK_X || pos.y >= CHUNK_Y || pos.z >= CHUNK_Z)
+	if (pos.y < 0 || pos.y >= CHUNK_Y)
+		return ;
+	if (pos.x < 0 ||  pos.z < 0 || pos.x >= CHUNK_X || pos.z >= CHUNK_Z)
 		this->neighborQueue.push_back(blockQueue(type, pos));
 	else
 		this->blocks[pos.x][pos.y][pos.z].setType(type);
@@ -230,13 +232,13 @@ void Chunk::setTerrain()
 			// extras
 			if (!water)
 			{
-				if (blocktype == Blocktype::GRASS_BLOCK && rand() % 10000 > 9994)
+				if (blocktype == Blocktype::GRASS_BLOCK && rand() % 100000 > 99992)
 					this->terr->structureEngine.addStructure(this,glm::ivec3(x,base,z), StructType::Tree);
-				else if (blocktype == Blocktype::GRASS_BLOCK && rand() % 10000 > 9998)
+				else if (blocktype == Blocktype::GRASS_BLOCK && rand() % 100000 > 99996)
 					this->terr->structureEngine.addStructure(this,glm::ivec3(x,base,z), StructType::GiantTree);
 
 				 // cactus
-				if (blocktype == Blocktype::SAND_BLOCK && rand() % 1000 > 996)
+				if (blocktype == Blocktype::SAND_BLOCK && rand() % 100000 > 99990)
 					this->terr->structureEngine.addStructure(this,glm::ivec3(x,base,z), StructType::Cactus);
 			}
 		}

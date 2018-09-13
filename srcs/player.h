@@ -25,5 +25,5 @@ private:
 	Terrain *terr;
 	float health = 1.0f;
 	float velocity = 0.0f;
-	float gravity = 10.0f;
+	float gravity = 16.0f;
 };

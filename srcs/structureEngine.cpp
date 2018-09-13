@@ -10,62 +10,87 @@ static bool isOverflowing(int x, int y, int z)
 
 void StructureEngine::generateTree(Chunk *chunk, glm::ivec3 loc)
 {
+	const int treeHeight = 40;
+	const int treeLayerOneWidth = 12;
+	const int treeLayerTwoWidth = 8;
+	const int treeTrunkWidth = 3;
 	// trunk
-	for (int i = 0; i < 8; i++)
+	for (int j = -treeTrunkWidth; j <= treeTrunkWidth; j++)
 	{
-		chunk->setBlock(glm::ivec3(loc.x,loc.y+i,loc.z),DIRT_BLOCK);
+		for (int k = -treeTrunkWidth; k <= treeTrunkWidth; k++)
+		{
+			for (int i = -2; i < treeHeight; i++) // -2 for tree depth
+			{	
+				chunk->setBlock(glm::ivec3(loc.x+j,loc.y+i,loc.z+k),TREE_BLOCK);
+			}
+		}	
 	}
 	// bush
-	for (int i = -4; i <= 4; i++)
+	for (int i = -treeLayerOneWidth; i <= treeLayerOneWidth; i++)
 	{
-		for (int j = -4; j <= 4; j++)
+		for (int j = -treeLayerOneWidth; j <= treeLayerOneWidth; j++)
 		{
-			chunk->setBlock(glm::ivec3(loc.x+i,loc.y+8,loc.z+j),GRASS_BLOCK);
+			chunk->setBlock(glm::ivec3(loc.x+i,loc.y+treeHeight,loc.z+j),TREE_LEAF_BLOCK_1);
 		}
 	}
-	for (int i = -2; i <= 2; i++)
+	for (int i = -treeLayerTwoWidth; i <= treeLayerTwoWidth; i++)
 	{
-		for (int j = -2; j <= 2; j++)
+		for (int j = -treeLayerTwoWidth; j <= treeLayerTwoWidth; j++)
 		{
-			chunk->setBlock(glm::ivec3(loc.x+i,loc.y+9,loc.z+j),GRASS_BLOCK);
+			chunk->setBlock(glm::ivec3(loc.x+i,loc.y+treeHeight+1,loc.z+j),TREE_LEAF_BLOCK_1);
 		}
 	}
 }
 
 void StructureEngine::generateGiantTree(Chunk *chunk, glm::ivec3 loc)
 {
+	const int treeHeight = 60;
+	const int treeLayerOneWidth = 24;
+	const int treeLayerTwoWidth = 16;
+	const int treeTrunkWidth = 5;
 	// trunk
-	for (int j = -1; j <= 1; j++)
+	for (int j = -treeTrunkWidth; j <= treeTrunkWidth; j++)
 	{
-		for (int k = -1; k <= 1; k++)
+		for (int k = -treeTrunkWidth; k <= treeTrunkWidth; k++)
 		{
-			for (int i = -2; i < 20; i++)
+			for (int i = -2; i < treeHeight; i++) // -2 for tree depth
 			{	
-				chunk->setBlock(glm::ivec3(loc.x+j,loc.y+i,loc.z+k),DIRT_BLOCK);
+				chunk->setBlock(glm::ivec3(loc.x+j,loc.y+i,loc.z+k),TREE_BLOCK);
 			}
 		}	
 	}
 	// bush
-	for (int i = -8; i <= 8; i++)
+	for (int i = -treeLayerOneWidth; i <= treeLayerOneWidth; i++)
 	{
-		for (int j = -8; j <= 8; j++)
+		for (int j = -treeLayerOneWidth; j <= treeLayerOneWidth; j++)
 		{
-			chunk->setBlock(glm::ivec3(loc.x+i,loc.y+20,loc.z+j),GRASS_BLOCK);
+			chunk->setBlock(glm::ivec3(loc.x+i,loc.y+treeHeight,loc.z+j),TREE_LEAF_BLOCK_2);
 		}
 	}
-	for (int i = -4; i <= 4; i++)
+	for (int i = -treeLayerTwoWidth; i <= treeLayerTwoWidth; i++)
 	{
-		for (int j = -4; j <= 4; j++)
+		for (int j = -treeLayerTwoWidth; j <= treeLayerTwoWidth; j++)
 		{
-			chunk->setBlock(glm::ivec3(loc.x+i,loc.y+21,loc.z+j),GRASS_BLOCK);
+			chunk->setBlock(glm::ivec3(loc.x+i,loc.y+treeHeight+1,loc.z+j),TREE_LEAF_BLOCK_2);
 		}
 	}
 }
 
 void StructureEngine::generateCactus(Chunk *chunk, glm::ivec3 loc)
 {
-	for (int i = 0; i < 3; i++)
-		chunk->setBlock(glm::ivec3(loc.x,i+loc.y,loc.z),GRASS_BLOCK);
+	const int cactusHeight = 14;
+	const int cactusTrunkWidth = 2;
+	// trunk
+	for (int j = -cactusTrunkWidth; j <= cactusTrunkWidth; j++)
+	{
+		for (int k = -cactusTrunkWidth; k <= cactusTrunkWidth; k++)
+		{
+			for (int i = -2; i < cactusHeight; i++) // -2 for tree depth
+			{	
+				chunk->setBlock(glm::ivec3(loc.x+j,loc.y+i,loc.z+k),GRASS_BLOCK);
+			}
+		}	
+	}
 }
 
 void StructureEngine::addStructure(Chunk *chunk, glm::ivec3 loc, StructType type)

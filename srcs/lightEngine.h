@@ -2,7 +2,6 @@
 
 #include "chunk.h"
 
-
 // inspired by https://www.seedofandromeda.com/blogs/29-fast-flood-fill-lighting-in-a-blocky-voxel-game-pt-1
 // and         https://www.seedofandromeda.com/blogs/30-fast-flood-fill-lighting-in-a-blocky-voxel-game-pt-2
 struct LightNode
@@ -27,7 +26,7 @@ struct LightRemovalNode
 class LightEngine
 {
 public:
-	void addedLighting();
+	void lampLighting();
 	void removedLighting();
 	void sunlightQueueClear();
 	void sunlightInit(Chunk *c);

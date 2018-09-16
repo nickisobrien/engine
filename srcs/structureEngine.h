@@ -8,7 +8,8 @@ enum StructType
 {
 	Tree,
 	Cactus,
-	GiantTree
+	GiantTree,
+	Rock
 };
 
 class StructureEngine
@@ -20,4 +21,5 @@ private:
 	void generateCactus(Chunk *chunk, glm::ivec3 loc);
 	void generateTree(Chunk *chunk, glm::ivec3 loc);
 	void generateGiantTree(Chunk *chunk, glm::ivec3 loc);
+	void generateRock(Chunk *chunk, glm::ivec3 loc);
 };

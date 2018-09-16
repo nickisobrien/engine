@@ -36,7 +36,7 @@
 #include "blockIndex.h" // block types
 #include "cubeMap.h"
 
-using namespace std; // should move to cpp files for locality
+using namespace std; // should move to cpp files for locality?
 
 #include "chunk.h"
 

@@ -192,7 +192,7 @@ void Player::leftMouseClickEvent()
 	int breakDist = 0;
 	Chunk *c = this->getChunk();
 	Block *b = c->getBlock(current_voxel.x,current_voxel.y,current_voxel.z);
-	while ((!b || !b->isActive()) && breakDist < 30)
+	while ((!b || !b->isActive()) && breakDist < 50)
 	{
 		if (tMaxX < tMaxY)
 		{
@@ -330,7 +330,7 @@ void Player::rightMouseClickEvent()
 	Block *b = c->getBlock(current_voxel.x,current_voxel.y,current_voxel.z);
 	Block *e;
 	glm::vec3 vec;
-	while ((!b || !b->isActive()) && breakDist < 30)
+	while ((!b || !b->isActive()) && breakDist < 50)
 	{
 		vec = glm::vec3(current_voxel.x, current_voxel.y, current_voxel.z);
 		e = c->getBlock(current_voxel.x,current_voxel.y,current_voxel.z);
@@ -405,8 +405,7 @@ void Player::rightMouseClickEvent()
 			c->setTorchLight(vec.x,vec.y,vec.z,14);
 			terr->lightEngine.lightBfsQueue.emplace(vec.x, vec.y, vec.z, c);
 			// clear out light queue
-			terr->lightEngine.addedLighting();
-			terr->updateChunk(glm::ivec2(c->getXOff(), c->getZOff()));
+			terr->lightEngine.lampLighting();
 		}
 		this->terr->updateChunk(glm::ivec2(c->getXOff(), c->getZOff()));
 		// edge blocks broken require neighbor chunk updates too

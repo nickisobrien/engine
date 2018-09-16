@@ -237,9 +237,10 @@ void Chunk::setTerrain()
 				else if (blocktype == Blocktype::GRASS_BLOCK && rand() % 10000 > 9998)
 					this->terr->structureEngine.addStructure(this,glm::ivec3(x,base,z), StructType::GiantTree);
 
-				 // cactus
 				if (blocktype == Blocktype::SAND_BLOCK && rand() % 1000 > 996)
 					this->terr->structureEngine.addStructure(this,glm::ivec3(x,base,z), StructType::Cactus);
+				else if (blocktype == Blocktype::SAND_BLOCK && rand() % 1000 > 996)
+					this->terr->structureEngine.addStructure(this,glm::ivec3(x,base,z), StructType::Rock);
 			}
 		}
 	}

@@ -85,6 +85,11 @@ void StructureEngine::generateCactus(Chunk *chunk, glm::ivec3 loc)
 	}
 }
 
+void StructureEngine::generateRock(Chunk *chunk, glm::ivec3 loc)
+{
+	chunk->setBlock(glm::ivec3(loc.x,loc.y,loc.z),STONE_BLOCK);
+}
+
 void StructureEngine::addStructure(Chunk *chunk, glm::ivec3 loc, StructType type)
 {
 	switch (type)
@@ -97,6 +102,9 @@ void StructureEngine::addStructure(Chunk *chunk, glm::ivec3 loc, StructType type
 			break;
 		case StructType::GiantTree:
 			this->generateGiantTree(chunk, loc);
+			break;
+		case StructType::Rock:
+			this->generateRock(chunk, loc);
 			break;
 	}	
 }

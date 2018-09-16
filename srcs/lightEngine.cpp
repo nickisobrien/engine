@@ -97,9 +97,10 @@ void LightEngine::sunlightQueueClear()
 	}
 }
 
-void LightEngine::addedLighting()
+void LightEngine::lampLighting()
 {
 	Chunk *chunk = NULL;
+	
 	// Currently not handling chunk edges
 	while(lightBfsQueue.empty() == false)
 	{
@@ -123,6 +124,15 @@ void LightEngine::addedLighting()
 					lightBfsQueue.emplace(node.x - 1, node.y, node.z, chunk);
 			}
 		}
+		else if (chunk->getXMinus()) // add to neighbor
+		{
+			if (chunk->getXMinus()->getTorchLight(CHUNK_X - 1, node.y, node.z) + 2 <= lightLevel)
+			{
+				chunk->getXMinus()->setTorchLight(CHUNK_X - 1, node.y, node.z, lightLevel - 1);
+				if (!chunk->getXMinus()->getBlock(CHUNK_X - 1, node.y, node.z)->isActive())
+					lightBfsQueue.emplace(CHUNK_X - 1, node.y, node.z, chunk->getXMinus());
+			}
+		}
 		// y-1
 		if (node.y - 1 >= 0)
 		{
@@ -143,6 +153,15 @@ void LightEngine::addedLighting()
 					lightBfsQueue.emplace(node.x, node.y, node.z - 1, chunk);
 			}
 		}
+		else if (chunk->getZMinus()) // add to neighbor
+		{
+			if (chunk->getZMinus()->getTorchLight(node.x, node.y, CHUNK_Z-1) + 2 <= lightLevel)
+			{
+				chunk->getZMinus()->setTorchLight(node.x, node.y, CHUNK_Z-1, lightLevel - 1);
+				if (!chunk->getZMinus()->getBlock(node.x, node.y, CHUNK_Z-1)->isActive())
+					lightBfsQueue.emplace(node.x, node.y, CHUNK_Z-1, chunk->getZMinus());
+			}
+		}
 		// x+1
 		if (node.x + 1 < CHUNK_X)
 		{
@@ -151,6 +170,15 @@ void LightEngine::addedLighting()
 				chunk->setTorchLight(node.x + 1, node.y, node.z, lightLevel - 1);
 				if (!chunk->getBlock(node.x + 1, node.y, node.z)->isActive())
 					lightBfsQueue.emplace(node.x + 1, node.y, node.z, chunk);
+			}
+		}
+		else if (chunk->getXPlus()) // add to neighbor
+		{
+			if (chunk->getXPlus()->getTorchLight(0, node.y, node.z) + 2 <= lightLevel)
+			{
+				chunk->getXPlus()->setTorchLight(0, node.y, node.z, lightLevel - 1);
+				if (!chunk->getXPlus()->getBlock(0, node.y, node.z)->isActive())
+					lightBfsQueue.emplace(0, node.y, node.z, chunk->getXPlus());
 			}
 		}
 		// y+1
@@ -173,8 +201,16 @@ void LightEngine::addedLighting()
 					lightBfsQueue.emplace(node.x, node.y, node.z + 1, chunk);
 			}
 		}
+		else if (chunk->getZPlus()) // add to neighbor
+		{
+			if (chunk->getZPlus()->getTorchLight(node.x, node.y, 0) + 2 <= lightLevel)
+			{
+				chunk->getZPlus()->setTorchLight(node.x, node.y, 0, lightLevel - 1);
+				if (!chunk->getZPlus()->getBlock(node.x, node.y, 0)->isActive())
+					lightBfsQueue.emplace(node.x, node.y, 0, chunk->getZPlus());
+			}
+		}
 	}
-	// updating chunk in player.cpp
 }
 
 
@@ -275,6 +311,6 @@ void LightEngine::removedLighting()
 	// {
 	// 	this->lightBfsQueue.pop();
 	// }
-	this->addedLighting();
+	this->lampLighting();
 }
 

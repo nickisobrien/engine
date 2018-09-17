@@ -99,6 +99,7 @@ void LightEngine::sunlightQueueClear()
 
 void LightEngine::lampLighting()
 {
+	// could make a chunk update list of glm::ivec3(chunk offsets) and return that to player.cpp to update chunks
 	Chunk *chunk = NULL;
 	
 	// Currently not handling chunk edges
@@ -128,6 +129,8 @@ void LightEngine::lampLighting()
 		{
 			if (chunk->getXMinus()->getTorchLight(CHUNK_X - 1, node.y, node.z) + 2 <= lightLevel)
 			{
+				// if i can switch to just a light update that'd be best or a forced update all in one frame
+				chunk->getXMinus()->setState(UPDATE);
 				chunk->getXMinus()->setTorchLight(CHUNK_X - 1, node.y, node.z, lightLevel - 1);
 				if (!chunk->getXMinus()->getBlock(CHUNK_X - 1, node.y, node.z)->isActive())
 					lightBfsQueue.emplace(CHUNK_X - 1, node.y, node.z, chunk->getXMinus());
@@ -157,6 +160,7 @@ void LightEngine::lampLighting()
 		{
 			if (chunk->getZMinus()->getTorchLight(node.x, node.y, CHUNK_Z-1) + 2 <= lightLevel)
 			{
+				chunk->getZMinus()->setState(UPDATE);
 				chunk->getZMinus()->setTorchLight(node.x, node.y, CHUNK_Z-1, lightLevel - 1);
 				if (!chunk->getZMinus()->getBlock(node.x, node.y, CHUNK_Z-1)->isActive())
 					lightBfsQueue.emplace(node.x, node.y, CHUNK_Z-1, chunk->getZMinus());
@@ -176,6 +180,7 @@ void LightEngine::lampLighting()
 		{
 			if (chunk->getXPlus()->getTorchLight(0, node.y, node.z) + 2 <= lightLevel)
 			{
+				chunk->getXPlus()->setState(UPDATE);
 				chunk->getXPlus()->setTorchLight(0, node.y, node.z, lightLevel - 1);
 				if (!chunk->getXPlus()->getBlock(0, node.y, node.z)->isActive())
 					lightBfsQueue.emplace(0, node.y, node.z, chunk->getXPlus());
@@ -196,6 +201,7 @@ void LightEngine::lampLighting()
 		{
 			if (chunk->getTorchLight(node.x, node.y, node.z + 1) + 2 <= lightLevel)
 			{
+				chunk->getZPlus()->setState(UPDATE);
 				chunk->setTorchLight(node.x, node.y, node.z + 1, lightLevel - 1);
 				if (!chunk->getBlock(node.x, node.y, node.z + 1)->isActive())
 					lightBfsQueue.emplace(node.x, node.y, node.z + 1, chunk);

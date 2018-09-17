@@ -34,6 +34,10 @@ bool Terrain::renderChunk(glm::ivec2 pos, Shader shader)
 		this->updateList = pos;
 		return (false);
 	}
+	else if (this->world.find(pos) != this->world.end() && this->world[pos]->getState() == UPDATE) // render updates
+	{
+		this->world[pos]->render(shader);
+	}
 	return (true);
 }
 

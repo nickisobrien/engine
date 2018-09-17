@@ -129,7 +129,7 @@ void LightEngine::lampLighting()
 		{
 			if (chunk->getXMinus()->getTorchLight(CHUNK_X - 1, node.y, node.z) + 2 <= lightLevel)
 			{
-				// if i can switch to just a light update that'd be best or a forced update all in one frame
+				// if i can switch to just a light update that'd be best or a forced update all in one frame, OR render till can update
 				chunk->getXMinus()->setState(UPDATE);
 				chunk->getXMinus()->setTorchLight(CHUNK_X - 1, node.y, node.z, lightLevel - 1);
 				if (!chunk->getXMinus()->getBlock(CHUNK_X - 1, node.y, node.z)->isActive())

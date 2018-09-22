@@ -118,6 +118,7 @@ int main(void)
 		if (terr.updateList != glm::ivec2(-100000,-100000)) // could switch to running this as a while loop on a list on a seperate thread
 		{
 			terr.updateChunk(terr.updateList);
+			terr.renderChunk(terr.updateList, cubeShader);
 			terr.updateList = glm::ivec2(-100000,-100000);
 		}
 

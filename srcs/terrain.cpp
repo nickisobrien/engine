@@ -34,10 +34,8 @@ bool Terrain::renderChunk(glm::ivec2 pos, Shader shader)
 		this->updateList = pos;
 		return (false);
 	}
-	else if (this->world.find(pos) != this->world.end() && this->world[pos]->getState() == UPDATE) // render updates
-	{
+	else if (this->world.find(pos) != this->world.end() && this->world[pos]->getState() == UPDATE) // render till updates
 		this->world[pos]->render(shader);
-	}
 	return (true);
 }
 
@@ -52,23 +50,29 @@ bool Terrain::renderWaterChunk(glm::ivec2 pos, Shader shader)
 
 void Terrain::setNoise(void)
 {
-	this->terrainNoise.SetSeed(std::time(0));
-	this->terrainNoise.SetNoiseType(FastNoise::PerlinFractal);
-	
-	// this->terrainNoise.SetFrequency(0.002f); // planes 
-	// this->terrainNoise.SetFractalOctaves(2);
+	this->terrainNoise1.SetSeed(std::time(0));
+	this->terrainNoise1.SetNoiseType(FastNoise::PerlinFractal);
+	this->terrainNoise1.SetFrequency(0.004f); // hills
+	this->terrainNoise1.SetFractalOctaves(1);
+	this->terrainNoise1.SetFractalGain(0.3f);
 
-	this->terrainNoise.SetFrequency(0.004f); // hills
-	this->terrainNoise.SetFractalOctaves(3);
+	this->terrainNoise2.SetSeed(this->terrainNoise1.GetSeed());
+	this->terrainNoise2.SetNoiseType(FastNoise::PerlinFractal);
+	this->terrainNoise2.SetFrequency(0.004f); // hills
+	this->terrainNoise2.SetFractalOctaves(2);
+	this->terrainNoise2.SetFractalGain(0.3f);
 
-	// this->terrainNoise.SetFrequency(0.006f); // mountains
-	// this->terrainNoise.SetFractalOctaves(4);
+	this->terrainNoise3.SetSeed(this->terrainNoise1.GetSeed());
+	this->terrainNoise3.SetNoiseType(FastNoise::PerlinFractal);
+	this->terrainNoise3.SetFrequency(0.004f); // hills
+	this->terrainNoise3.SetFractalOctaves(3);
+	this->terrainNoise3.SetFractalGain(0.3f);
 
-	this->temperatureNoise.SetSeed(terrainNoise.GetSeed()/2);
+	this->temperatureNoise.SetSeed(terrainNoise1.GetSeed()/2);
 	this->temperatureNoise.SetNoiseType(FastNoise::PerlinFractal);
 	this->temperatureNoise.SetFrequency(0.001f);
 
-	this->temperatureNoise.SetSeed(terrainNoise.GetSeed()*2);
+	this->temperatureNoise.SetSeed(terrainNoise1.GetSeed()*2);
 	this->humidityNoise.SetNoiseType(FastNoise::Perlin);
 	this->humidityNoise.SetFrequency(0.001f);
 }

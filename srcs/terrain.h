@@ -25,6 +25,8 @@ private:
 	friend class Chunk;
 	FastNoise temperatureNoise;
 	FastNoise humidityNoise;
-	FastNoise terrainNoise;
+	FastNoise terrainNoise1;
+	FastNoise terrainNoise2;
+	FastNoise terrainNoise3;
 	StructureEngine structureEngine;
 };

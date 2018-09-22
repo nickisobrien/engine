@@ -14,7 +14,7 @@
 enum ChunkState
 {
 	GENERATE, // needs to be generated completely
-	UPDATE, // needs an update
+	UPDATE,
 	RENDER, // can be rendered
 	UNLOAD // needs to be unloaded
 };
@@ -54,6 +54,7 @@ public:
 	inline Chunk *getZPlus() { return (this->zPlus); }
 	vector<blockQueue> neighborQueue;
 	void neighborQueueUnload();
+	void pullTerrainFromNeighbors();
 
 	// lighting
 	inline int getSunLight(int x, int y, int z) { return (sunLightMap[x][y][z]); };
@@ -63,6 +64,7 @@ public:
 	inline void clearSunLightMap() { memset(this->sunLightMap, 0, sizeof(this->sunLightMap)); }
 
 	void setTerrain();
+	int	getBase(int x, int z);
 	int	getWorld(int x, int y, int z);
 	bool neighborsSet = false;
 	Block *getBlock(int x, int y, int z);

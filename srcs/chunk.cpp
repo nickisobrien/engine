@@ -172,6 +172,27 @@ void Chunk::neighborQueueUnload()
 	neighborQueue = temp;
 }
 
+void Chunk::pullTerrainFromNeighbors()
+{
+	if (this->getXMinus())
+		this->getXMinus()->neighborQueueUnload();
+	if (this->getZMinus())
+		this->getZMinus()->neighborQueueUnload();
+	if (this->getXPlus())
+		this->getXPlus()->neighborQueueUnload();
+	if (this->getZPlus())
+		this->getZPlus()->neighborQueueUnload();
+	this->setState(RENDER); //reset state because it doesn't need the update that neighborqueueunload does
+}
+
+int	Chunk::getBase(int x, int z)
+{
+	float b1 = MAP(this->terr->terrainNoise1.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 0.1f, YSQRT);
+	float b2 = MAP(this->terr->terrainNoise2.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 0.1f, YSQRT);
+	float b3 = MAP(this->terr->terrainNoise3.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 0.1f, YSQRT);
+	return (pow((b1+b2+b3)/3, 2));
+}
+
 void Chunk::setTerrain()
 {
 	// std::clock_t	start;
@@ -184,8 +205,7 @@ void Chunk::setTerrain()
 		{
 			bool water = false;
 			// Use the noise library to get the height value of x, z
-			float b = MAP(this->terr->terrainNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 0.1f, YSQRT);
-			int base = pow(b, 2);
+			int base = getBase(x,z);
 			float temp = this->terr->temperatureNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
 			float hum = this->terr->humidityNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
 			short blocktype;
@@ -244,6 +264,7 @@ void Chunk::setTerrain()
 			}
 		}
 	}
+	this->pullTerrainFromNeighbors();
 	// std::cout << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << std::endl;
 }
 
@@ -283,8 +304,7 @@ void Chunk::faceRendering()
 					xMinusCheck = this->xMinus->blocks[CHUNK_X-1][y][z].getType();
 				else if (!x)
 				{
-					float b = MAP(this->terr->terrainNoise.GetNoise(x+(CHUNK_X*xoff)-1,z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 0.1f, YSQRT);
-					int base = pow(b, 2);
+					int base = getBase(x-1,z);
 					if (base <= y)
 						xMinusCheck = 0;
 					else
@@ -297,8 +317,7 @@ void Chunk::faceRendering()
 					zMinusCheck = this->zMinus->blocks[x][y][CHUNK_Z-1].getType();
 				else if (!z)
 				{
-					float b = MAP(this->terr->terrainNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)-1), -1.0f, 1.0f, 0.1f, YSQRT);
-					int base = pow(b, 2);
+					int base = getBase(x,z-1);
 					if (base <= y)
 						zMinusCheck = 0;
 					else
@@ -317,8 +336,7 @@ void Chunk::faceRendering()
 					xPlusCheck = this->xPlus->blocks[0][y][z].getType();
 				else if (x == CHUNK_X-1)
 				{
-					float b = MAP(this->terr->terrainNoise.GetNoise(x+(CHUNK_X*xoff)+1,z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 0.1f, YSQRT);
-					int base = pow(b, 2);
+					int base = getBase(x+1,z);
 					if (base <= y)
 						xPlusCheck = 0;
 					else
@@ -331,8 +349,7 @@ void Chunk::faceRendering()
 					zPlusCheck = this->zPlus->blocks[x][y][0].getType();
 				else if (z == CHUNK_Z-1)
 				{
-					float b = MAP(this->terr->terrainNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)+1), -1.0f, 1.0f, 0.1f, YSQRT);
-					int base = pow(b, 2);
+					int base = getBase(x,z+1);
 					if (base <= y)
 						zPlusCheck = 0;
 					else

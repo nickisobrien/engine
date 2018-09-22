@@ -251,6 +251,21 @@ void LightEngine::removedLighting()
 				lightBfsQueue.emplace(node.x - 1, node.y, node.z, chunk);
 			}
 		}
+		else if (chunk->getXMinus()) // add to neighbor
+		{
+			int neighborLevel = chunk->getXMinus()->getTorchLight(CHUNK_X - 1, node.y, node.z);
+			if (neighborLevel != 0 && neighborLevel < lightLevel)
+			{
+				node.chunk->getXMinus()->setTorchLight(CHUNK_X-1, node.y, node.z, 0);
+				lightRemovalBfsQueue.emplace(CHUNK_X-1, node.y, node.z, neighborLevel, chunk->getXMinus());
+			}
+			else if (neighborLevel >= lightLevel)
+			{
+				lightBfsQueue.emplace(CHUNK_X-1, node.y, node.z, chunk->getXMinus());
+			}
+		}
+
+		// need to do neighbor light unloading
 		// y-1
 		if (node.y - 1 >= 0)
 		{
@@ -275,6 +290,19 @@ void LightEngine::removedLighting()
 			else if (neighborLevel >= lightLevel)
 				lightBfsQueue.emplace(node.x, node.y, node.z - 1, chunk);
 		}
+		else if (chunk->getZMinus()) // add to neighbor
+		{
+			int neighborLevel = chunk->getZMinus()->getTorchLight(node.x, node.y, CHUNK_Z-1);
+			if (neighborLevel != 0 && neighborLevel < lightLevel)
+			{
+				node.chunk->getZMinus()->setTorchLight(node.x, node.y, CHUNK_Z-1, 0);
+				lightRemovalBfsQueue.emplace(node.x, node.y, CHUNK_Z-1, neighborLevel, chunk->getZMinus());
+			}
+			else if (neighborLevel >= lightLevel)
+			{
+				lightBfsQueue.emplace(node.x, node.y, CHUNK_Z-1, chunk->getZMinus());
+			}
+		}
 
 		// x+1
 		if (node.x + 1 < CHUNK_X)
@@ -288,6 +316,20 @@ void LightEngine::removedLighting()
 			else if (neighborLevel >= lightLevel)
 				lightBfsQueue.emplace(node.x + 1, node.y, node.z, chunk);
 		}
+		else if (chunk->getXPlus()) // add to neighbor
+		{
+			int neighborLevel = chunk->getXPlus()->getTorchLight(0, node.y, node.z);
+			if (neighborLevel != 0 && neighborLevel < lightLevel)
+			{
+				node.chunk->getXPlus()->setTorchLight(0, node.y, node.z, 0);
+				lightRemovalBfsQueue.emplace(0, node.y, node.z, neighborLevel, chunk->getXPlus());
+			}
+			else if (neighborLevel >= lightLevel)
+			{
+				lightBfsQueue.emplace(0, node.y, node.z, chunk->getXPlus());
+			}
+		}
+
 		// y-1
 		if (node.y + 1 < CHUNK_Y)
 		{
@@ -300,6 +342,7 @@ void LightEngine::removedLighting()
 			else if (neighborLevel >= lightLevel)
 				lightBfsQueue.emplace(node.x, node.y + 1, node.z, chunk);
 		}
+
 		// z-1
 		if (node.z + 1 < CHUNK_Z)
 		{
@@ -312,11 +355,20 @@ void LightEngine::removedLighting()
 			else if (neighborLevel >= lightLevel)
 				lightBfsQueue.emplace(node.x, node.y, node.z + 1, chunk);
 		}
+		else if (chunk->getZPlus()) // add to neighbor
+		{
+			int neighborLevel = chunk->getZPlus()->getTorchLight(node.x, node.y, 0);
+			if (neighborLevel != 0 && neighborLevel < lightLevel)
+			{
+				node.chunk->getZPlus()->setTorchLight(node.x, node.y, 0, 0);
+				lightRemovalBfsQueue.emplace(node.x, node.y, 0, neighborLevel, chunk->getZPlus());
+			}
+			else if (neighborLevel >= lightLevel)
+			{
+				lightBfsQueue.emplace(node.x, node.y, 0, chunk->getZPlus());
+			}
+		}
 	}
-	// while (!this->lightBfsQueue.empty())
-	// {
-	// 	this->lightBfsQueue.pop();
-	// }
 	this->lampLighting();
 }
 

@@ -8,7 +8,7 @@
 #include "player.h"
 #include "textureEngine.h"
 
-#define RENDER_RADIUS 18
+#define RENDER_RADIUS 24
 
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
@@ -58,6 +58,7 @@ int main(void)
 
 	cubeShader.use();
 	cubeShader.setInt("atlas", 0);
+	int rendRadius = 4;
 
 	// render loop
 	while (!glfwWindowShouldClose(window))
@@ -90,9 +91,9 @@ int main(void)
 		Chunk *c = player.getChunk();
 		terr.renderChunk(glm::ivec2(c->getXOff(), c->getZOff()), cubeShader);
 		// need to make sure to only render each chunk once per frame
-		for (int i = 0; i < RENDER_RADIUS; i++)
+		for (int i = 0; i < rendRadius; i++)
 		{
-			for (int j = 0; j < RENDER_RADIUS; j++)
+			for (int j = 0; j < rendRadius; j++)
 			{
 				if (!i && !j)
 					continue;
@@ -102,10 +103,11 @@ int main(void)
 				terr.renderChunk(glm::ivec2(c->getXOff() + i, c->getZOff() - j), cubeShader);
 			}
 		}
+
 		terr.renderWaterChunk(glm::ivec2(c->getXOff(), c->getZOff()), cubeShader);
-		for (int i = 0; i < RENDER_RADIUS; i++)
+		for (int i = 0; i < rendRadius; i++)
 		{
-			for (int j = 0; j < RENDER_RADIUS; j++)
+			for (int j = 0; j < rendRadius; j++)
 			{
 				if (!i && !j)
 					continue;
@@ -121,6 +123,8 @@ int main(void)
 			terr.renderChunk(terr.updateList, cubeShader);
 			terr.updateList = glm::ivec2(-100000,-100000);
 		}
+		else if (rendRadius < RENDER_RADIUS)
+			rendRadius++;
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);

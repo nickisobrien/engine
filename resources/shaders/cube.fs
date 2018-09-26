@@ -34,15 +34,15 @@ void main()
 
 	if (Norm.y == -1.0f)
 	{
-		FragColor.x += 0.1f;
-		FragColor.y += 0.1f;
-		FragColor.z += 0.1f;
+		FragColor.x += 0.2f;
+		FragColor.y += 0.2f;
+		FragColor.z += 0.2f;
 	}
 	if (Norm.y == 1.0f)
 	{
-		FragColor.x -= 0.1f;
-		FragColor.y -= 0.1f;
-		FragColor.z -= 0.1f;
+		FragColor.x -= 0.4f;
+		FragColor.y -= 0.4f;
+		FragColor.z -= 0.4f;
 	}
 
 	// FragColor = mix(vec4(skyColor,1.0 ),FragColor,Visibility);

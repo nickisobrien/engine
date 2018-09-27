@@ -22,13 +22,10 @@ void Player::processInput(GLFWwindow *window, float deltaTime)
 
 		cout << "Block:	(" << x << ", " << y << ", " << z << ")" << endl;
 	}
+	if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
+		this->currentBlockPlace = Blocktype::LIGHT_BLOCK;
 	if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
-	{
-		if (this->currentBlockPlace == Blocktype::LIGHT_BLOCK)
-			this->currentBlockPlace = Blocktype::SNOW_BLOCK;
-		else
-			this->currentBlockPlace = Blocktype::LIGHT_BLOCK;
-	}
+		this->currentBlockPlace = Blocktype::SNOW_BLOCK;
 
 	// NON DEBUGGERS
 	// Escape = exit window
@@ -109,7 +106,7 @@ void Player::jump()
 	if (this->isGrounded())
 	{
 		// this->setPosition(glm::vec3(cur.x, cur.y+0.01f, cur.z)); // temp easy code jump
-		this->velocity = -10.0f;
+		this->velocity = -12.0f;
 	}
 }
 

@@ -1,5 +1,5 @@
-#include "engine.h"
-#include "terrain.h"
+#include "engine.hpp"
+#include "terrain.hpp"
 
 void Terrain::updateChunk(glm::ivec2 pos)
 {

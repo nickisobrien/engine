@@ -1,5 +1,5 @@
-#include "engine.h"
-#include "camera.h"
+#include "engine.hpp"
+#include "camera.hpp"
 
 void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
 {

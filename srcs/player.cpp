@@ -1,4 +1,4 @@
-#include "player.h"
+#include "player.hpp"
 
 void Player::processInput(GLFWwindow *window, float deltaTime)
 {

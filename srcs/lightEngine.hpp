@@ -1,6 +1,6 @@
 #pragma once
 
-#include "chunk.h"
+#include "chunk.hpp"
 
 // inspired by https://www.seedofandromeda.com/blogs/29-fast-flood-fill-lighting-in-a-blocky-voxel-game-pt-1
 // and         https://www.seedofandromeda.com/blogs/30-fast-flood-fill-lighting-in-a-blocky-voxel-game-pt-2

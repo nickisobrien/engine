@@ -7,7 +7,7 @@ SRC_DIR := ./srcs/
 OBJ_DIR := ./objs/
 LIB_DIR := ./lib/
 
-HEADERS = ./srcs/*.h
+HEADERS = ./srcs/*.hpp
 
 # engine
 FILES = engine chunk camera terrain block FastNoise player lightEngine textureEngine structureEngine

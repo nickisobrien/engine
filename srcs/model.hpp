@@ -1,7 +1,7 @@
 #pragma once
 
-#include "shader.h"
-#include "mesh.h"
+#include "shader.hpp"
+#include "mesh.hpp"
 
 unsigned int TextureFromFile(const char *path, const string &directory);
 

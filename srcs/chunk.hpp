@@ -1,10 +1,10 @@
 #pragma once
 
-#include "shader.h"
-#include "block.h"
-#include "FastNoise.h"
-#include "structureEngine.h"
-#include "terrain.h"
+#include "shader.hpp"
+#include "block.hpp"
+#include "FastNoise.hpp"
+#include "structureEngine.hpp"
+#include "terrain.hpp"
 
 #define CHUNK_Z 16
 #define CHUNK_X 16

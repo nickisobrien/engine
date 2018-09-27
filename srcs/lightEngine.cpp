@@ -1,5 +1,5 @@
-#include "engine.h"
-#include "lightEngine.h"
+#include "engine.hpp"
+#include "lightEngine.hpp"
 
 void LightEngine::sunlightInit(Chunk *c)
 {

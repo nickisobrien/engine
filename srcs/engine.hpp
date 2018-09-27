@@ -33,12 +33,12 @@
 #define TEXTURE_SIZE 16
 #define DIST(X,Y,XX,YY) ((YY-Y)/(XX-X));
 
-#include "blockIndex.h" // block types
-#include "cubeMap.h"
+#include "blockIndex.hpp" // block types
+#include "cubeMap.hpp"
 
 using namespace std; // should move to cpp files for locality?
 
-#include "chunk.h"
+#include "chunk.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);

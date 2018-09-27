@@ -1,5 +1,5 @@
-#include "engine.h"
-#include "structureEngine.h"
+#include "engine.hpp"
+#include "structureEngine.hpp"
 
 static bool isOverflowing(int x, int y, int z)
 {

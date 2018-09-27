@@ -1,9 +1,9 @@
 #pragma once
 
-#include "chunk.h"
-#include "FastNoise.h"
-#include "lightEngine.h"
-#include "structureEngine.h"
+#include "chunk.hpp"
+#include "FastNoise.hpp"
+#include "lightEngine.hpp"
+#include "structureEngine.hpp"
 
 class Player;
 

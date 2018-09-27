@@ -1,5 +1,5 @@
-#include "engine.h"
-#include "block.h"
+#include "engine.hpp"
+#include "block.hpp"
 
 bool Block::isActive(void)
 {

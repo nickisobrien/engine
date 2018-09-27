@@ -1,9 +1,9 @@
 #pragma once
 
-#include "engine.h"
-#include "camera.h"
-#include "chunk.h"
-#include "terrain.h"
+#include "engine.hpp"
+#include "camera.hpp"
+#include "chunk.hpp"
+#include "terrain.hpp"
 
 class Player
 {

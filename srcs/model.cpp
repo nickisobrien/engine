@@ -1,6 +1,6 @@
-#include "engine.h"
-#include "model.h"
-// put includes in model.h because declarations needed them
+#include "engine.hpp"
+#include "model.hpp"
+// put includes in model.hpp because declarations needed them
 
 void Model::Draw(Shader shader)
 {

@@ -1,5 +1,5 @@
-#include "engine.h"
-#include "chunk.h"
+#include "engine.hpp"
+#include "chunk.hpp"
 
 #define YSQRT sqrt(CHUNK_Y-1)
 

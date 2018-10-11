@@ -1,3 +1,3 @@
 # engine
 
-An ongoing learning project where I'll be exploring OpenGL and 3D mechanics
+An ongoing learning project developing things such as 3D procedural terrain, physics engine, lighting engine, and other game features.

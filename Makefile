@@ -1,7 +1,7 @@
 NAME = engine
 RM = /bin/rm -f
 
-FLAGS = -std=c++11#-Wall -Wextra -Werror
+FLAGS = -std=c++11# -Wall -Wextra -Werror
 
 SRC_DIR := ./srcs/
 OBJ_DIR := ./objs/

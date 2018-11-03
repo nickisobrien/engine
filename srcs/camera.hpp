@@ -4,10 +4,10 @@
 
 // Defines several possible options for camera movement. Used as abstraction to stay away from window-system specific input methods
 enum Camera_Movement {
-    FORWARD,
-    BACKWARD,
-    LEFT,
-    RIGHT
+	FORWARD,
+	BACKWARD,
+	LEFT,
+	RIGHT
 };
 
 // Default camera values
@@ -21,51 +21,51 @@ const float ZOOM = 45.0f;
 class Camera
 {
 public:
-    // Camera Attributes
-    glm::vec3 Position;
-    glm::vec3 Front;
-    glm::vec3 Up;
-    glm::vec3 Right;
-    glm::vec3 WorldUp;
-    // Euler Angles
-    float Yaw;
-    float Pitch;
-    // Camera options
-    float MovementSpeed;
-    float MouseSensitivity;
-    float Zoom;
+	// Camera Attributes
+	glm::vec3 Position;
+	glm::vec3 Front;
+	glm::vec3 Up;
+	glm::vec3 Right;
+	glm::vec3 WorldUp;
+	// Euler Angles
+	float Yaw;
+	float Pitch;
+	// Camera options
+	float MovementSpeed;
+	float MouseSensitivity;
+	float Zoom;
 
-    // Constructor with vectors
-    Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
-    {
-        Position = position;
-        WorldUp = up;
-        Yaw = yaw;
-        Pitch = pitch;
-        updateCameraVectors();
-    }
+	// Constructor with vectors
+	Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
+	{
+		Position = position;
+		WorldUp = up;
+		Yaw = yaw;
+		Pitch = pitch;
+		updateCameraVectors();
+	}
 
-    // Returns the view matrix calculated using Euler Angles and the LookAt Matrix
-    inline glm::mat4 GetViewMatrix() { return glm::lookAt(Position, Position + Front, Up); }
+	// Returns the view matrix calculated using Euler Angles and the LookAt Matrix
+	inline glm::mat4 GetViewMatrix() { return glm::lookAt(Position, Position + Front, Up); }
 
-    inline glm::vec3 GetViewVector()
-    {
-        glm::mat4 matInverseView = glm::inverse(this->GetViewMatrix());
-        return (glm::vec3(-matInverseView[2][0], -matInverseView[2][1], -matInverseView[2][2]));
-    }
+	inline glm::vec3 GetViewVector()
+	{
+		glm::mat4 matInverseView = glm::inverse(this->GetViewMatrix());
+		return (glm::vec3(-matInverseView[2][0], -matInverseView[2][1], -matInverseView[2][2]));
+	}
 
-    inline glm::vec3 GetPosition() { return this->Position; }
-    void SetPosition(glm::vec3 pos) { this->Position = pos; }
+	inline glm::vec3 GetPosition() { return this->Position; }
+	void SetPosition(glm::vec3 pos) { this->Position = pos; }
 
-    // Processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
-    void ProcessKeyboard(Camera_Movement direction, float deltaTime);
-    // Processes input received from a mouse input system. Expects the offset value in both the x and y direction.
-    void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true);
-    // Processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
-    void ProcessMouseScroll(float yoffset);
+	// Processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
+	void ProcessKeyboard(Camera_Movement direction, float deltaTime);
+	// Processes input received from a mouse input system. Expects the offset value in both the x and y direction.
+	void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true);
+	// Processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
+	void ProcessMouseScroll(float yoffset);
 
 private:
-    // Calculates the front vector from the Camera's (updated) Euler Angles
-    void updateCameraVectors();
-    friend class Player;
+	// Calculates the front vector from the Camera's (updated) Euler Angles
+	void updateCameraVectors();
+	friend class Player;
 };

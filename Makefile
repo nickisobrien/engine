@@ -30,10 +30,10 @@ $(OBJ_DIR):
 	@echo [INFO] engine Object Files Directory Created
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp $(HEADERS)
-	g++ $(FLAGS) $(GL_INC) -o $@ -c $< 
+	clang++ $(FLAGS) $(GL_INC) -o $@ -c $< 
 
 $(NAME): $(OBJ_DIR) $(OFILES)
-	@g++ $(FLAGS) $(GL_LINK) $(OFILES) $(ASSIMP_LINK) $(GL_FLAGS) -o $(NAME)
+	@clang++ $(FLAGS) $(GL_LINK) $(OFILES) $(ASSIMP_LINK) $(GL_FLAGS) -o $(NAME)
 	@echo [INFO] engine Binary Created
 
 clean:

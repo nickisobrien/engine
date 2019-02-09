@@ -1,8 +1,8 @@
-#include "engine.hpp"
-#include "textureEngine.hpp"
+#include <engine.hpp>
+#include <textureEngine.hpp>
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.hpp" // https://github.com/nothings/stb/blob/master/stb_image.h
+#include <stb_image.hpp> // https://github.com/nothings/stb/blob/master/stb_image.h
 
 
 unsigned int TextureEngine::loadTexture(char const *path)

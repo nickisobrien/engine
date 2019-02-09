@@ -1,6 +1,6 @@
-#include "engine.hpp"
-#include "shader.hpp"
-#include "mesh.hpp"
+#include <engine.hpp>
+#include <shader.hpp>
+#include <mesh.hpp>
 
 Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures)
 {

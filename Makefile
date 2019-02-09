@@ -6,8 +6,9 @@ FLAGS = -std=c++11# -Wall -Wextra -Werror
 SRC_DIR := ./srcs/
 OBJ_DIR := ./objs/
 LIB_DIR := ./lib/
-
-HEADERS = ./srcs/*.hpp
+INC_DIR := ./includes/
+HEADERS := ${INC_DIR}*.hpp
+HEADERS_INC := -I ${INC_DIR}
 
 # engine
 FILES = engine chunk camera terrain block FastNoise player lightEngine textureEngine structureEngine
@@ -30,7 +31,7 @@ $(OBJ_DIR):
 	@echo [INFO] engine Object Files Directory Created
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp $(HEADERS)
-	clang++ $(FLAGS) $(GL_INC) -o $@ -c $< 
+	clang++ $(FLAGS) ${HEADERS_INC} $(GL_INC) -o $@ -c $< 
 
 $(NAME): $(OBJ_DIR) $(OFILES)
 	@clang++ $(FLAGS) $(GL_LINK) $(OFILES) $(ASSIMP_LINK) $(GL_FLAGS) -o $(NAME)

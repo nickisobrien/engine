@@ -441,15 +441,16 @@ void Chunk::addFace(int face, int x, int y, int z, int val, vector<float> *m, in
 
 		//if (side)
 		// else (top)
-		if (blocks[x][y][z].getType() == GRASS_BLOCK && face != 1)
-			vec2.x += 0.0625 * ((GRASS_BLOCK_SIDE - 1) % 16);
+		if ((blocks[x][y][z].getType() == GRASS_BLOCK) && face != 1) // for grass side facing
+			vec2.x += 0.0625 * (xtype+1);
+		else if (blocks[x][y][z].getType() == TREE_BLOCK && (face == 1 || face == 0)) // for tree trunks
+			vec2.x += 0.0625 * (xtype+1);
 		else
 			vec2.x += 0.0625 * xtype;
+		
 		vec2.y /= 16;
-		if (blocks[x][y][z].getType() == GRASS_BLOCK && face != 1)
-			vec2.y += 0.0625 * (GRASS_BLOCK_SIDE / 17);
-		else
-			vec2.y += 0.0625 * ytype;
+		// y type equation doesn't change because this assumes textures are in the same row as shared texture
+		vec2.y += 0.0625 * ytype;
 		m->push_back(vec2.x);
 		m->push_back(vec2.y);
 

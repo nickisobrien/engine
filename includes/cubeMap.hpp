@@ -11,17 +11,6 @@ static glm::vec3 VERTICES[8] =
 	glm::vec3(1, 1, 1),
 	glm::vec3(-1, 1, 1)
 };
- 
- //save
-// static glm::vec2 TEXCOORDS[6] =
-// {
-// 	glm::vec2(0, 0),
-// 	glm::vec2(1, 0),
-// 	glm::vec2(0, 1),
-// 	glm::vec2(0, 1),
-// 	glm::vec2(0, 0),
-// 	glm::vec2(1, 0)
-// };
 
 static glm::vec2 TEXCOORDS[6] =
 {

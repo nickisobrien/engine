@@ -1,7 +1,7 @@
 #include <engine.hpp>
 #include <terrain.hpp>
 
-#define CHUNKS_PER_LOOP 2
+#define CHUNKS_PER_LOOP 1
 
 void Terrain::updateChunk(glm::ivec2 pos)
 {

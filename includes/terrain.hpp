@@ -19,7 +19,7 @@ public:
 	void setNoise(void);
 	void setNeighbors(glm::ivec2 pos);
 	unordered_map<glm::ivec2, Chunk *> world;
-	glm::ivec2 updateList = glm::ivec2(-100000,-100000);
+	stack<glm::ivec2> updateList;
 	LightEngine lightEngine;
 private:
 	friend class Chunk;

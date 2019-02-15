@@ -53,8 +53,8 @@ int main(void)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// build and compile our shader program
-	Shader cubeShader("/Users/nickobrien/Programming/gameengine/resources/shaders/cube.vs", "/Users/nickobrien/Programming/gameengine/resources/shaders/cube.fs");
-	unsigned int atlas = textureEngine.loadTexture("/Users/nickobrien/Programming/gameengine/resources/textures/atlas3.jpeg");
+	Shader cubeShader("./resources/shaders/cube.vs", "./resources/shaders/cube.fs");
+	unsigned int atlas = textureEngine.loadTexture("./resources/textures/atlas3.jpeg");
 
 	cubeShader.use();
 	cubeShader.setInt("atlas", 0);
@@ -118,11 +118,14 @@ int main(void)
 			}
 		}
 
-		if (terr.updateList != glm::ivec2(-100000,-100000)) // could switch to running this as a while loop on a list on a seperate thread
+		if (!terr.updateList.empty())
 		{
-			terr.updateChunk(terr.updateList);
-			terr.renderChunk(terr.updateList, cubeShader);
-			terr.updateList = glm::ivec2(-100000,-100000);
+			while (!terr.updateList.empty()) // could switch to running this as a while loop on a list on a seperate thread
+			{
+				terr.updateChunk(terr.updateList.top());
+				terr.renderChunk(terr.updateList.top(), cubeShader);
+				terr.updateList.pop();
+			}
 		}
 		else if (rendRadius < RENDER_RADIUS)
 			rendRadius++;

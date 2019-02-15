@@ -1,6 +1,8 @@
 #include <engine.hpp>
 #include <terrain.hpp>
 
+#define CHUNKS_PER_LOOP 2
+
 void Terrain::updateChunk(glm::ivec2 pos)
 {
 	if (this->world.find(pos) != this->world.end()) // built may be the interchangable with neighborsSet
@@ -29,9 +31,9 @@ bool Terrain::renderChunk(glm::ivec2 pos, Shader shader)
 		if (!this->world[pos]->neighborsSet)
 			this->setNeighbors(pos);
 	}
-	else if (this->updateList == glm::ivec2(-100000,-100000))
+	else if (this->updateList.size() < CHUNKS_PER_LOOP)
 	{	
-		this->updateList = pos;
+		this->updateList.push(pos);
 		return (false);
 	}
 	else if (this->world.find(pos) != this->world.end() && this->world[pos]->getState() == UPDATE) // render till updates

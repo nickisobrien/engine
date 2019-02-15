@@ -428,31 +428,34 @@ void Chunk::addFace(int face, int x, int y, int z, int val, vector<float> *m, in
 	for (int i = face * 6, j = 0; i < face * 6 + 6; j++, i++)
 	{
 		// vertices
-		glm::vec3 vec1(	VERTICES[INDICES[i]].x * 0.5f + (float)x,
+		glm::vec3 vert(	VERTICES[INDICES[i]].x * 0.5f + (float)x,
 						VERTICES[INDICES[i]].y * 0.5f + (float)y,
 						VERTICES[INDICES[i]].z * 0.5f + (float)z);
-		m->push_back(vec1.x);
-		m->push_back(vec1.y);
-		m->push_back(vec1.z);
+		m->push_back(vert.x);
+		m->push_back(vert.y);
+		m->push_back(vert.z);
 
 		// textures
-		glm::vec2 vec2(TEXCOORDS[j].x, TEXCOORDS[j].y);
-		vec2.x /= 16;
+		glm::vec2 tex(TEXCOORDS[j].x, TEXCOORDS[j].y);
+		tex.x /= 16;
 
 		//if (side)
 		// else (top)
 		if ((blocks[x][y][z].getType() == GRASS_BLOCK) && face != 1) // for grass side facing
-			vec2.x += 0.0625 * (xtype+1);
+			tex.x += 0.0625 * (xtype+1);
 		else if (blocks[x][y][z].getType() == TREE_BLOCK && (face == 1 || face == 0)) // for tree trunks
-			vec2.x += 0.0625 * (xtype+1);
+			tex.x += 0.0625 * (xtype+1);
 		else
-			vec2.x += 0.0625 * xtype;
+			tex.x += 0.0625 * xtype;
 		
-		vec2.y /= 16;
+		tex.y /= 16;
 		// y type equation doesn't change because this assumes textures are in the same row as shared texture
-		vec2.y += 0.0625 * ytype;
-		m->push_back(vec2.x);
-		m->push_back(vec2.y);
+		if (blocks[x][y][z].getType() == CACTUS_BLOCK && (face == 1 || face == 0)) // for tree trunks
+			tex.y += 0.0625 * (ytype+1);
+		else
+			tex.y += 0.0625 * ytype;
+		m->push_back(tex.x);
+		m->push_back(tex.y);
 
 		// normals
 		m->push_back(NORMALS[INDICES[i / 6]].x);

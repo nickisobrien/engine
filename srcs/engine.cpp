@@ -54,7 +54,7 @@ int main(void)
 
 	// build and compile our shader program
 	Shader cubeShader("./resources/shaders/cube.vs", "./resources/shaders/cube.fs");
-	unsigned int atlas = textureEngine.loadTexture("./resources/textures/atlas3.jpeg");
+	unsigned int atlas = textureEngine.loadTexture("./resources/textures/atlas2.png");
 
 	cubeShader.use();
 	cubeShader.setInt("atlas", 0);
@@ -101,6 +101,15 @@ int main(void)
 				terr.renderChunk(glm::ivec2(c->getXOff() - i, c->getZOff() - j), cubeShader);
 				terr.renderChunk(glm::ivec2(c->getXOff() - i, c->getZOff() + j), cubeShader);
 				terr.renderChunk(glm::ivec2(c->getXOff() + i, c->getZOff() - j), cubeShader);
+
+				// thread t1(terr.renderChunk, glm::ivec2(c->getXOff() + i, c->getZOff() + j), cubeShader);
+				// thread t2(terr.renderChunk, glm::ivec2(c->getXOff() - i, c->getZOff() - j), cubeShader);
+				// thread t3(terr.renderChunk, glm::ivec2(c->getXOff() - i, c->getZOff() + j), cubeShader);
+				// thread t4(terr.renderChunk, glm::ivec2(c->getXOff() + i, c->getZOff() - j), cubeShader);
+				// t1.join();
+				// t2.join();
+				// t3.join();
+				// t4.join();
 			}
 		}
 

@@ -263,7 +263,8 @@ void Chunk::setTerrain()
 			}
 		}
 	}
-	this->pullTerrainFromNeighbors();
+	// COMMENTED THIS OUT, DOESN'T SEEM TO EFFECT ANYTHING??
+	// this->pullTerrainFromNeighbors();
 	// std::cout << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << std::endl;
 }
 
@@ -422,31 +423,40 @@ void Chunk::buildVAO(void)
 
 void Chunk::addFace(int face, int x, int y, int z, int val, vector<float> *m, int *ps)
 {
-	int xtype = blocks[x][y][z].getType() - 1 % 16;
+	int xtype = (blocks[x][y][z].getType() - 1) % 16;
 	int ytype = blocks[x][y][z].getType() / 17;
 	for (int i = face * 6, j = 0; i < face * 6 + 6; j++, i++)
 	{
 		// vertices
-		glm::vec3 vec1(	vertices[indices[i]].x * 0.5f + (float)x,
-						vertices[indices[i]].y * 0.5f + (float)y,
-						vertices[indices[i]].z * 0.5f + (float)z);
+		glm::vec3 vec1(	VERTICES[INDICES[i]].x * 0.5f + (float)x,
+						VERTICES[INDICES[i]].y * 0.5f + (float)y,
+						VERTICES[INDICES[i]].z * 0.5f + (float)z);
 		m->push_back(vec1.x);
 		m->push_back(vec1.y);
 		m->push_back(vec1.z);
 
 		// textures
-		glm::vec2 vec2(texCoords[texInds[j % 4]].x, texCoords[texInds[j % 4]].y);
+		glm::vec2 vec2(TEXCOORDS[j].x, TEXCOORDS[j].y);
 		vec2.x /= 16;
-		vec2.x += 0.0625 * (xtype);
+
+		//if (side)
+		// else (top)
+		if (blocks[x][y][z].getType() == GRASS_BLOCK && face != 1)
+			vec2.x += 0.0625 * ((GRASS_BLOCK_SIDE - 1) % 16);
+		else
+			vec2.x += 0.0625 * xtype;
 		vec2.y /= 16;
-		vec2.y += 0.0625 * (ytype);
+		if (blocks[x][y][z].getType() == GRASS_BLOCK && face != 1)
+			vec2.y += 0.0625 * (GRASS_BLOCK_SIDE / 17);
+		else
+			vec2.y += 0.0625 * ytype;
 		m->push_back(vec2.x);
 		m->push_back(vec2.y);
 
 		// normals
-		m->push_back(normals[indices[i / 6]].x);
-		m->push_back(normals[indices[i / 6]].y);
-		m->push_back(normals[indices[i / 6]].z);
+		m->push_back(NORMALS[INDICES[i / 6]].x);
+		m->push_back(NORMALS[INDICES[i / 6]].y);
+		m->push_back(NORMALS[INDICES[i / 6]].z);
 
 		// torch lighting, becomes a float when pushed back because mesh is a float vector
 		m->push_back(this->torchLightMap[x][y][z]);

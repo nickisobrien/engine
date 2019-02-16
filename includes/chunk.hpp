@@ -95,11 +95,10 @@ private:
 	vector<float> mesh;
 	vector<float> transparentMesh;
 
-	// ChunkState state = GENERATE;
 	Chunk *xMinus = NULL;
 	Chunk *xPlus = NULL;
 	Chunk *zMinus = NULL;
 	Chunk *zPlus = NULL;
 
-	Terrain *terr;
+	Terrain *terr; // pointer to parent
 };

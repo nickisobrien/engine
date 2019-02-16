@@ -19,6 +19,9 @@ TextureEngine textureEngine;
 Terrain terr;
 Player player(glm::vec3(CHUNK_X/2.0f, (float)CHUNK_Y-30.0f, CHUNK_Z/2.0f), &terr);
 
+// need to this to pass for thread
+static inline void	updatePlayer(float deltaTime){ player.update(deltaTime); }
+
 int main(void)
 {
 	// glfw: initialize and configure
@@ -79,8 +82,6 @@ int main(void)
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, atlas);
 
-		// for physics
-		player.update(deltaTime);
 		// setup renderer
 		cubeShader.use();
 		glm::mat4 projection = glm::perspective(glm::radians(player.camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 1000.0f);
@@ -89,6 +90,9 @@ int main(void)
 		cubeShader.setMat4("view", view);
 
 		Chunk *c = player.getChunk();
+
+		thread playerMovementThread(updatePlayer, deltaTime);
+
 		// need to make sure to only render each chunk once per frame
 		terr.renderChunk(glm::ivec2(c->getXOff(), c->getZOff()), cubeShader);
 		for (int i = 0; i < rendRadius; i++)
@@ -118,6 +122,8 @@ int main(void)
 			}
 		}
 
+		playerMovementThread.join();
+
 		if (!terr.updateList.empty())
 		{
 			while (!terr.updateList.empty()) // could switch to running this as a while loop on a list on a seperate thread
@@ -129,7 +135,6 @@ int main(void)
 		}
 		else if (rendRadius < RENDER_RADIUS)
 			rendRadius++;
-
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);
 		glfwPollEvents();

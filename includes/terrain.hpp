@@ -12,7 +12,8 @@ float noise(float x, float y);
 class Terrain
 {
 public:
-	inline Terrain(void) { this->setNoise(); }
+	Terrain(void);
+	~Terrain(void);
 	void updateChunk(glm::ivec2 pos);
 	bool renderChunk(glm::ivec2 pos, Shader shader);
 	bool renderWaterChunk(glm::ivec2 pos, Shader shader);
@@ -23,10 +24,10 @@ public:
 	LightEngine lightEngine;
 private:
 	friend class Chunk;
-	FastNoise temperatureNoise;
-	FastNoise humidityNoise;
-	FastNoise terrainNoise1;
-	FastNoise terrainNoise2;
-	FastNoise terrainNoise3;
-	StructureEngine structureEngine;
+	FastNoise *temperatureNoise;
+	FastNoise *humidityNoise;
+	FastNoise *terrainNoise1;
+	FastNoise *terrainNoise2;
+	FastNoise *terrainNoise3;
+	StructureEngine *structureEngine;
 };

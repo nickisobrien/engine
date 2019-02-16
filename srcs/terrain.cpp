@@ -3,10 +3,31 @@
 
 #define CHUNKS_PER_LOOP 1
 
+Terrain::Terrain(void)
+{
+	this->structureEngine = new StructureEngine();
+	this->temperatureNoise = new FastNoise();
+	this->humidityNoise = new FastNoise();
+	this->terrainNoise1 = new FastNoise();
+	this->terrainNoise2 = new FastNoise();
+	this->terrainNoise3 = new FastNoise();
+	this->setNoise();
+}
+
+Terrain::~Terrain(void)
+{
+	delete this->structureEngine;
+	delete this->temperatureNoise;
+	delete this->humidityNoise;
+	delete this->terrainNoise1;
+	delete this->terrainNoise2;
+	delete this->terrainNoise3;
+}
+
 void Terrain::updateChunk(glm::ivec2 pos)
 {
 	if (this->world.find(pos) != this->world.end()) // built may be the interchangable with neighborsSet
-	{
+	{				
 		this->world[pos]->clearSunLightMap();
 		if (!this->world[pos]->neighborQueue.empty())
 			this->world[pos]->neighborQueueUnload();
@@ -14,12 +35,12 @@ void Terrain::updateChunk(glm::ivec2 pos)
 		this->world[pos]->update();
 	}
 	else
-	{
-		this->world[pos] = new Chunk(pos.x, pos.y, this);
-		this->setNeighbors(pos);
-		this->world[pos]->setTerrain();
-		this->lightEngine.sunlightInit(this->world[pos]);
-		this->world[pos]->update();
+	{ // new chunk
+		this->world[pos] = new Chunk(pos.x, pos.y, this);				
+		this->setNeighbors(pos);		
+		this->world[pos]->setTerrain();		
+		this->lightEngine.sunlightInit(this->world[pos]);		
+		this->world[pos]->update();		
 	}
 }
 
@@ -52,31 +73,31 @@ bool Terrain::renderWaterChunk(glm::ivec2 pos, Shader shader)
 
 void Terrain::setNoise(void)
 {
-	this->terrainNoise1.SetSeed(std::time(0));
-	this->terrainNoise1.SetNoiseType(FastNoise::PerlinFractal);
-	this->terrainNoise1.SetFrequency(0.004f); // hills
-	this->terrainNoise1.SetFractalOctaves(1);
-	this->terrainNoise1.SetFractalGain(0.3f);
+	this->terrainNoise1->SetSeed(std::time(0));
+	this->terrainNoise1->SetNoiseType(FastNoise::PerlinFractal);
+	this->terrainNoise1->SetFrequency(0.004f); // hills
+	this->terrainNoise1->SetFractalOctaves(1);
+	this->terrainNoise1->SetFractalGain(0.3f);
 
-	this->terrainNoise2.SetSeed(this->terrainNoise1.GetSeed());
-	this->terrainNoise2.SetNoiseType(FastNoise::PerlinFractal);
-	this->terrainNoise2.SetFrequency(0.004f); // hills
-	this->terrainNoise2.SetFractalOctaves(2);
-	this->terrainNoise2.SetFractalGain(0.3f);
+	this->terrainNoise2->SetSeed(this->terrainNoise1->GetSeed());
+	this->terrainNoise2->SetNoiseType(FastNoise::PerlinFractal);
+	this->terrainNoise2->SetFrequency(0.004f); // hills
+	this->terrainNoise2->SetFractalOctaves(2);
+	this->terrainNoise2->SetFractalGain(0.3f);
 
-	this->terrainNoise3.SetSeed(this->terrainNoise1.GetSeed());
-	this->terrainNoise3.SetNoiseType(FastNoise::PerlinFractal);
-	this->terrainNoise3.SetFrequency(0.004f); // hills
-	this->terrainNoise3.SetFractalOctaves(3);
-	this->terrainNoise3.SetFractalGain(0.3f);
+	this->terrainNoise3->SetSeed(this->terrainNoise1->GetSeed());
+	this->terrainNoise3->SetNoiseType(FastNoise::PerlinFractal);
+	this->terrainNoise3->SetFrequency(0.004f); // hills
+	this->terrainNoise3->SetFractalOctaves(3);
+	this->terrainNoise3->SetFractalGain(0.3f);
 
-	this->temperatureNoise.SetSeed(terrainNoise1.GetSeed()/2);
-	this->temperatureNoise.SetNoiseType(FastNoise::PerlinFractal);
-	this->temperatureNoise.SetFrequency(0.001f);
+	this->temperatureNoise->SetSeed(terrainNoise1->GetSeed()/2);
+	this->temperatureNoise->SetNoiseType(FastNoise::PerlinFractal);
+	this->temperatureNoise->SetFrequency(0.001f);
 
-	this->temperatureNoise.SetSeed(terrainNoise1.GetSeed()*2);
-	this->humidityNoise.SetNoiseType(FastNoise::Perlin);
-	this->humidityNoise.SetFrequency(0.001f);
+	this->temperatureNoise->SetSeed(terrainNoise1->GetSeed()*2);
+	this->humidityNoise->SetNoiseType(FastNoise::Perlin);
+	this->humidityNoise->SetFrequency(0.001f);
 }
 
 void Terrain::setNeighbors(glm::ivec2 pos)

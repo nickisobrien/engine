@@ -6,13 +6,18 @@
 Chunk::Chunk(int x, int z, Terrain *t) : xoff(x), zoff(z), terr(t)
 {
 	this->blocks = new Block**[CHUNK_X];
+	this->torchLightMap = new uint8_t**[CHUNK_X];
+	this->sunLightMap = new uint8_t**[CHUNK_X];
 	for(int i = 0; i < CHUNK_X; i++)
 	{
 		this->blocks[i] = new Block*[CHUNK_Y];
-
+		this->torchLightMap[i] = new uint8_t*[CHUNK_Y];
+		this->sunLightMap[i] = new uint8_t*[CHUNK_Y];
 		for(int j = 0; j < CHUNK_Y; j++)
 		{
 			this->blocks[i][j] = new Block[CHUNK_Z];
+			this->torchLightMap[i][j] = new uint8_t[CHUNK_Z]();
+			this->sunLightMap[i][j] = new uint8_t[CHUNK_Z]();
 		}
 	}
 
@@ -20,10 +25,6 @@ Chunk::Chunk(int x, int z, Terrain *t) : xoff(x), zoff(z), terr(t)
 	this->transparentPointSize = 0;
 	offsetMatrix = glm::translate(glm::mat4(1.0f), glm::vec3((float)(xoff * CHUNK_X), 1.0f, (float)(zoff * CHUNK_Z)));
 	offsetMatrix = glm::translate(offsetMatrix, glm::vec3(0.5f, -0.5f, 0.5f));
-
-	// zero lightmap
-	memset(torchLightMap, 0, sizeof(torchLightMap));
-	memset(sunLightMap, 0, sizeof(sunLightMap));	
 
 	// non transparent
 	// cout << x << " " << z << endl;

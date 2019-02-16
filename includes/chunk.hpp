@@ -57,11 +57,13 @@ public:
 	void pullTerrainFromNeighbors();
 
 	// lighting
-	inline int getSunLight(int x, int y, int z) { return (sunLightMap[x][y][z]); };
+	inline uint8_t getSunLight(int x, int y, int z) { return (sunLightMap[x][y][z]); };
 	inline void setSunLight(int x, int y, int z, int val) { sunLightMap[x][y][z] = val; };
-	inline int getTorchLight(int x, int y, int z) { return (torchLightMap[x][y][z]); };
+	inline uint8_t getTorchLight(int x, int y, int z) { return (torchLightMap[x][y][z]); };
 	inline void setTorchLight(int x, int y, int z, int val) { torchLightMap[x][y][z] = val; };
-	inline void clearSunLightMap() { memset(this->sunLightMap, 0, sizeof(this->sunLightMap)); }
+	inline void clearSunLightMap() { for (int i = 0; i < CHUNK_X; i++) {
+		for (int j = 0; j < CHUNK_Y; j++) {
+		for (int k = 0; k < CHUNK_Z; k++){ sunLightMap[i][j][k] = 0; }}}}
 
 	void setTerrain();
 	int	getBase(int x, int z);
@@ -80,8 +82,8 @@ private:
 
 	Block ***blocks;
 	// TODO: switch these to one map using 4 bits each, sent to buffer as char
-	char torchLightMap[CHUNK_X][CHUNK_Y][CHUNK_Z];
-	char sunLightMap[CHUNK_X][CHUNK_Y][CHUNK_Z];
+	uint8_t ***torchLightMap;
+	uint8_t ***sunLightMap;
 	glm::mat4 offsetMatrix;
 	unsigned int VAO;
 	unsigned int VBO;

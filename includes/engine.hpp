@@ -33,6 +33,8 @@
 #define ATLAS_SIZE 256
 #define TEXTURE_SIZE 16
 #define DIST(X,Y,XX,YY) ((YY-Y)/(XX-X));
+#define RENDER_RADIUS 24
+
 
 #include "blockIndex.hpp" // block types
 #include "cubeMap.hpp"

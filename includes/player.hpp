@@ -8,12 +8,13 @@
 class Player
 {
 public:
-	inline Player(glm::vec3 pos, Terrain *terr) { camera = Camera(pos); this->terr = terr; }
-	Camera camera;
+	inline Player(glm::vec3 pos, Terrain *terr) { camera = new Camera(pos); this->terr = terr; }
+	inline ~Player() { delete camera; }
+	Camera *camera;
 	Chunk *getChunk();
 	void processInput(GLFWwindow *window, float deltaTime);
-	inline void setPosition(glm::vec3 pos) { this->camera.SetPosition(pos); }
-	inline glm::vec3 getPosition(void) { return (this->camera.GetPosition()); }
+	inline void setPosition(glm::vec3 pos) { this->camera->SetPosition(pos); }
+	inline glm::vec3 getPosition(void) { return (this->camera->GetPosition()); }
 	inline void update(float time) { this->applyGravity(time); }
 	void applyGravity(float time);
 	bool isGrounded();

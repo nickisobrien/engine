@@ -35,13 +35,13 @@ void Player::processInput(GLFWwindow *window, float deltaTime)
 	// Movement
 	glm::vec3 savePos = this->getPosition();
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		this->camera.ProcessKeyboard(FORWARD, deltaTime);
+		this->camera->ProcessKeyboard(FORWARD, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		this->camera.ProcessKeyboard(BACKWARD, deltaTime);
+		this->camera->ProcessKeyboard(BACKWARD, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		this->camera.ProcessKeyboard(LEFT, deltaTime);
+		this->camera->ProcessKeyboard(LEFT, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		this->camera.ProcessKeyboard(RIGHT, deltaTime);
+		this->camera->ProcessKeyboard(RIGHT, deltaTime);
 	// collision checks/allows running up 1 block
 	glm::vec3 newPos = this->getPosition();
 	int x = (int)floor(newPos.x) % CHUNK_X;
@@ -72,8 +72,8 @@ void Player::processInput(GLFWwindow *window, float deltaTime)
 
 Chunk *Player::getChunk()
 {
-	int cx = this->camera.Position.x >= 0.0f ? this->camera.Position.x / CHUNK_X : ceil(this->camera.Position.x) / CHUNK_X - 1.0f;
-	int cz = this->camera.Position.z >= 0.0f ? this->camera.Position.z / CHUNK_Z : ceil(this->camera.Position.z) / CHUNK_X - 1.0f;
+	int cx = this->camera->Position.x >= 0.0f ? this->camera->Position.x / CHUNK_X : ceil(this->camera->Position.x) / CHUNK_X - 1.0f;
+	int cz = this->camera->Position.z >= 0.0f ? this->camera->Position.z / CHUNK_Z : ceil(this->camera->Position.z) / CHUNK_X - 1.0f;
 	glm::ivec2 pos(cx, cz);
 	// not found generate new chunk at player pos
 	if (this->terr->world.find(pos) == this->terr->world.end())
@@ -156,7 +156,7 @@ void Player::leftMouseClickEvent()
 {
 	// block traversal algorithm http://www.cse.yorku.ca/~amana/research/grid.pdf
 	glm::vec3 current = this->getPosition();
-	glm::vec3 currentView = this->camera.GetViewVector();
+	glm::vec3 currentView = this->camera->GetViewVector();
 	glm::ivec3 current_voxel((int)floor(current.x) % CHUNK_X,
 							floor(current.y),
 							(int)floor(current.z) % CHUNK_Z);
@@ -166,7 +166,7 @@ void Player::leftMouseClickEvent()
 		current_voxel.z = CHUNK_Z + current_voxel.z;
 
 	// normalized ray direction.
-	glm::vec3 ray = this->camera.GetViewVector();
+	glm::vec3 ray = this->camera->GetViewVector();
 
 	// in which direction the voxel ids are incremented.
 	int stepX = ray.x > 0.0f ? 1 : ray.x < 0.0f ? -1 : 0;
@@ -292,7 +292,7 @@ void Player::rightMouseClickEvent()
 {
 	// block traversal algorithm http://www.cse.yorku.ca/~amana/research/grid.pdf
 	glm::vec3 current = this->getPosition();
-	glm::vec3 currentView = this->camera.GetViewVector();
+	glm::vec3 currentView = this->camera->GetViewVector();
 	glm::ivec3 current_voxel((int)floor(current.x) % CHUNK_X,
 							floor(current.y),
 							(int)floor(current.z) % CHUNK_Z);
@@ -302,7 +302,7 @@ void Player::rightMouseClickEvent()
 		current_voxel.z = CHUNK_Z + current_voxel.z;
 
 	// normalized ray direction.
-	glm::vec3 ray = this->camera.GetViewVector();
+	glm::vec3 ray = this->camera->GetViewVector();
 
 	// in which direction the voxel ids are incremented.
 	int stepX = ray.x > 0.0f ? 1 : ray.x < 0.0f ? -1 : 0;

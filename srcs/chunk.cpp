@@ -115,6 +115,21 @@ void Chunk::setBlock(glm::ivec3 pos, Blocktype type)
 Chunk::~Chunk(void)
 {
 	this->cleanVAO();
+	for(int i = 0; i < CHUNK_X; i++)
+	{
+		for(int j = 0; j < CHUNK_Y; j++)
+		{
+			delete this->blocks[i][j];
+			delete this->torchLightMap[i][j];
+			delete this->sunLightMap[i][j];
+		}
+		delete this->blocks[i];
+		delete this->torchLightMap[i];
+		delete this->sunLightMap[i];
+	}
+	delete this->blocks;
+	delete this->torchLightMap;
+	delete this->sunLightMap;
 }
 
 void Chunk::render(Shader shader)

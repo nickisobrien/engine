@@ -82,8 +82,8 @@ int main(void)
 
 		// setup renderer
 		cubeShader.use();
-		glm::mat4 projection = glm::perspective(glm::radians(player->camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 1000.0f);
-		glm::mat4 view = player->camera.GetViewMatrix();
+		glm::mat4 projection = glm::perspective(glm::radians(player->camera->Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 1000.0f);
+		glm::mat4 view = player->camera->GetViewMatrix();
 		cubeShader.setMat4("projection", projection);
 		cubeShader.setMat4("view", view);
 
@@ -164,7 +164,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	lastX = xpos;
 	lastY = ypos;
 
-	player->camera.ProcessMouseMovement(xoffset, yoffset);
+	player->camera->ProcessMouseMovement(xoffset, yoffset);
 }
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
@@ -179,7 +179,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	player->camera.ProcessMouseScroll(yoffset);
+	player->camera->ProcessMouseScroll(yoffset);
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function execute

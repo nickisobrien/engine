@@ -3,29 +3,29 @@
 void Player::processInput(GLFWwindow *window, float deltaTime)
 {
 	// DEBUGGERS
-	if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
-		this->terr->updateChunk(glm::ivec2(this->getChunk()->getXOff(), this->getChunk()->getZOff()));
-	if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS)
-		cout << this->getChunk()->neighborQueue.size() << endl;
-	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
-		cout << "Player position: (" << this->getPosition().x << ", " << this->getPosition().y << ", " << this->getPosition().z << ") " << endl;
-	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
-	{
-		glm::vec3 current = this->getPosition();
-		int x = (int)floor(current.x) % CHUNK_X;
-		int y = floor(current.y);
-		int z = (int)floor(current.z) % CHUNK_Z;
-		if (x < 0)
-			x = CHUNK_X + x;
-		if (z < 0)
-			z = CHUNK_Z + z;
+	// if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
+	// 	this->terr->updateChunk(glm::ivec2(this->getChunk()->getXOff(), this->getChunk()->getZOff()));
+	// if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS)
+	// 	cout << this->getChunk()->neighborQueue.size() << endl;
+	// if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+	// 	cout << "Player position: (" << this->getPosition().x << ", " << this->getPosition().y << ", " << this->getPosition().z << ") " << endl;
+	// if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
+	// {
+	// 	glm::vec3 current = this->getPosition();
+	// 	int x = (int)floor(current.x) % CHUNK_X;
+	// 	int y = floor(current.y);
+	// 	int z = (int)floor(current.z) % CHUNK_Z;
+	// 	if (x < 0)
+	// 		x = CHUNK_X + x;
+	// 	if (z < 0)
+	// 		z = CHUNK_Z + z;
 
-		cout << "Block:	(" << x << ", " << y << ", " << z << ")" << endl;
-	}
-	if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
-		this->currentBlockPlace = Blocktype::LIGHT_BLOCK;
-	if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
-		this->currentBlockPlace = Blocktype::SNOW_BLOCK;
+	// 	cout << "Block:	(" << x << ", " << y << ", " << z << ")" << endl;
+	// }
+	// if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
+	// 	this->currentBlockPlace = Blocktype::LIGHT_BLOCK;
+	// if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
+	// 	this->currentBlockPlace = Blocktype::SNOW_BLOCK;
 
 	// NON DEBUGGERS
 	// Escape = exit window
@@ -128,7 +128,7 @@ void Player::applyGravity(float time)
 }
 
 
-// helper funcs for blcok breaking
+// helper funcs for block breaking
 static int signum(int x)
 {
 		return x == 0 ? 0 : x < 0 ? -1 : 1;

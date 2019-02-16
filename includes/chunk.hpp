@@ -14,7 +14,7 @@
 enum ChunkState
 {
 	GENERATE, // needs to be generated completely
-	UPDATE,
+	UPDATE, // needs an update
 	RENDER, // can be rendered
 	UNLOAD // needs to be unloaded
 };
@@ -78,7 +78,7 @@ private:
 	
 	ChunkState state = GENERATE;
 
-	Block blocks[CHUNK_X][CHUNK_Y][CHUNK_Z];
+	Block ***blocks;
 	// TODO: switch these to one map using 4 bits each, sent to buffer as char
 	char torchLightMap[CHUNK_X][CHUNK_Y][CHUNK_Z];
 	char sunLightMap[CHUNK_X][CHUNK_Y][CHUNK_Z];

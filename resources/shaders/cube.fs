@@ -32,6 +32,7 @@ void main()
 	FragColor.y += SunLight/16;
 	FragColor.z += SunLight/16;
 
+
 	if (Norm.y == -1.0f)
 	{
 		FragColor.x += 0.2f;

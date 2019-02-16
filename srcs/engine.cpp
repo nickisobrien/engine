@@ -89,8 +89,8 @@ int main(void)
 		cubeShader.setMat4("view", view);
 
 		Chunk *c = player.getChunk();
-		terr.renderChunk(glm::ivec2(c->getXOff(), c->getZOff()), cubeShader);
 		// need to make sure to only render each chunk once per frame
+		terr.renderChunk(glm::ivec2(c->getXOff(), c->getZOff()), cubeShader);
 		for (int i = 0; i < rendRadius; i++)
 		{
 			for (int j = 0; j < rendRadius; j++)
@@ -101,15 +101,6 @@ int main(void)
 				terr.renderChunk(glm::ivec2(c->getXOff() - i, c->getZOff() - j), cubeShader);
 				terr.renderChunk(glm::ivec2(c->getXOff() - i, c->getZOff() + j), cubeShader);
 				terr.renderChunk(glm::ivec2(c->getXOff() + i, c->getZOff() - j), cubeShader);
-
-				// thread t1(terr.renderChunk, glm::ivec2(c->getXOff() + i, c->getZOff() + j), cubeShader);
-				// thread t2(terr.renderChunk, glm::ivec2(c->getXOff() - i, c->getZOff() - j), cubeShader);
-				// thread t3(terr.renderChunk, glm::ivec2(c->getXOff() - i, c->getZOff() + j), cubeShader);
-				// thread t4(terr.renderChunk, glm::ivec2(c->getXOff() + i, c->getZOff() - j), cubeShader);
-				// t1.join();
-				// t2.join();
-				// t3.join();
-				// t4.join();
 			}
 		}
 
@@ -131,7 +122,7 @@ int main(void)
 		{
 			while (!terr.updateList.empty()) // could switch to running this as a while loop on a list on a seperate thread
 			{
-				terr.updateChunk(terr.updateList.top());
+				terr.updateChunk(terr.updateList.top());	
 				terr.renderChunk(terr.updateList.top(), cubeShader);
 				terr.updateList.pop();
 			}

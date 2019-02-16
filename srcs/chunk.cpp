@@ -5,6 +5,17 @@
 
 Chunk::Chunk(int x, int z, Terrain *t) : xoff(x), zoff(z), terr(t)
 {
+	this->blocks = new Block**[CHUNK_X];
+	for(int i = 0; i < CHUNK_X; i++)
+	{
+		this->blocks[i] = new Block*[CHUNK_Y];
+
+		for(int j = 0; j < CHUNK_Y; j++)
+		{
+			this->blocks[i][j] = new Block[CHUNK_Z];
+		}
+	}
+
 	this->pointSize = 0;
 	this->transparentPointSize = 0;
 	offsetMatrix = glm::translate(glm::mat4(1.0f), glm::vec3((float)(xoff * CHUNK_X), 1.0f, (float)(zoff * CHUNK_Z)));
@@ -12,10 +23,13 @@ Chunk::Chunk(int x, int z, Terrain *t) : xoff(x), zoff(z), terr(t)
 
 	// zero lightmap
 	memset(torchLightMap, 0, sizeof(torchLightMap));
-	memset(sunLightMap, 0, sizeof(sunLightMap));
+	memset(sunLightMap, 0, sizeof(sunLightMap));	
 
 	// non transparent
+	// cout << x << " " << z << endl;
+	// this segfaults on multithreaded generation?
 	glGenVertexArrays(1, &this->VAO);
+	// cout << "NO SEG!" << endl;
 	glGenBuffers(1, &this->VBO);
 	glBindVertexArray(this->VAO);
 		glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
@@ -39,7 +53,7 @@ Chunk::Chunk(int x, int z, Terrain *t) : xoff(x), zoff(z), terr(t)
 		// sun light
 		glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, 10 * sizeof(GLfloat), (GLvoid*)(9 * sizeof(GLfloat)));
 		glEnableVertexAttribArray(4);
-	glBindVertexArray(0);
+	glBindVertexArray(0);	
 
 	// transparent
 	glGenVertexArrays(1, &this->transparentVAO);
@@ -185,12 +199,14 @@ void Chunk::pullTerrainFromNeighbors()
 	this->setState(RENDER); //reset state because it doesn't need the update that neighborqueueunload does
 }
 
+// heightmap generation
 int	Chunk::getBase(int x, int z)
 {
-	float b1 = MAP(this->terr->terrainNoise1.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 0.1f, YSQRT);
-	float b2 = MAP(this->terr->terrainNoise2.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 0.1f, YSQRT);
-	float b3 = MAP(this->terr->terrainNoise3.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 0.1f, YSQRT);
-	return (pow((b1+b2+b3)/3, 2));
+	float b1 = MAP(this->terr->terrainNoise1->GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 0.1f, YSQRT);
+	// float b2 = MAP(this->terr->terrainNoise2.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 0.1f, YSQRT);
+	// float b3 = MAP(this->terr->terrainNoise3.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff)), -1.0f, 1.0f, 0.1f, YSQRT);
+	// return (pow((b1+b2+b3)/3, 2));
+	return (pow(b1, 2));
 }
 
 void Chunk::setTerrain()
@@ -206,32 +222,17 @@ void Chunk::setTerrain()
 			bool water = false;
 			// Use the noise library to get the height value of x, z
 			int base = getBase(x,z);
-			float temp = this->terr->temperatureNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
-			float hum = this->terr->humidityNoise.GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
+			float temp = this->terr->temperatureNoise->GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
+			float hum = this->terr->humidityNoise->GetNoise(x+(CHUNK_X*xoff),z+(CHUNK_Z*zoff));
 			short blocktype;
 			// noise layer #1 "Temperature"
 			// noise layer #2 "Humidity"
-			if (temp < -0.33f)
-			{
-				if (hum < 0.0f)
-					blocktype = 67;
-				else
-					blocktype = 68;
-			}
-			else if (temp >= -0.33f && temp >= 0.33f)
-			{
-				if (hum < 0.0f)
-					blocktype = Blocktype::GRASS_BLOCK;
-				else
-					blocktype = Blocktype::DIRT_BLOCK;
-			}
-			else
-			{
-				if (hum < 0.0f)
-					blocktype = Blocktype::SAND_BLOCK;
-				else
-					blocktype = Blocktype::GRASS_BLOCK;
-			}
+			(temp < -0.33f) ?
+				(hum < 0.0f) ? blocktype = 67 : blocktype = 68
+				: (temp >= 0.33f) ?
+					(hum < 0.0f) ? blocktype = Blocktype::GRASS_BLOCK : blocktype = Blocktype::DIRT_BLOCK
+					: (hum < 0.0f) ? blocktype = Blocktype::SAND_BLOCK : blocktype = Blocktype::GRASS_BLOCK;
+
 			if (base < WATER_LEVEL)
 				water = true;
 			for (int y = 0; y < base - 4; y++)
@@ -252,18 +253,18 @@ void Chunk::setTerrain()
 			if (!water)
 			{
 				if (blocktype == Blocktype::GRASS_BLOCK && rand() % 10000 > 9996)
-					this->terr->structureEngine.addStructure(this,glm::ivec3(x,base,z), StructType::Tree);
+					this->terr->structureEngine->addStructure(this,glm::ivec3(x,base,z), StructType::Tree);
 				else if (blocktype == Blocktype::GRASS_BLOCK && rand() % 10000 > 9998)
-					this->terr->structureEngine.addStructure(this,glm::ivec3(x,base,z), StructType::GiantTree);
+					this->terr->structureEngine->addStructure(this,glm::ivec3(x,base,z), StructType::GiantTree);
 
 				if (blocktype == Blocktype::SAND_BLOCK && rand() % 1000 > 998)
-					this->terr->structureEngine.addStructure(this,glm::ivec3(x,base,z), StructType::Cactus);
+					this->terr->structureEngine->addStructure(this,glm::ivec3(x,base,z), StructType::Cactus);
 				else if (blocktype == Blocktype::SAND_BLOCK && rand() % 1000 > 998)
-					this->terr->structureEngine.addStructure(this,glm::ivec3(x,base,z), StructType::Rock);
+					this->terr->structureEngine->addStructure(this,glm::ivec3(x,base,z), StructType::Rock);
 			}
 		}
 	}
-	// COMMENTED THIS OUT, DOESN'T SEEM TO EFFECT ANYTHING??
+	// might not actually need to pull terrain from neighbors here:
 	// this->pullTerrainFromNeighbors();
 	// std::cout << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << std::endl;
 }
@@ -402,20 +403,16 @@ void Chunk::faceRendering()
 void Chunk::buildVAO(void)
 {
 	glBindVertexArray(this->VAO);
-
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
 		glBufferData(GL_ARRAY_BUFFER, mesh.size() * sizeof(float), &this->mesh[0], GL_STATIC_DRAW);
-
 	glBindVertexArray(0);
-	mesh.clear();
+	mesh.clear(); // don't need after mesh is built
 
 	glBindVertexArray(this->transparentVAO);
-
 		glBindBuffer(GL_ARRAY_BUFFER, transparentVBO);
 		glBufferData(GL_ARRAY_BUFFER, transparentMesh.size() * sizeof(float), &this->transparentMesh[0], GL_STATIC_DRAW);
-
 	glBindVertexArray(0);
-	transparentMesh.clear();
+	transparentMesh.clear(); // don't need after mesh is built
 	this->setState(RENDER);
 }
 

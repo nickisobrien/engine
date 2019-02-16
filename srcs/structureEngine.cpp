@@ -62,7 +62,7 @@ void StructureEngine::generateGiantTree(Chunk *chunk, glm::ivec3 loc)
 		{
 			for (int j = -TREELAYERWIDTH + k*4; j <= TREELAYERWIDTH - k*4; j++)
 			{
-				chunk->setBlock(glm::ivec3(loc.x+i,loc.y+TREEHEIGHT+k,loc.z+j),TREE_LEAF_BLOCK_2);
+				chunk->setBlock(glm::ivec3(loc.x+i,loc.y+TREEHEIGHT+k,loc.z+j),TREE_LEAF_BLOCK_1);
 			}
 		}
 	}

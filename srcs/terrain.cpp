@@ -12,6 +12,7 @@ Terrain::Terrain(void)
 	this->terrainNoise2 = new FastNoise();
 	this->terrainNoise3 = new FastNoise();
 	this->setNoise();
+	this->lightEngine = new LightEngine();
 }
 
 Terrain::~Terrain(void)
@@ -22,6 +23,7 @@ Terrain::~Terrain(void)
 	delete this->terrainNoise1;
 	delete this->terrainNoise2;
 	delete this->terrainNoise3;
+	delete this->lightEngine;
 }
 
 void Terrain::updateChunk(glm::ivec2 pos)
@@ -31,7 +33,7 @@ void Terrain::updateChunk(glm::ivec2 pos)
 		this->world[pos]->clearSunLightMap();
 		if (!this->world[pos]->neighborQueue.empty())
 			this->world[pos]->neighborQueueUnload();
-		this->lightEngine.sunlightInit(this->world[pos]);
+		this->lightEngine->sunlightInit(this->world[pos]);
 		this->world[pos]->update();
 	}
 	else
@@ -39,7 +41,7 @@ void Terrain::updateChunk(glm::ivec2 pos)
 		this->world[pos] = new Chunk(pos.x, pos.y, this);				
 		this->setNeighbors(pos);		
 		this->world[pos]->setTerrain();		
-		this->lightEngine.sunlightInit(this->world[pos]);		
+		this->lightEngine->sunlightInit(this->world[pos]);		
 		this->world[pos]->update();		
 	}
 }

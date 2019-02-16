@@ -258,9 +258,9 @@ void Player::leftMouseClickEvent()
 		if (b->getType() == Blocktype::LIGHT_BLOCK)
 		{
 			short val = (short)c->getTorchLight(current_voxel.x,current_voxel.y,current_voxel.z);
-			this->terr->lightEngine.lightRemovalBfsQueue.emplace(current_voxel.x,current_voxel.y,current_voxel.z, val, c);
+			this->terr->lightEngine->lightRemovalBfsQueue.emplace(current_voxel.x,current_voxel.y,current_voxel.z, val, c);
 			c->setTorchLight(current_voxel.x,current_voxel.y,current_voxel.z, 0);
-			this->terr->lightEngine.removedLighting();
+			this->terr->lightEngine->removedLighting();
 		}
 		b->setType(Blocktype::AIR_BLOCK);
 		this->terr->updateChunk(glm::ivec2(c->getXOff(), c->getZOff()));
@@ -400,9 +400,9 @@ void Player::rightMouseClickEvent()
 		if (e->getType() == Blocktype::LIGHT_BLOCK)
 		{
 			c->setTorchLight(vec.x,vec.y,vec.z,14);
-			terr->lightEngine.lightBfsQueue.emplace(vec.x, vec.y, vec.z, c);
+			terr->lightEngine->lightBfsQueue.emplace(vec.x, vec.y, vec.z, c);
 			// clear out light queue
-			terr->lightEngine.lampLighting();
+			terr->lightEngine->lampLighting();
 		}
 		this->terr->updateChunk(glm::ivec2(c->getXOff(), c->getZOff()));
 		// edge blocks broken require neighbor chunk updates too

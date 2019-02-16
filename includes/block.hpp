@@ -6,7 +6,7 @@ public:
 	inline Block() {};
 	inline ~Block() {};
 
-	inline bool isActive(void) { return (this->type == Blocktype::AIR_BLOCK || this->type == Blocktype::WATER_BLOCK) }
+	inline bool isActive(void) { return (this->type == Blocktype::AIR_BLOCK || this->type == Blocktype::WATER_BLOCK); }
 	inline uint8_t getType(void) { return this->type; }
 	inline void setType(uint8_t t) { this->type = t; }
 private:

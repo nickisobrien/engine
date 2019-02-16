@@ -439,18 +439,20 @@ void Chunk::addFace(int face, int x, int y, int z, int val, vector<float> *m, in
 		glm::vec2 tex(TEXCOORDS[j].x, TEXCOORDS[j].y);
 		tex.x /= 16;
 
-		//if (side)
-		// else (top)
-		if ((blocks[x][y][z].getType() == GRASS_BLOCK) && face != 1) // for grass side facing
+		// if (side && grass)
+		// else if (top)
+		// else
+		if (blocks[x][y][z].getType() == GRASS_BLOCK && face != 1)
 			tex.x += 0.0625 * (xtype+1);
-		else if (blocks[x][y][z].getType() == TREE_BLOCK && (face == 1 || face == 0)) // for tree trunks
+		else if (blocks[x][y][z].getType() == TREE_BLOCK && (face == 1 || face == 0))
 			tex.x += 0.0625 * (xtype+1);
 		else
 			tex.x += 0.0625 * xtype;
 		
+		// if (cactus and top)
+		// else
 		tex.y /= 16;
-		// y type equation doesn't change because this assumes textures are in the same row as shared texture
-		if (blocks[x][y][z].getType() == CACTUS_BLOCK && (face == 1 || face == 0)) // for tree trunks
+		if (blocks[x][y][z].getType() == CACTUS_BLOCK && (face == 1 || face == 0))
 			tex.y += 0.0625 * (ytype+1);
 		else
 			tex.y += 0.0625 * ytype;

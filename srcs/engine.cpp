@@ -15,12 +15,12 @@ float lastFrame = 0.0f; // Time of last frame
 float lastX = WIDTH / 2.0f;
 float lastY = HEIGHT / 2.0f;
 bool firstMouse = true;
-TextureEngine textureEngine;
-Terrain terr;
-Player player(glm::vec3(CHUNK_X/2.0f, (float)CHUNK_Y-30.0f, CHUNK_Z/2.0f), &terr);
+TextureEngine *textureEngine = new TextureEngine();
+Terrain *terr = new Terrain();
+Player *player = new Player(glm::vec3(CHUNK_X/2.0f, (float)CHUNK_Y-30.0f, CHUNK_Z/2.0f), terr);
 
 // need to this to pass for thread
-static inline void	updatePlayer(float deltaTime){ player.update(deltaTime); }
+static inline void	updatePlayer(float deltaTime){ player->update(deltaTime); }
 
 int main(void)
 {
@@ -57,7 +57,7 @@ int main(void)
 
 	// build and compile our shader program
 	Shader cubeShader("./resources/shaders/cube.vs", "./resources/shaders/cube.fs");
-	unsigned int atlas = textureEngine.loadTexture("./resources/textures/atlas2.png");
+	unsigned int atlas = textureEngine->loadTexture("./resources/textures/atlas2.png");
 
 	cubeShader.use();
 	cubeShader.setInt("atlas", 0);
@@ -72,7 +72,7 @@ int main(void)
 		lastFrame = currentFrame;
 
 		// input
-		player.processInput(window, deltaTime);
+		player->processInput(window, deltaTime);
 
 		// render
 		glClearColor(0.5f, 0.7f, 0.9f, 1.0f);
@@ -84,53 +84,53 @@ int main(void)
 
 		// setup renderer
 		cubeShader.use();
-		glm::mat4 projection = glm::perspective(glm::radians(player.camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 1000.0f);
-		glm::mat4 view = player.camera.GetViewMatrix();
+		glm::mat4 projection = glm::perspective(glm::radians(player->camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 1000.0f);
+		glm::mat4 view = player->camera.GetViewMatrix();
 		cubeShader.setMat4("projection", projection);
 		cubeShader.setMat4("view", view);
 
-		Chunk *c = player.getChunk();
+		Chunk *c = player->getChunk();
 
 		thread playerMovementThread(updatePlayer, deltaTime);
 
 		// need to make sure to only render each chunk once per frame
-		terr.renderChunk(glm::ivec2(c->getXOff(), c->getZOff()), cubeShader);
+		terr->renderChunk(glm::ivec2(c->getXOff(), c->getZOff()), cubeShader);
 		for (int i = 0; i < rendRadius; i++)
 		{
 			for (int j = 0; j < rendRadius; j++)
 			{
 				if (!i && !j)
 					continue;
-				terr.renderChunk(glm::ivec2(c->getXOff() + i, c->getZOff() + j), cubeShader);
-				terr.renderChunk(glm::ivec2(c->getXOff() - i, c->getZOff() - j), cubeShader);
-				terr.renderChunk(glm::ivec2(c->getXOff() - i, c->getZOff() + j), cubeShader);
-				terr.renderChunk(glm::ivec2(c->getXOff() + i, c->getZOff() - j), cubeShader);
+				terr->renderChunk(glm::ivec2(c->getXOff() + i, c->getZOff() + j), cubeShader);
+				terr->renderChunk(glm::ivec2(c->getXOff() - i, c->getZOff() - j), cubeShader);
+				terr->renderChunk(glm::ivec2(c->getXOff() - i, c->getZOff() + j), cubeShader);
+				terr->renderChunk(glm::ivec2(c->getXOff() + i, c->getZOff() - j), cubeShader);
 			}
 		}
 
-		terr.renderWaterChunk(glm::ivec2(c->getXOff(), c->getZOff()), cubeShader);
+		terr->renderWaterChunk(glm::ivec2(c->getXOff(), c->getZOff()), cubeShader);
 		for (int i = 0; i < rendRadius; i++)
 		{
 			for (int j = 0; j < rendRadius; j++)
 			{
 				if (!i && !j)
 					continue;
-				terr.renderWaterChunk(glm::ivec2(c->getXOff() + i, c->getZOff() + j), cubeShader);
-				terr.renderWaterChunk(glm::ivec2(c->getXOff() - i, c->getZOff() - j), cubeShader);
-				terr.renderWaterChunk(glm::ivec2(c->getXOff() - i, c->getZOff() + j), cubeShader);
-				terr.renderWaterChunk(glm::ivec2(c->getXOff() + i, c->getZOff() - j), cubeShader);
+				terr->renderWaterChunk(glm::ivec2(c->getXOff() + i, c->getZOff() + j), cubeShader);
+				terr->renderWaterChunk(glm::ivec2(c->getXOff() - i, c->getZOff() - j), cubeShader);
+				terr->renderWaterChunk(glm::ivec2(c->getXOff() - i, c->getZOff() + j), cubeShader);
+				terr->renderWaterChunk(glm::ivec2(c->getXOff() + i, c->getZOff() - j), cubeShader);
 			}
 		}
 
 		playerMovementThread.join();
 
-		if (!terr.updateList.empty())
+		if (!terr->updateList.empty())
 		{
-			while (!terr.updateList.empty()) // could switch to running this as a while loop on a list on a seperate thread
+			while (!terr->updateList.empty()) // could switch to running this as a while loop on a list on a seperate thread
 			{
-				terr.updateChunk(terr.updateList.top());	
-				terr.renderChunk(terr.updateList.top(), cubeShader);
-				terr.updateList.pop();
+				terr->updateChunk(terr->updateList.top());	
+				terr->renderChunk(terr->updateList.top(), cubeShader);
+				terr->updateList.pop();
 			}
 		}
 		else if (rendRadius < RENDER_RADIUS)
@@ -138,9 +138,11 @@ int main(void)
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		glfwSwapBuffers(window);
 		glfwPollEvents();
-		// glfwPollEvents is currently bugged on new macOS
-
 	}
+	delete textureEngine;
+	delete terr;
+	delete player;
+
 	// glfw: terminate, clearing all previously allocated GLFW resources
 	glfwTerminate();
 	return 0;
@@ -164,22 +166,22 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	lastX = xpos;
 	lastY = ypos;
 
-	player.camera.ProcessMouseMovement(xoffset, yoffset);
+	player->camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
 	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
-		player.leftMouseClickEvent();
+		player->leftMouseClickEvent();
 
 	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
-		player.rightMouseClickEvent();
+		player->rightMouseClickEvent();
 
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	player.camera.ProcessMouseScroll(yoffset);
+	player->camera.ProcessMouseScroll(yoffset);
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function execute

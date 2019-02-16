@@ -124,9 +124,10 @@ int main(void)
 
 		if (!terr->updateList.empty())
 		{
+			thread t1;
 			while (!terr->updateList.empty()) // could switch to running this as a while loop on a list on a seperate thread
 			{
-				terr->updateChunk(terr->updateList.top());	
+				terr->updateChunk(terr->updateList.top());
 				terr->renderChunk(terr->updateList.top(), cubeShader);
 				terr->updateList.pop();
 			}

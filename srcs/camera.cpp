@@ -3,7 +3,7 @@
 
 void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime)
 {
-	float velocity = MovementSpeed * deltaTime;
+	float velocity = this->MovementSpeed * deltaTime;
 	
 	if (direction == FORWARD)
 		Position += glm::vec3(Front.x, 0.0f, Front.z) * velocity;

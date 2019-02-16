@@ -4,4 +4,4 @@ An ongoing learning project developing things such as 3D procedural terrain, phy
 
 Status: Working on OSX Mojave (Haven't done testing/porting/configuring)
 
-<img width="1280" alt="screen shot 2019-02-03 at 11 47 17 am" src="https://user-images.githubusercontent.com/18608979/52181995-604d1280-27ad-11e9-8fbe-609f0110a88a.png">
+<img width="1280" alt="screen shot 2019-02-16 at 9 14 49 am" src="https://user-images.githubusercontent.com/18608979/52902840-5bd02300-31cb-11e9-8959-49d628e73855.png">

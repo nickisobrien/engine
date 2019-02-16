@@ -11,7 +11,7 @@ HEADERS := ${INC_DIR}*.hpp
 HEADERS_INC := -I ${INC_DIR}
 
 # engine
-FILES = engine chunk camera terrain block FastNoise player lightEngine textureEngine structureEngine
+FILES = engine chunk camera terrain FastNoise player lightEngine textureEngine structureEngine
 CFILES = $(patsubst %, $(SRC_DIR)%.cpp, $(FILES))
 OFILES = $(patsubst %, $(OBJ_DIR)%.o, $(FILES))
 

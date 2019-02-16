@@ -14,6 +14,7 @@ class Terrain
 public:
 	Terrain(void);
 	~Terrain(void);
+	inline Chunk *getChunk(glm::ivec2 pos) { if (this->world.find(pos) != this->world.end()) return (this->world[pos]); return NULL; }
 	void updateChunk(glm::ivec2 pos);
 	bool renderChunk(glm::ivec2 pos, Shader shader);
 	bool renderWaterChunk(glm::ivec2 pos, Shader shader);

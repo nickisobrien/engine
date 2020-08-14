@@ -6,18 +6,15 @@
 Chunk::Chunk(int x, int z, Terrain *t) : xoff(x), zoff(z), terr(t)
 {
 	this->blocks = new Block**[CHUNK_X];
-	this->torchLightMap = new uint8_t**[CHUNK_X];
-	this->sunLightMap = new uint8_t**[CHUNK_X];
+	this->lightMap = new uint8_t**[CHUNK_X];
 	for(int i = 0; i < CHUNK_X; i++)
 	{
 		this->blocks[i] = new Block*[CHUNK_Y];
-		this->torchLightMap[i] = new uint8_t*[CHUNK_Y];
-		this->sunLightMap[i] = new uint8_t*[CHUNK_Y];
+		this->lightMap[i] = new uint8_t*[CHUNK_Y];
 		for(int j = 0; j < CHUNK_Y; j++)
 		{
 			this->blocks[i][j] = new Block[CHUNK_Z];
-			this->torchLightMap[i][j] = new uint8_t[CHUNK_Z]();
-			this->sunLightMap[i][j] = new uint8_t[CHUNK_Z]();
+			this->lightMap[i][j] = new uint8_t[CHUNK_Z]();
 		}
 	}
 
@@ -120,16 +117,13 @@ Chunk::~Chunk(void)
 		for(int j = 0; j < CHUNK_Y; j++)
 		{
 			delete this->blocks[i][j];
-			delete this->torchLightMap[i][j];
-			delete this->sunLightMap[i][j];
+			delete this->lightMap[i][j];
 		}
 		delete this->blocks[i];
-		delete this->torchLightMap[i];
-		delete this->sunLightMap[i];
+		delete this->lightMap[i];
 	}
 	delete this->blocks;
-	delete this->torchLightMap;
-	delete this->sunLightMap;
+	delete this->lightMap;
 }
 
 void Chunk::render(Shader shader)
@@ -478,10 +472,8 @@ void Chunk::addFace(int face, int x, int y, int z, int val, vector<float> *m, in
 		m->push_back(NORMALS[INDICES[i / 6]].z);
 
 		// torch lighting, becomes a float when pushed back because mesh is a float vector
-		m->push_back(this->torchLightMap[x][y][z]);
-
-		// can move these light maps to private and use getTorchLight
-		m->push_back(this->sunLightMap[x][y][z]);
+		m->push_back(getTorchLight(x, y, z));
+		m->push_back(getSunLight(x, y, z));
 	}
 	*ps+=6;
 }

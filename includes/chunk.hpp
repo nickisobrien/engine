@@ -11,6 +11,14 @@
 #define CHUNK_Y 256
 #define WATER_LEVEL 38
 
+#define SUN_LIGHT_SHIFT 0
+#define SUN_LIGHT_MASK (0xf << SUN_LIGHT_SHIFT)
+#define GET_SUN_LIGHT(v) ((v & SUN_LIGHT_MASK) >> SUN_LIGHT_SHIFT)
+
+#define TORCH_LIGHT_SHIFT 4
+#define TORCH_LIGHT_MASK (0xf << TORCH_LIGHT_SHIFT)
+#define GET_TORCH_LIGHT(v) ((v & TORCH_LIGHT_MASK) >> TORCH_LIGHT_SHIFT)
+
 enum ChunkState
 {
 	GENERATE, // needs to be generated completely
@@ -57,14 +65,24 @@ public:
 	void pullTerrainFromNeighbors();
 
 	// lighting
-	inline uint8_t getSunLight(int x, int y, int z) { return (sunLightMap[x][y][z]); };
-	inline void setSunLight(int x, int y, int z, int val) { sunLightMap[x][y][z] = val; };
-	inline uint8_t getTorchLight(int x, int y, int z) { return (torchLightMap[x][y][z]); };
-	inline void setTorchLight(int x, int y, int z, int val) { torchLightMap[x][y][z] = val; };
-	inline void clearSunLightMap() { for (int i = 0; i < CHUNK_X; i++) {
+	inline uint8_t getSunLight(int x, int y, int z) {
+		return (GET_SUN_LIGHT(lightMap[x][y][z])); };
+	inline void setSunLight(int x, int y, int z, int val) {
+		lightMap[x][y][z] &= ~SUN_LIGHT_MASK;
+		lightMap[x][y][z] |= (val << SUN_LIGHT_SHIFT) & SUN_LIGHT_MASK; 
+	};
+	inline uint8_t getTorchLight(int x, int y, int z) {
+		return (GET_TORCH_LIGHT(lightMap[x][y][z])); };
+	inline void setTorchLight(int x, int y, int z, int val) {
+		lightMap[x][y][z] &= ~TORCH_LIGHT_MASK;
+		lightMap[x][y][z] |=  (val << TORCH_LIGHT_SHIFT) & TORCH_LIGHT_MASK;
+	};
+	inline void clearSunLightMap() {
+		for (int i = 0; i < CHUNK_X; i++) {
 		for (int j = 0; j < CHUNK_Y; j++) {
-		for (int k = 0; k < CHUNK_Z; k++){ sunLightMap[i][j][k] = 0; }}}}
-
+		for (int k = 0; k < CHUNK_Z; k++) {
+			lightMap[i][j][k] |= ~SUN_LIGHT_MASK;
+		}}}}
 	void setTerrain();
 	int	getBase(int x, int z);
 	int	getWorld(int x, int y, int z);
@@ -82,8 +100,7 @@ private:
 
 	Block ***blocks;
 	// TODO: switch these to one map using 4 bits each, sent to buffer as char
-	uint8_t ***torchLightMap;
-	uint8_t ***sunLightMap;
+	uint8_t ***lightMap;
 	glm::mat4 offsetMatrix;
 	unsigned int VAO;
 	unsigned int VBO;
